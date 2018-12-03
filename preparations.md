@@ -38,7 +38,7 @@ az login
 and login with your usual credentials, to connect to the Azure cloud.
 
 ## Kubectl
-You can use the Azure CLI to install kubectl, following these instructions:
+You can use the Azure CLI to install kubectl, like so:
 ```console
 az acs kubernetes install-cli --install-location /usr/local/bin/kubectl
 ```
@@ -54,6 +54,7 @@ This will show the client version for kubectl, but it will probably report an er
 * Install Docker for Mac: https://store.docker.com/editions/community/docker-ce-desktop-mac
 
 ### Verify installation
+Run:
 ```console
 docker run hello-world
 ``` 
