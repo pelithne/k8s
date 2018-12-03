@@ -97,12 +97,12 @@ docker rm azure-vote-front azure-vote-back
 
 ## Using the Azure Container Registry
 
-We have created a container registry that can be used during the workshop. In order to use it, you must first login to, using the credentials provided to you.
+We have created a container registry that can be used during the workshop. In order to use it, you must first login with your credentials.
 
 Use the ````az-acr-login```` command and provide the unique name given to the container registry.
 
 ```azurecli
-az acr login --name <acrName>
+az acr login --name collectorWorkshopACR
 ```
 
 The command returns a *Login Succeeded* message once completed.
@@ -120,9 +120,14 @@ redis                        latest              a1b99da73d05        7 days ago 
 tiangolo/uwsgi-nginx-flask   flask               788ca94b2313        9 months ago        694MB
 ```
 
-To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry.
+Since we are using a shared ACR, you need to tag your image with a unique name to distinguish it from other users containers:
+```console
+docker tag azure-vote-front <unique name>/azure-vote-front
+```
 
-To get the login server address, use the ````az-acr-list```` command and query for the *loginServer* as follows:
+Also, to use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry.
+
+To get the login server address, use the `az-acr-list` command and query for the *loginServer* as follows:
 
 ```azurecli
 az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
@@ -131,7 +136,7 @@ az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:log
 Now, tag your local *azure-vote-front* image with the *acrloginServer* address of the container registry. To indicate the image version, add *:v1* to the end of the image name:
 
 ```console
-docker tag azure-vote-front <acrLoginServer>/azure-vote-front:v1
+docker tag <unique name>/azure-vote-front <acrLoginServer>/<unique name>/azure-vote-front:v1
 ```
 
 To verify the tags are applied, run ````docker-images```` again. An image is tagged with the ACR instance address and a version number.
