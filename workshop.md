@@ -68,7 +68,7 @@ redis                        latest     a1b99da73d05        7 days ago          
 tiangolo/uwsgi-nginx-flask   flask      788ca94b2313        9 months ago        694MB
 ```
 
-To see the running containers, run ````docker-ps````:
+To see the running containers, run ````docker ps````:
 
 ```
 $ docker ps
@@ -99,7 +99,7 @@ docker rm azure-vote-front azure-vote-back
 
 We have created a container registry that can be used during the workshop. In order to use it, you must first login with your credentials.
 
-Use the ````az-acr-login```` command and provide the unique name given to the container registry.
+Use the ````az acr login```` command and provide the name given to the container registry.
 
 ```azurecli
 az acr login --name collectorWorkshopACR
@@ -109,7 +109,7 @@ The command returns a *Login Succeeded* message once completed.
 
 ## Tag a container image
 
-To see a list of your current local images, use the ````docker-images```` command:
+To see a list of your current local images, use the ````docker images```` command:
 
 ```
 $ docker images
@@ -127,7 +127,7 @@ docker tag azure-vote-front <unique name>/azure-vote-front
 
 Also, to use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry.
 
-To get the login server address, use the `az-acr-list` command and query for the *loginServer* as follows:
+To get the login server address, use the `az acr list` command and query for the *loginServer* as follows:
 
 ```azurecli
 az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
@@ -139,48 +139,51 @@ Now, tag your local *azure-vote-front* image with the *acrloginServer* address o
 docker tag <unique name>/azure-vote-front <acrLoginServer>/<unique name>/azure-vote-front:v1
 ```
 
-To verify the tags are applied, run ````docker-images```` again. An image is tagged with the ACR instance address and a version number.
+To verify the tags are applied, run ````docker images```` again. An image is tagged with the ACR instance address and a version number.
 
 ```
 $ docker images
 
-REPOSITORY                                           TAG           IMAGE ID            CREATED             SIZE
-azure-vote-front                                     latest        eaf2b9c57e5e        8 minutes ago       716 MB
-mycontainerregistry.azurecr.io/azure-vote-front      v1            eaf2b9c57e5e        8 minutes ago       716 MB
-redis                                                latest        a1b99da73d05        7 days ago          106MB
-tiangolo/uwsgi-nginx-flask                           flask         788ca94b2313        8 months ago        694 MB
+REPOSITORY                                                    TAG           IMAGE ID            CREATED             SIZE
+azure-vote-front                                              latest        eaf2b9c57e5e        25 minutes ago      716 MB
+unique-name/azure-vote-front                                  latest        eaf2b9c57e5e        10 minutes ago      716 MB
+mycontainerregistry.azurecr.io/unique-name/azure-vote-front   v1            eaf2b9c57e5e        8 minutes ago       716 MB
+redis                                                         latest        a1b99da73d05        7 days ago          106MB
+tiangolo/uwsgi-nginx-flask                                    flask         788ca94b2313        8 months ago        694 MB
 ```
 
 ## Push images to registry
 
-You can now push the *azure-vote-front* image to your ACR instance. Use ````docker-push```` and provide your own *acrLoginServer* address for the image name as follows:
+You can now push the *azure-vote-front* image to your ACR instance. Use ````docker push```` and provide your own *acrLoginServer* address for the image name as follows:
 
 ```console
-docker push <acrLoginServer>/azure-vote-front:v1
+docker push <acrLoginServer>/<unique name>/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
 
 ## List images in registry
 
-To return a list of images that have been pushed to your ACR instance, use the ````az-acr-repository-list```` command. Provide your own `<acrName>` as follows:
+To return a list of images that have been pushed to your ACR instance, use the ````az acr repository list```` command. Provide your own `<acrName>` as follows:
 
 ```azurecli
 az acr repository list --name <acrName> --output table
 ```
 
-The following example output lists the *azure-vote-front* image as available in the registry:
+The following example output lists the *azure-vote-front* images as available in the registry. The list will (eventually) contain images from all workshop participants: 
 
 ```
 Result
 ----------------
-azure-vote-front
+unique-name/azure-vote-front
+another-unique-name/azure-vote-front
+yet-another-unique-name/azure-vote-front
 ```
 
-To see the tags for a specific image, use the ````az-acr-repository-show-tags```` command as follows:
+To see the tags for a specific image, use the ````az acr repository show-tags```` command as follows:
 
 ```azurecli
-az acr repository show-tags --name <acrName> --repository azure-vote-front --output table
+az acr repository show-tags --name <acrName> --repository <unique name>/azure-vote-front --output table
 ```
 
 The following example output shows the *v1* image tagged in a previous step:
@@ -226,7 +229,7 @@ This is mainly for convenience. You can skip this step, but then you have to inc
 
 You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./azure-vote directory
 
-Get the ACR login server name using the ````az-acr-list```` command as follows:
+Get the ACR login server name using the ````az acr list```` command as follows:
 
 ```azurecli
 az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
@@ -258,7 +261,7 @@ Save and close the file.
 
 ## Deploy the application
 
-To deploy your application, use the ```kubectl-apply``` command. This command parses the manifest file and creates the defined Kubernetes objects. Specify the sample manifest file, as shown in the following example:
+To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the defined Kubernetes objects. Specify the sample manifest file, as shown in the following example:
 
 ```console
 kubectl apply -f azure-vote-all-in-one-redis.yaml
@@ -315,7 +318,7 @@ In this step you will scale out the pods in the app and try pod autoscaling.
 
 ## Manually scale pods
 
-When the Azure Vote front-end and Redis instance were deployed in previous steps, a single replica was created. To see the number and state of pods in your cluster, use the `kubectl-get` command as follows:
+When the Azure Vote front-end and Redis instance were deployed in previous steps, a single replica was created. To see the number and state of pods in your cluster, use the `kubectl get` command as follows:
 
 ```console
 kubectl get pods
@@ -329,13 +332,13 @@ azure-vote-back-2549686872-4d2r5   1/1       Running   0          31m
 azure-vote-front-848767080-tf34m   1/1       Running   0          31m
 ```
 
-To manually change the number of pods in the *azure-vote-front* deployment, use the ````kubectl-scale```` command. The following example increases the number of front-end pods to *3*:
+To manually change the number of pods in the *azure-vote-front* deployment, use the ````kubectl scale```` command. The following example increases the number of front-end pods to *3*:
 
 ```console
 kubectl scale --replicas=3 deployment/azure-vote-front
 ```
 
-Run `kubectl-get` again to verify that Kubernetes creates the additional pods. After a minute or so, the additional pods are available in your cluster:
+Run `kubectl get` again to verify that Kubernetes creates the additional pods. After a minute or so, the additional pods are available in your cluster:
 
 ```console
 $ kubectl get pods
@@ -361,7 +364,7 @@ resources:
      cpu: 500m
 ```
 
-The following example uses the ````kubectl-autoscale```` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances:
+The following example uses the ````kubectl autoscale```` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances:
 
 ```console
 kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=3 --max=10
@@ -440,13 +443,13 @@ az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:log
 Use ````docker-tag```` to tag the image. Replace `<acrLoginServer>` with your ACR login server name or public registry hostname, and update the image version to *:v2* as follows:
 
 ```console
-docker tag azure-vote-front <acrLoginServer>/azure-vote-front:v2
+docker tag azure-vote-front <acrLoginServer>/<unique name>/azure-vote-front:v2
 ```
 
-Now use ````docker-push```` to upload the image to your registry. Replace `<acrLoginServer>` with your ACR login server name. If you experience issues pushing to your ACR registry, ensure that you have run the ````az-acr-login```` command.
+Now use ````docker-push```` to upload the image to your registry. Replace `<acrLoginServer>` with your ACR login server name. If you experience issues pushing to your ACR registry, ensure that you have run the ````az acr login```` command.
 
 ```console
-docker push <acrLoginServer>/azure-vote-front:v2
+docker push <acrLoginServer>/<unique name>/azure-vote-front:v2
 ```
 
 ## Deploy the updated application
