@@ -154,7 +154,7 @@ tiangolo/uwsgi-nginx-flask                                    flask         788c
 
 ## Push images to registry
 
-You can now push the *azure-vote-front* image to your ACR instance. Use ````docker push```` and provide your own *acrLoginServer* address for the image name as follows:
+You can now push the *azure-vote-front* image to your ACR instance. Use ````docker push```` and provide the *acrLoginServer* address for the image name as follows:
 
 ```console
 docker push <acrLoginServer>/<unique name>/azure-vote-front:v1
@@ -164,10 +164,10 @@ It may take a few minutes to complete the image push to ACR.
 
 ## List images in registry
 
-To return a list of images that have been pushed to your ACR instance, use the ````az acr repository list```` command. Provide your own `<acrName>` as follows:
+To return a list of images that have been pushed to your ACR instance, use the ````az acr repository list```` command:
 
 ```azurecli
-az acr repository list --name <acrName> --output table
+az acr repository list --name collectorWorkshopACR --output table
 ```
 
 The following example output lists the *azure-vote-front* images as available in the registry. The list will (eventually) contain images from all workshop participants: 
@@ -183,7 +183,7 @@ yet-another-unique-name/azure-vote-front
 To see the tags for a specific image, use the ````az acr repository show-tags```` command as follows:
 
 ```azurecli
-az acr repository show-tags --name <acrName> --repository <unique name>/azure-vote-front --output table
+az acr repository show-tags --name collectorWorkshopACR --repository <unique name>/azure-vote-front --output table
 ```
 
 The following example output shows the *v1* image tagged in a previous step:
@@ -249,12 +249,12 @@ containers:
   image: microsoft/azure-vote-front:v1
 ```
 
-Provide your own ACR login server name so that your manifest file looks like the following example:
+Provide the ACR login server name so that your manifest file looks like the following example:
 
 ```yaml
 containers:
 - name: azure-vote-front
-  image: <acrName>.azurecr.io/azure-vote-front:v1
+  image: collectorworkshopacr.azurecr.io/azure-vote-front:v1
 ```
 
 Save and close the file.
@@ -440,13 +440,13 @@ To correctly use the updated image, tag the *azure-vote-front* image with the lo
 az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
 ```
 
-Use ````docker-tag```` to tag the image. Replace `<acrLoginServer>` with your ACR login server name or public registry hostname, and update the image version to *:v2* as follows:
+Use ````docker tag```` to tag the image. Replace `<acrLoginServer>` with your ACR login server name or public registry hostname, and update the image version to *:v2* as below. Don't forget to add your unique name tag.
 
 ```console
 docker tag azure-vote-front <acrLoginServer>/<unique name>/azure-vote-front:v2
 ```
 
-Now use ````docker-push```` to upload the image to your registry. Replace `<acrLoginServer>` with your ACR login server name. If you experience issues pushing to your ACR registry, ensure that you have run the ````az acr login```` command.
+Now use ````docker push```` to upload the image to your registry. Replace `<acrLoginServer>` with your ACR login server name. If you experience issues pushing to your ACR registry, ensure that you have run the ````az acr login```` command.
 
 ```console
 docker push <acrLoginServer>/<unique name>/azure-vote-front:v2
@@ -475,10 +475,10 @@ kubectl scale --replicas=3 deployment/azure-vote-front
 To update the application, use the ````kubectl set```` command. Update `<acrLoginServer>` with the login server or host name of your container registry, and specify the *v2* application version:
 
 ```console
-kubectl set image deployment azure-vote-front azure-vote-front=<acrLoginServer>/azure-vote-front:v2
+kubectl set image deployment azure-vote-front azure-vote-front=<acrLoginServer>/<unique name>/azure-vote-front:v2
 ```
 
-To monitor the deployment, use the ````kubectl get pod```` command. As the updated application is deployed, your pods are terminated and re-created with the new container image.
+To monitor the deployment, use the ```kubectl get pods``` command. As the updated application is deployed, your pods are terminated and re-created with the new container image.
 
 ```console
 kubectl get pods
