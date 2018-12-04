@@ -1,5 +1,9 @@
 # Azure Kubernetes Service (AKS) Workshop
 
+Welcome to this Azure Kubernetes Workshop instruction. The workshop contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. 
+
+## Running Docker Containers locally
+
 In this first step in the tutorial, you will prepare a multi-container application for use in your local docker environment. Existing tools such as Git and Docker are used to locally build and test an application. You will learn how to:
 
  * Clone a sample application source from GitHub
@@ -11,14 +15,14 @@ Once completed, the following application runs in your local development environ
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png) 
 
 
-## Get application code
+### Get application code
 
 The sample application used in this tutorial is a basic voting app. The application consists of a front-end web component and a back-end Redis instance. The web component is packaged into a custom container image. The Redis instance uses an unmodified image from Docker Hub.
 
-Use````git```` to clone the sample application to your development environment:
+Use```git``` to clone the sample application to your development environment:
 
 ```console
-git clone https://github.com/Azure-Samples/azure-voting-app-redis.git
+git clone https://github.com/pelithne/azure-voting-app-redis.git
 ```
 
 Change directories so that you are working from the cloned directory.
@@ -29,25 +33,28 @@ cd azure-voting-app-redis
 
 Inside the directory is the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.
 
-## Create a docker network
+### Create a docker network
+
+### Note: if you are using WSL, and if you have not installed docker there, you need to use `docker.exe` on the command line. 
+
 This network will be used by the containers that are started below, to allow them to communicate with each other
 
 ```console
  docker network create mynet
 ```
 
-## Create container images
+### Create container images
 
-Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will create two images, one for flask and one for the azure-vote-front.
+Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will create two images, one base image and one for the azure-vote-front.
 ```console
  docker build -t azure-vote-front ./azure-vote
 ```
 Please review ./azure-vote/Dockerfile to get an understanding for container images get created based on this file.
 
-## Run the application locally
+### Run the application locally
 First start the redis cache container. The command below will start a container with name "azure-vote-back" using the official redis docker container. If this is the first time the command is executed, the image will be downloaded to your computer (this can take a while). 
 
-Note that in the command below, the container is instructed to use the network ````mynet```` that was created in a previous step.
+Note that in the command below, the container is instructed to use the network ```mynet``` that was created in a previous step.
 ```console
 docker run --name azure-vote-back --net mynet -d redis
 ```
@@ -57,18 +64,18 @@ Now start the frontend container. The command below will start a container with 
 docker run --name azure-vote-front -d -p 8080:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
 ```
 
-When completed, use the ````docker images```` command to see the created images. Three images have been downloaded or created. The *azure-vote-front* image contains the front-end application and uses the `nginx-flask` image as a base. The `redis` image is used to start a Redis instance.
+When completed, use the ```docker images``` command to see the created images. Three images have been downloaded or created. The *azure-vote-front* image contains the front-end application and uses the `nginx-flask` image as a base. The `redis` image is used to start a Redis instance.
 
 ```
 $ docker images
 
 REPOSITORY                   TAG        IMAGE ID            CREATED             SIZE
-azure-vote-front             latest     9cc914e25834        40 seconds ago      694MB
-redis                        latest     a1b99da73d05        7 days ago          106MB
-tiangolo/uwsgi-nginx-flask   flask      788ca94b2313        9 months ago        694MB
+azure-vote-front            latest      e9488bdfb34b        3 minutes ago       708MB
+redis                       latest      5958914cc558        6 days ago          94.9MB
+jetpac33/azure-vote-front   v2          e2f39950cbf1        13 months ago       708MB
 ```
 
-To see the running containers, run ````docker ps````:
+To see the running containers, run ```docker ps```:
 
 ```
 $ docker ps
@@ -78,13 +85,13 @@ CONTAINER ID        IMAGE             COMMAND                  CREATED          
 b68fed4b66b6        redis             "docker-entrypoint..."   57 seconds ago      Up 30 seconds       0.0.0.0:6379->6379/tcp          azure-vote-back
 ```
 
-## Test application locally
+### Test application locally
 
 To see the running application, enter http://localhost:8080 in a local web browser. The sample application loads, as shown in the following example:
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
 
-## Clean up resources
+### Clean up resources
 
 Now that the application's functionality has been validated, the running containers can be stopped and removed. Do not delete the container images - in the next step, the *azure-vote-front* image will be uploaded to an Azure Container Registry.
 
@@ -97,77 +104,71 @@ docker rm azure-vote-front azure-vote-back
 
 ## Using the Azure Container Registry
 
-We have created a container registry that can be used during the workshop. In order to use it, you must first login with your credentials.
+We have created a container registry that can be used during the workshop. The name of this registry is `crcollectorworkshop`
 
-Use the ````az acr login```` command and provide the name given to the container registry.
+### Login to Container Registry
+
+In order to use the registry, you must first login with your credentials.
+
+Use the ```az acr login``` command and provide the name given to the container registry.
 
 ```azurecli
-az acr login --name collectorWorkshopACR
+az acr login --name crcollectorworkshop
 ```
 
 The command returns a *Login Succeeded* message once completed.
 
-## Tag a container image
+### Tag a container image
 
-To see a list of your current local images, use the ````docker images```` command:
+To see a list of your current local images, once again use the ```docker images``` command:
 
 ```
 $ docker images
 
 REPOSITORY                   TAG                 IMAGE ID            CREATED             SIZE
-azure-vote-front             latest              4675398c9172        13 minutes ago      694MB
-redis                        latest              a1b99da73d05        7 days ago          106MB
-tiangolo/uwsgi-nginx-flask   flask               788ca94b2313        9 months ago        694MB
+azure-vote-front             latest              e9488bdfb34b        3 minutes ago       708MB
+redis                        latest              5958914cc558        6 days ago          94.9MB
+jetpac33/azure-vote-front    v2                  e2f39950cbf1        13 months ago       708MB
 ```
 
-Since we are using a shared ACR, you need to tag your image with a unique name to distinguish it from other users containers:
-```console
-docker tag azure-vote-front <unique name>/azure-vote-front
-```
+To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `crcollectorworkshop.azurecr.io`
 
-Also, to use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry.
+Also, since you are using a shared repository, you need to tag your image with a unique name to distinguish it from other users containers. Select a name that is very likely to be unique amont the workshop participants.
 
-To get the login server address, use the `az acr list` command and query for the *loginServer* as follows:
+Finally, to indicate the image version, add *:v1* to the end of the image name.
 
-```azurecli
-az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
-```
-
-Now, tag your local *azure-vote-front* image with the *acrloginServer* address of the container registry. To indicate the image version, add *:v1* to the end of the image name:
+The resulting command:
 
 ```console
-docker tag <unique name>/azure-vote-front <acrLoginServer>/<unique name>/azure-vote-front:v1
+docker tag azure-vote-front crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
-To verify the tags are applied, run ````docker images```` again. An image is tagged with the ACR instance address and a version number.
+To verify the tags are applied, run ```docker images``` again. An image is tagged with the ACR instance address and a version number.
 
 ```
 $ docker images
-
-REPOSITORY                                                    TAG           IMAGE ID            CREATED             SIZE
-azure-vote-front                                              latest        eaf2b9c57e5e        25 minutes ago      716 MB
-unique-name/azure-vote-front                                  latest        eaf2b9c57e5e        10 minutes ago      716 MB
-mycontainerregistry.azurecr.io/unique-name/azure-vote-front   v1            eaf2b9c57e5e        8 minutes ago       716 MB
-redis                                                         latest        a1b99da73d05        7 days ago          106MB
-tiangolo/uwsgi-nginx-flask                                    flask         788ca94b2313        8 months ago        694 MB
+azure-vote-front                                                latest              e9488bdfb34b        3 minutes ago       708MB
+crcollectorworkshop.azurecr.io/unique-name/azure-vote-front     latest              e9488bdfb34b        3 minutes ago       708MB
+redis                                                           latest              5958914cc558        6 days ago          94.9MB
+jetpac33/azure-vote-front                                       v2                  e2f39950cbf1        13 months ago       708MB
 ```
 
-## Push images to registry
+### Push images to registry
 
-You can now push the *azure-vote-front* image to your ACR instance. Use ````docker push```` and provide the *acrLoginServer* address for the image name as follows:
+You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-docker push <acrLoginServer>/<unique name>/azure-vote-front:v1
+docker push crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
 
-## List images in registry
+### List images in registry
 
-To return a list of images that have been pushed to your ACR instance, use the ````az acr repository list```` command:
+To return a list of images that have been pushed to your ACR instance, use the ```az acr repository list``` command:
 
 ```azurecli
-az acr repository list --name collectorWorkshopACR --output table
+az acr repository list --name crcollectorworkshop --output table
 ```
 
 The following example output lists the *azure-vote-front* images as available in the registry. The list will (eventually) contain images from all workshop participants: 
@@ -180,10 +181,10 @@ another-unique-name/azure-vote-front
 yet-another-unique-name/azure-vote-front
 ```
 
-To see the tags for a specific image, use the ````az acr repository show-tags```` command as follows:
+To see the tags for a specific image, use the ```az acr repository show-tags``` command as follows:
 
 ```azurecli
-az acr repository show-tags --name collectorWorkshopACR --repository <unique name>/azure-vote-front --output table
+az acr repository show-tags --name crcollectorworkshop --repository <unique name>/azure-vote-front --output table
 ```
 
 The following example output shows the *v1* image tagged in a previous step:
@@ -204,36 +205,34 @@ Kubernetes provides a distributed platform for containerized applications. You b
  * Run an application in Kubernetes
  * Test the application
 
-## Validate towards Kubernetes Cluster
+### Validate towards Kubernetes Cluster
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
-az aks get-credentials --resource-group CollectorWorkshop --name CollectorWorkshopCluster
+az aks get-credentials --resource-group CollectorWorkshop --name aks-workshop
 ```
 
-## Kubernetes Namespace
+### Kubernetes Namespaces
+### NOTE: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
 A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
 
-### Create namespace
-To create a namespace, run the following command, and give it a name that will be unique within the cluster.
+To create a namespace, run the following command, and give it a name that you think will be unique within the cluster.
 ```console
 kubectl create namespace <your unique namespace name>
 ```
 Then set the default namespace for your current session
 ```console
-kubectl config set-context CollectorWorkshopCluster --namespace=<your unique namespace name>
+kubectl config set-context aks-workshop --namespace=<your unique namespace name>
 ```
 This is mainly for convenience. You can skip this step, but then you have to include a ´--namespace´ flag on all kubectl commands.
 
+You can verify that your newly created namespace is the active one:
+```console
+kubectl config view | grep namespace
+```
 
-## Update the manifest file
+### Update the manifest file
 
 You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./azure-vote directory
-
-Get the ACR login server name using the ````az acr list```` command as follows:
-
-```azurecli
-az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
-```
 
 The sample manifest file from the git repo cloned in the first tutorial uses the login server name of *microsoft*. Open this manifest file with a text editor, such as `vi`:
 
@@ -241,7 +240,7 @@ The sample manifest file from the git repo cloned in the first tutorial uses the
 vi azure-vote-all-in-one-redis.yaml
 ```
 
-Replace *microsoft* with your ACR login server name. The image name is found on line 47 of the manifest file. The following example shows the default image name:
+Replace *microsoft* with your ACR login server name and your `<unique name>`. The image name is found on line 47 of the manifest file. The following example shows the default image name:
 
 ```yaml
 containers:
@@ -249,13 +248,15 @@ containers:
   image: microsoft/azure-vote-front:v1
 ```
 
-Provide the ACR login server name so that your manifest file looks like the following example:
+Provide the ACR login server and `<unique name>` name so that your manifest file looks like the following example:
 
 ```yaml
 containers:
 - name: azure-vote-front
-  image: collectorworkshopacr.azurecr.io/azure-vote-front:v1
+  image: crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1
 ```
+
+Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
 Save and close the file.
 
@@ -278,7 +279,7 @@ deployment "azure-vote-front" created
 service "azure-vote-front" created
 ```
 
-## Test the application
+### Test the application
 
 A kubernetes-service is created which exposes the application to the internet. This process can take a few minutes. To monitor progress, use the `kubectl get service` command with the `--watch` argument:
 
@@ -316,7 +317,7 @@ In this step you will scale out the pods in the app and try pod autoscaling.
  * Configure autoscaling pods that run the app front-end
 
 
-## Manually scale pods
+### Manually scale pods
 
 When the Azure Vote front-end and Redis instance were deployed in previous steps, a single replica was created. To see the number and state of pods in your cluster, use the `kubectl get` command as follows:
 
@@ -332,7 +333,7 @@ azure-vote-back-2549686872-4d2r5   1/1       Running   0          31m
 azure-vote-front-848767080-tf34m   1/1       Running   0          31m
 ```
 
-To manually change the number of pods in the *azure-vote-front* deployment, use the ````kubectl scale```` command. The following example increases the number of front-end pods to *3*:
+To manually change the number of pods in the *azure-vote-front* deployment, use the ```kubectl scale``` command. The following example increases the number of front-end pods to *3*:
 
 ```console
 kubectl scale --replicas=3 deployment/azure-vote-front
@@ -350,7 +351,7 @@ azure-vote-front-3309479140-bzt05   1/1       Running   0          3m
 azure-vote-front-3309479140-hrbf2   1/1       Running   0          15m
 ```
 
-## Autoscale pods
+### Autoscale pods
 
 Kubernetes supports horizontal pod autoscaling to adjust the number of pods in a deployment depending on CPU utilization or other select metrics. The metrics-server is used to provide resource utilization to Kubernetes, and is automatically deployed in AKS clusters versions 1.10 and higher. 
 
@@ -364,7 +365,7 @@ resources:
      cpu: 500m
 ```
 
-The following example uses the ````kubectl autoscale```` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances:
+The following example uses the ```kubectl autoscale``` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances:
 
 ```console
 kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=3 --max=10
@@ -396,7 +397,7 @@ In this step the sample Azure Vote app is updated. You learn how to:
  * Deploy the updated container image
 
 
-## Update an application
+### Update an application
 
 Let's make a change to the sample application, then update the version already deployed to your AKS cluster. The sample application source code can be found inside of the *azure-vote* directory. Open the *config_file.cfg* file with an editor, such as `vi`:
 
@@ -416,15 +417,15 @@ SHOWHOST = 'false'
 
 Save and close the file.
 
-## Update the container image
+### Update the container image
 
-To re-create the front-end image and test the updated application, use ````docker build```` the same way as in a previous step. 
+To re-create the front-end image and test the updated application, use ```docker build``` the same way as in a previous step. 
 
 ```console
 docker build -t azure-vote-front ./azure-vote
 ```
 
-## Test the application locally
+### Test the application locally
 
 To verify that the updated container image shows your changes, open a local web browser to http://localhost:8080.
 
@@ -432,29 +433,25 @@ To verify that the updated container image shows your changes, open a local web 
 
 The updated color values provided in the *config_file.cfg* file are displayed on your running application.
 
-## Tag and push the image
+### Tag and push the image
 
-To correctly use the updated image, tag the *azure-vote-front* image with the login server name of your ACR registry. Get the login server name with the ````az acr list```` command:
+To correctly use the updated image, tag the *azure-vote-front* image with the login server name of your ACR registry, and your `<unique name>`.
 
-```azurecli
-az acr list --resource-group collectorWorkshopRG --query "[].{acrLoginServer:loginServer}" --output table
-```
-
-Use ````docker tag```` to tag the image. Replace `<acrLoginServer>` with your ACR login server name or public registry hostname, and update the image version to *:v2* as below. Don't forget to add your unique name tag.
+Use ```docker tag``` to tag the image and update the image version to *:v2* as below. 
 
 ```console
-docker tag azure-vote-front <acrLoginServer>/<unique name>/azure-vote-front:v2
+docker tag azure-vote-front crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
-Now use ````docker push```` to upload the image to your registry. Replace `<acrLoginServer>` with your ACR login server name. If you experience issues pushing to your ACR registry, ensure that you have run the ````az acr login```` command.
+Now use ```docker push``` to upload the image to your registry. If you experience issues pushing to your ACR registry, ensure that you have run the ```az acr login``` command.
 
 ```console
-docker push <acrLoginServer>/<unique name>/azure-vote-front:v2
+docker push crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
-## Deploy the updated application
+### Deploy the updated application
 
-To ensure maximum uptime, multiple instances of the application pod must be running. Verify the number of running front-end instances with the ````kubectl get pods```` command:
+To ensure maximum uptime, multiple instances of the application pod must be running. Verify the number of running front-end instances with the ```kubectl get pods``` command:
 
 ```
 $ kubectl get pods
@@ -472,10 +469,10 @@ If you do not have multiple front-end pods, scale the *azure-vote-front* deploym
 kubectl scale --replicas=3 deployment/azure-vote-front
 ```
 
-To update the application, use the ````kubectl set```` command. Update `<acrLoginServer>` with the login server or host name of your container registry, and specify the *v2* application version:
+To update the application, use the ```kubectl set``` and specify the *v2* application version:
 
 ```console
-kubectl set image deployment azure-vote-front azure-vote-front=<acrLoginServer>/<unique name>/azure-vote-front:v2
+kubectl set image deployment azure-vote-front azure-vote-front=crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 To monitor the deployment, use the ```kubectl get pods``` command. As the updated application is deployed, your pods are terminated and re-created with the new container image.
@@ -496,9 +493,9 @@ azure-vote-front-1297194256-tptnx  1/1       Running       0          5m
 azure-vote-front-1297194256-zktw9  1/1       Terminating   0          1m
 ```
 
-## Test the updated application
+### Test the updated application
 
-To view the update application, first get the external IP address of the `azure-vote-front` service:
+To view the updated application, first get the external IP address of the `azure-vote-front` service:
 
 ```console
 kubectl get service azure-vote-front
@@ -507,3 +504,21 @@ kubectl get service azure-vote-front
 Now open a local web browser to the IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
+
+
+## Cleaning up
+To stop your running containers, you can run the following command:
+
+```console
+kubectl delete -f azure-vote-all-in-one-redis.yaml
+```
+
+After this, you can remove the namespace you created previously:
+```console
+kubectl delete namespace <your unique namespace name>
+```
+
+Finally, remove the docker image from the container registry:
+```console
+az acr repository delete --name crcollectorworkshop --repository <unique name>/azure-vote-front
+```

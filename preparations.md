@@ -19,16 +19,18 @@ If, for some reason, you do not want to run WSL, there are many alternatives for
 ### Verify installation
 When installation has finished, make sure that you can clone a repository. For instance, you can clone the repo that we will use during the workshop (after switching to a suitable folder on your local machine):
 ```console
-git clone https://github.com/Azure-Samples/azure-voting-app-redis.git
+git clone https://github.com/pelithne/azure-voting-app-redis.git
 ```
 
-Then go into the folder ````azure-voting-app-redis```` and make sure there are some files in there. 
+Then go into the folder ```azure-voting-app-redis``` and make sure there are some files in there. 
 
 ## Azure CLI
 If WSL/Ubuntu is used you can use `apt` to install Azure CLI. Follow the instructions here:
 https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#install
 
 If another shell is used, you are on your own! Look for guidance here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
+
+For Mac you can use brew. Instructions here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos?view=azure-cli-latest
 
 ### Verify installation
 Run 
