@@ -333,11 +333,33 @@ azure-vote-back-2549686872-4d2r5   1/1       Running   0          31m
 azure-vote-front-848767080-tf34m   1/1       Running   0          31m
 ```
 
-To manually change the number of pods in the *azure-vote-front* deployment, use the ```kubectl scale``` command. The following example increases the number of front-end pods to *3*:
+It is possible to use the ```kubectl scale``` command to scale the number of pods. However, the preferred way is to edit the kubernetes manifest to increase the number of replicas.
 
-```console
-kubectl scale --replicas=3 deployment/azure-vote-front
-```
+Open the sample manifest file `azure-vote-all-in-one-redis.yaml` from the previously cloned git repo and change `replicas` from 1 to 3, on line 34.
+ ````
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 1
+  ````
+
+To
+
+  ````
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 3
+  ````
+And the run:
+
+````
+kubectl apply -f azure-vote-all-in-one-redis.yaml
+````
 
 Run `kubectl get` again to verify that Kubernetes creates the additional pods. After a minute or so, the additional pods are available in your cluster:
 
@@ -463,17 +485,33 @@ azure-vote-front-233282510-dhrtr   1/1       Running   0          10m
 azure-vote-front-233282510-pqbfk   1/1       Running   0          10m
 ```
 
-If you do not have multiple front-end pods, scale the *azure-vote-front* deployment as follows:
+If you do not have multiple front-end pods, scale the *azure-vote-front* deployment as per the instructions in the previous section (by changing `replicas` in `azure-vote-all-in-one-redis.yaml`)
 
-```console
-kubectl scale --replicas=3 deployment/azure-vote-front
-```
 
-To update the application, use the ```kubectl set``` and specify the *v2* application version:
+To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version .
 
-```console
-kubectl set image deployment azure-vote-front azure-vote-front=crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2
-```
+Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1` to `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
+ ````
+    spec:
+      containers:
+      - name: azure-vote-front
+        image: crcollectorworkshop.azurecr.io/pelithne/azure-vote-front:v1
+  ````
+
+To
+
+  ````
+    spec:
+      containers:
+      - name: azure-vote-front
+        image: crcollectorworkshop.azurecr.io/pelithne/azure-vote-front:v2
+  ````
+And the run:
+
+````
+kubectl apply -f azure-vote-all-in-one-redis.yaml
+```` 
+
 
 To monitor the deployment, use the ```kubectl get pods``` command. As the updated application is deployed, your pods are terminated and re-created with the new container image.
 
