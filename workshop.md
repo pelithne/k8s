@@ -336,6 +336,8 @@ azure-vote-front-848767080-tf34m   1/1       Running   0          31m
 It is possible to use the ```kubectl scale``` command to scale the number of pods. However, the preferred way is to edit the kubernetes manifest to increase the number of replicas.
 
 Open the sample manifest file `azure-vote-all-in-one-redis.yaml` from the previously cloned git repo and change `replicas` from 1 to 3, on line 34.
+
+Change this:
  ````
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -345,7 +347,7 @@ spec:
   replicas: 1
   ````
 
-To
+To this:
 
   ````
 apiVersion: apps/v1beta1
@@ -491,6 +493,8 @@ If you do not have multiple front-end pods, scale the *azure-vote-front* deploym
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version .
 
 Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1` to `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
+
+Change
  ````
     spec:
       containers:
@@ -499,7 +503,6 @@ Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `ima
   ````
 
 To
-
   ````
     spec:
       containers:
