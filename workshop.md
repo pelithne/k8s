@@ -208,7 +208,7 @@ Kubernetes provides a distributed platform for containerized applications. You b
 ### Validate towards Kubernetes Cluster
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
-az aks get-credentials --resource-group CollectorWorkshop --name aks-workshop
+az aks get-credentials --resource-group Group-KubernetesWorkshop-Dev --name aks-workshop
 ```
 
 ### Kubernetes Namespaces
