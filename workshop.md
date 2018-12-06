@@ -363,7 +363,7 @@ And the run:
 kubectl apply -f azure-vote-all-in-one-redis.yaml
 ````
 
-Run `kubectl get` again to verify that Kubernetes creates the additional pods. After a minute or so, the additional pods are available in your cluster:
+Run `kubectl get pods` again to verify that Kubernetes creates the additional pods. After a minute or so, the additional pods are available in your cluster:
 
 ```console
 $ kubectl get pods
