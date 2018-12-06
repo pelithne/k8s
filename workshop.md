@@ -338,7 +338,7 @@ It is possible to use the ```kubectl scale``` command to scale the number of pod
 Open the sample manifest file `azure-vote-all-in-one-redis.yaml` from the previously cloned git repo and change `replicas` from 1 to 3, on line 34.
 
 Change this:
- ````
+ ```yaml
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -349,7 +349,7 @@ spec:
 
 To this:
 
-  ````
+  ```yaml
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -495,7 +495,7 @@ To update the application, you can use  ```kubectl set``` and specify the new ap
 Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1` to `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
 
 Change
- ````
+ ```yaml
     spec:
       containers:
       - name: azure-vote-front
@@ -503,7 +503,7 @@ Change
   ````
 
 To
-  ````
+  ```yaml
     spec:
       containers:
       - name: azure-vote-front
