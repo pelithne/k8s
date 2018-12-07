@@ -104,7 +104,7 @@ docker rm azure-vote-front azure-vote-back
 
 ## Using the Azure Container Registry
 
-We have created a container registry that can be used during the workshop. The name of this registry is `crcollectorworkshop`
+We use an existing container registry that can be used during the workshop. The `ACR name` (and, if necessary credentials) will be provided to you.
 
 ### Login to Container Registry
 
@@ -113,7 +113,7 @@ In order to use the registry, you must first login with your credentials.
 Use the ```az acr login``` command and provide the name given to the container registry.
 
 ```azurecli
-az acr login --name crcollectorworkshop
+az acr login --name <ACR name>
 ```
 
 The command returns a *Login Succeeded* message once completed.
@@ -131,7 +131,7 @@ redis                        latest              5958914cc558        6 days ago 
 jetpac33/azure-vote-front    v2                  e2f39950cbf1        13 months ago       708MB
 ```
 
-To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `crcollectorworkshop.azurecr.io`
+To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<ACR name>.azurecr.io`
 
 Also, since you are using a shared repository, you need to tag your image with a unique name to distinguish it from other users containers. Select a name that is very likely to be unique amont the workshop participants.
 
@@ -140,7 +140,7 @@ Finally, to indicate the image version, add *:v1* to the end of the image name.
 The resulting command:
 
 ```console
-docker tag azure-vote-front crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1
+docker tag azure-vote-front <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 To verify the tags are applied, run ```docker images``` again. An image is tagged with the ACR instance address and a version number.
@@ -148,7 +148,7 @@ To verify the tags are applied, run ```docker images``` again. An image is tagge
 ```
 $ docker images
 azure-vote-front                                                latest              e9488bdfb34b        3 minutes ago       708MB
-crcollectorworkshop.azurecr.io/unique-name/azure-vote-front     latest              e9488bdfb34b        3 minutes ago       708MB
+ACR-name.azurecr.io/unique-name/azure-vote-front     latest              e9488bdfb34b        3 minutes ago       708MB
 redis                                                           latest              5958914cc558        6 days ago          94.9MB
 jetpac33/azure-vote-front                                       v2                  e2f39950cbf1        13 months ago       708MB
 ```
@@ -158,7 +158,7 @@ jetpac33/azure-vote-front                                       v2              
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-docker push crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1
+docker push <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
@@ -168,7 +168,7 @@ It may take a few minutes to complete the image push to ACR.
 To return a list of images that have been pushed to your ACR instance, use the ```az acr repository list``` command:
 
 ```azurecli
-az acr repository list --name crcollectorworkshop --output table
+az acr repository list --name <ACR name> --output table
 ```
 
 The following example output lists the *azure-vote-front* images as available in the registry. The list will (eventually) contain images from all workshop participants: 
@@ -184,7 +184,7 @@ yet-another-unique-name/azure-vote-front
 To see the tags for a specific image, use the ```az acr repository show-tags``` command as follows:
 
 ```azurecli
-az acr repository show-tags --name crcollectorworkshop --repository <unique name>/azure-vote-front --output table
+az acr repository show-tags --name <ACR name> --repository <unique name>/azure-vote-front --output table
 ```
 
 The following example output shows the *v1* image tagged in a previous step:
@@ -206,9 +206,11 @@ Kubernetes provides a distributed platform for containerized applications. You b
  * Test the application
 
 ### Validate towards Kubernetes Cluster
+You will be using an existing Kubernetes cluster. The name (and, if needed, credentials) will be provided to you. 
+
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
-az aks get-credentials --resource-group Group-KubernetesWorkshop-Dev --name aks-workshop
+az aks get-credentials --resource-group Group-KubernetesWorkshop-Dev --name <AKS cluster name>
 ```
 
 ### Kubernetes Namespaces
@@ -221,7 +223,7 @@ kubectl create namespace <your unique namespace name>
 ```
 Then set the default namespace for your current session
 ```console
-kubectl config set-context aks-workshop --namespace=<your unique namespace name>
+kubectl config set-context <AKS cluster name> --namespace=<your unique namespace name>
 ```
 This is mainly for convenience. You can skip this step, but then you have to include a ´--namespace´ flag on all kubectl commands.
 
@@ -253,7 +255,7 @@ Provide the ACR login server and `<unique name>` name so that your manifest file
 ```yaml
 containers:
 - name: azure-vote-front
-  image: crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1
+  image: <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
@@ -464,13 +466,13 @@ To correctly use the updated image, tag the *azure-vote-front* image with the lo
 Use ```docker tag``` to tag the image and update the image version to *:v2* as below. 
 
 ```console
-docker tag azure-vote-front crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2
+docker tag azure-vote-front <ACR name>.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 Now use ```docker push``` to upload the image to your registry. If you experience issues pushing to your ACR registry, ensure that you have run the ```az acr login``` command.
 
 ```console
-docker push crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2
+docker push <ACR name>.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 ### Deploy the updated application
@@ -492,14 +494,14 @@ If you do not have multiple front-end pods, scale the *azure-vote-front* deploym
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version .
 
-Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v1` to `crcollectorworkshop.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
+Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `<ACR name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<ACR name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
 
 Change
  ```yaml
     spec:
       containers:
       - name: azure-vote-front
-        image: crcollectorworkshop.azurecr.io/pelithne/azure-vote-front:v1
+        image: <ACR name>.azurecr.io/pelithne/azure-vote-front:v1
   ````
 
 To
@@ -507,7 +509,7 @@ To
     spec:
       containers:
       - name: azure-vote-front
-        image: crcollectorworkshop.azurecr.io/pelithne/azure-vote-front:v2
+        image: <ACR name>.azurecr.io/pelithne/azure-vote-front:v2
   ````
 And the run:
 
@@ -561,5 +563,5 @@ kubectl delete namespace <your unique namespace name>
 
 Finally, remove the docker image from the container registry:
 ```console
-az acr repository delete --name crcollectorworkshop --repository <unique name>/azure-vote-front
+az acr repository delete --name <ACR name> --repository <unique name>/azure-vote-front
 ```
