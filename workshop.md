@@ -73,10 +73,10 @@ When completed, use the ```docker images``` command to see the created images. T
 ```
 $ docker images
 
-REPOSITORY                   TAG        IMAGE ID            CREATED             SIZE
-azure-vote-front            latest      e9488bdfb34b        3 minutes ago       708MB
-redis                       latest      5958914cc558        6 days ago          94.9MB
-jetpac33/azure-vote-front   v2          e2f39950cbf1        13 months ago       708MB
+REPOSITORY                   TAG                   IMAGE ID            CREATED             SIZE
+azure-vote-front             latest                00c4df2b3d4b        11 minutes ago      192MB
+redis                        latest                5958914cc558        11 days ago         94.9MB
+tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
 
 To see the running containers, run ```docker ps```:
@@ -129,10 +129,10 @@ To see a list of your current local images, once again use the ```docker images`
 ```
 $ docker images
 
-REPOSITORY                   TAG                 IMAGE ID            CREATED             SIZE
-azure-vote-front             latest              e9488bdfb34b        3 minutes ago       708MB
-redis                        latest              5958914cc558        6 days ago          94.9MB
-jetpac33/azure-vote-front    v2                  e2f39950cbf1        13 months ago       708MB
+REPOSITORY                   TAG                   IMAGE ID            CREATED             SIZE
+azure-vote-front             latest                00c4df2b3d4b        11 minutes ago      192MB
+redis                        latest                5958914cc558        11 days ago         94.9MB
+tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
 
 To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<ACR name>.azurecr.io`
@@ -150,11 +150,10 @@ docker tag azure-vote-front <ACR name>.azurecr.io/<unique name>/azure-vote-front
 To verify the tags are applied, run ```docker images``` again. An image is tagged with the ACR instance address and a version number.
 
 ```
-$ docker images
-azure-vote-front                                                latest              e9488bdfb34b        3 minutes ago       708MB
-ACR-name.azurecr.io/unique-name/azure-vote-front     latest              e9488bdfb34b        3 minutes ago       708MB
-redis                                                           latest              5958914cc558        6 days ago          94.9MB
-jetpac33/azure-vote-front                                       v2                  e2f39950cbf1        13 months ago       708MB
+azure-vote-front                                   latest                00c4df2b3d4b        11 minutes ago      192MB
+ACR-name.azurecr.io/unique-name/azure-vote-front   latest                00c4df2b3d48        11 minutes ago      192MB
+redis                                              latest                5958914cc558        11 days ago         94.9MB
+tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
 
 ### Push images to registry
