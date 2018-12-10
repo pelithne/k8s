@@ -22,13 +22,13 @@ The sample application used in this tutorial is a basic voting app. The applicat
 Use```git``` to clone the sample application to your development environment:
 
 ```console
-git clone https://github.com/pelithne/azure-voting-app-redis.git
+git clone https://github.com/pelithne/azure-vote.git
 ```
 
 Change directories so that you are working from the cloned directory.
 
 ```console
-cd azure-voting-app-redis
+cd azure-vote
 ```
 
 Inside the directory is the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.
