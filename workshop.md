@@ -26,7 +26,7 @@ The sample application used in this tutorial is a basic voting app. The applicat
 Use```git``` to clone the sample application to your development environment:
 
 ```console
-git clone https://github.com/pelithne/azure-vote.git
+git clone https://github.com/pelithne/azure-vote-app.git
 ```
 
 Change directories so that you are working from the cloned directory.
