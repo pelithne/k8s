@@ -23,7 +23,7 @@ Once completed, the following application runs in your local development environ
 
 The sample application used in this tutorial is a basic voting app. The application consists of a front-end web component and a back-end Redis instance. The web component is packaged into a custom container image. The Redis instance uses an unmodified image from Docker Hub.
 
-Use```git``` to clone the sample application to your development environment (if you already cloned the repoduring preparations, you can skip this obviously):
+Use```git``` to clone the sample application to your development environment (if you already cloned the repo during preparations, you can skip this obviously):
 
 ```console
 git clone https://github.com/pelithne/azure-vote-app.git
