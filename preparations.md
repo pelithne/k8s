@@ -39,13 +39,11 @@ https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-
 ### For Windows 7 users
 Use the MSI Installer found here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest
 
-
-If another shell is used, you are on your own! Look for guidance here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
-
+### For Mac users
 For Mac you can use brew. Instructions here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos?view=azure-cli-latest
 
 ### Verify installation
-Run (in cmd or powershell)
+Run (in cmd, powershell or any other shell you ended up using)
 ```console
 az login
 ``` 
