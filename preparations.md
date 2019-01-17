@@ -24,7 +24,7 @@ Using all defaults during install appears to work fine. When installation finish
 ### For Mac Users
 Git SCM for Mac: https://git-scm.com/download/mac
 
-### Verify installation
+### Verify installation - for all operating systems above
 When installation has finished, make sure that you can clone a repository. For instance, you can clone the repo that we will use during the workshop (after switching to a suitable folder on your local machine):
 ```console
 git clone https://github.com/pelithne/azure-voting-app-redis.git
@@ -44,7 +44,7 @@ Use the MSI Installer found here: https://docs.microsoft.com/en-us/cli/azure/ins
 ### For Mac users
 For Mac you can use brew. Instructions here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos?view=azure-cli-latest
 
-### Verify installation
+### Verify installation  - for all operating systems above
 Run (in cmd, powershell or any other shell you ended up using)
 ```console
 az login
@@ -58,7 +58,7 @@ az aks kubernetes install-cli
 ```
 Follow the instructions to add kubectl to you PATH.
 
-### Verify installation
+### Verify installation  - for all operating systems above
 ```console
  kubectl version
 ```
@@ -74,7 +74,7 @@ This will show the client version for kubectl, but it will probably report an er
 ### Mac users
 * Install Docker for Mac: https://store.docker.com/editions/community/docker-ce-desktop-mac
 
-### Verify installation
+### Verify installation  - for all operating systems above
 Run:
 ```console
 docker run hello-world
