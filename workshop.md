@@ -114,7 +114,7 @@ We use an existing container registry that can be used during the workshop. The 
 
 ### Login to Container Registry
 
-In order to use the registry, you must first login with your credentials.
+In order to use the registry, you must first login with your credentials. You may have to login to azure again using ```az login``` command before you can login to the Container Registry.
 
 Use the ```az acr login``` command and provide the name given to the container registry.
 
