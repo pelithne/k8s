@@ -76,7 +76,6 @@ After you have completed the installation, and if you feel a bit adventurous, yo
 If so, you can run the following commands form the "Docker Toolbox Bash shell"
 ````
 alias az='"C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\python.exe" -Im azure.cli'
-az aks kubernetes install-cli
 alias kubectl=~/.azure-kubectl/kubectl.exe
 ````
 
