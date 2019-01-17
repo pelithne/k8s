@@ -91,7 +91,9 @@ b68fed4b66b6        redis             "docker-entrypoint..."   57 seconds ago   
 
 ### Test application locally
 
-To see the running application, enter http://localhost:8080 in a local web browser. The sample application loads, as shown in the following example:
+To see the running application, enter http://localhost:8080 in a local web browser. If you are using Docker Toolbox, the default address will be http://192.168.99.100:8080.
+
+The sample application loads, as shown in the following example:
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
 
