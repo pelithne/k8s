@@ -63,8 +63,11 @@ Follow the instructions to add kubectl to you PATH.
 This will show the client version for kubectl, but it will probably report an error because it is not able to connect to the server. This is OK for now.
 
 ## Docker
-### Windows users
+### Windows 10 users
 * Install Docker for windows: https://store.docker.com/editions/community/docker-ce-desktop-windows
+
+### Windows 7 users
+* Install docker Toolbox: https://docs.docker.com/toolbox/toolbox_install_windows/
 
 ### Mac users
 * Install Docker for Mac: https://store.docker.com/editions/community/docker-ce-desktop-mac
