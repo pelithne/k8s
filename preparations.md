@@ -15,7 +15,7 @@ If you do not already have these on your system, please follow the steps below.
 The preferred way (of course!) is to use WSL, Windows Subsystem for Linux, to get a linux environment on your windows system. The Ubuntu install comes with git out of the box. Please follow the instructions here: https://docs.microsoft.com/en-us/windows/wsl/install-win10. 
 
 ### For Windows 7 users 
-## NOTE: If you are going to install Docker Toolbox in a later step below (you probably are), then you could skip this step, since git comes with the Docker Toolbox installation.
+### NOTE: If you are going to install Docker Toolbox in a later step below (you probably are), then you could skip this step, since git comes with the Docker Toolbox installation.
 
 Git SCM is a popular Git client, which can be found here: https://gitforwindows.org/
 
