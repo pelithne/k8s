@@ -39,7 +39,7 @@ If WSL/Ubuntu is used you can use `apt` to install Azure CLI. Follow the instruc
 https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#install
 
 ### For Windows 7 users
-Use the MSI Installer found here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest
+Use the MSI Installer found here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest 
 
 ### For Mac users
 For Mac you can use brew. Instructions here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos?view=azure-cli-latest
@@ -70,6 +70,16 @@ This will show the client version for kubectl, but it will probably report an er
 
 ### Windows 7 users
 * Install docker Toolbox: https://docs.docker.com/toolbox/toolbox_install_windows/
+
+After you have completed the installation, and if you feel a bit adventurous, you can now set up the bash shell that comes with Docker Toolbox to also run ````az cli``` and ````kubectl````.
+
+If so, you can run the following commands form the "Docker Toolbox Bash shell"
+````
+alias az='"C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\python.exe" -Im azure.cli'
+az aks kubernetes install-cli
+alias kubectl=~/.azure-kubectl/kubectl.exe
+````
+
 
 ### Mac users
 * Install Docker for Mac: https://store.docker.com/editions/community/docker-ce-desktop-mac
