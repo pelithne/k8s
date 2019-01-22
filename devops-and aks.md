@@ -151,11 +151,12 @@ You are right, we just have the Parrot app so far! You could now Clone both Parr
 
 You should now have four build definitions and four release definitions that you can now run to eventually see the Parrot app showing its friends:
 
-![Image 13](./media/AzureDevOps_13.png) 
+![Image 13](./media/AzureDevOps_13-1024x842.png) 
 
 Conclusion
 Congratulations! You have deployed 4 different apps in a Kubernetes cluster by leveraging Azure DevOps, Azure Container Registry, Azure Kubernetes Service, Docker and Helm! You have also used Azure Cloud Shell to run some Azure and Kubernetes commands.
 
+![Image 14](./media/AzureDevOps_14.png) 
 
 As illustrated throughout this tutorial, all together the technologies used will help you create a generic, strong and robust DevOps pipeline to deploy your apps from any languages to any platform. There are three central pieces simplifying the collaboration between the developers and the IT Pros – it’s about Configuration-as-Code and Infrastructure-as-Code:
 
