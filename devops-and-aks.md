@@ -19,6 +19,10 @@ Here are the technologies we’ll walk through, that were not already used in th
 * Azure DevOps account: we will use an Azure DevOps project for a Git repo and build/release pipelines. Sign into your account here: https://azure.microsoft.com/en-us/services/devops/
 
 
+
+## Create new project in Azure Devops
+After logging into your Azure DevOps account, simply click "New Project" in the top right corner, and select a name for the project (for instance "pippyandfriends") 
+
 ## Install Helm
 ````
 $ kubectl create serviceaccount tiller --namespace kube-system
