@@ -554,6 +554,14 @@ Now open a local web browser to the IP address.
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
 
 
+## Extra tasks if you finish early
+
+### Create CI/CD pipeline to deploy to Kubernetes
+The tutorial below instructs you to create a new Container Registry, AKS cluster, Resource Group and Namespace. Instead of this you can use what was created during (and before) the workshop.
+
+https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
+
+
 ## Cleaning up
 To stop your running containers, you can run the following command:
 
@@ -570,3 +578,6 @@ Finally, remove the docker image from the container registry:
 ```console
 az acr repository delete --name <ACR name> --repository <unique name>/azure-vote-front
 ```
+
+
+
