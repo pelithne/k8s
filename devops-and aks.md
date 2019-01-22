@@ -15,7 +15,8 @@ Here are the technologies we’ll walk through, that were not already used in th
 
 
 ## Prerequisites & Setup
-* Completed "main workshop" from this repository
+* Completed "main workshop" from this repository (but not the final "claen up" step!)
+* Azure DevOps account: we will use an Azure DevOps project for a Git repo and build/release pipelines. Sign into your account here: https://azure.microsoft.com/en-us/services/devops/
 
 
 ## Install Helm
@@ -25,7 +26,7 @@ $ kubectl create clusterrolebinding tiller --clusterrole cluster-admin --service
 $ kubectl create clusterrolebinding default-view --clusterrole=view --serviceaccount=<your namespace>:default
 ````
 
-The DevOps Workflow with Containers
+## The DevOps Workflow with Containers
 This is the DevOps workflow with containers illustrated in this tutorial:
 
 ![Image 1](./media/AzureDevOps_1.png) 
