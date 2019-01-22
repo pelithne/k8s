@@ -1,24 +1,18 @@
 ## Introduction
 
-### Note: This is an adapted version of a tutorial found here: https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
+### Note: This is an adapted version of a tutorial found here: 
+https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
 
 The difference from the original is that we will reuse some of the resuources used in the "main kubernetes workshop" from this repository.
 
 In this tutorial, we will setup a CI/CD pipeline to deploy your apps on a Kubernetes cluster with Azure DevOps by leveraging a Linux agent, Docker and Helm. The combination of these technologies will illustrate how you can easily setup a CI/CD pipeline, leverage Configuration-as-Code and Infrastructure-as-Code, and accelerate your DevOps journey with containers.
 
-Here are the technologies we’ll walk through:
+Here are the technologies we’ll walk through, that were not already used in the "main workshop":
 
 **Azure DevOps** helps to implement your CI/CD pipelines for any platform, any languages.
 
-**Docker** adds more consistency and quality for your apps, their deployment and management. Docker allows also to be programming languages agnostic, all your apps packaged as Docker images could be in different languages: .NET Core, Java, Node.js, Go, Python, etc.
-
 **Helm** simplifies and automates more your apps deployments in Kubernetes.
 
-**Kubernetes** is a container orchestrator that makes the collaboration between developers and IT pros easy and will for sure help you in the orchestration, management, and monitoring of all your apps containerized, in a consistent way.
-
-**Azure Kubernetes Service (AKS)** is a fully managed Kubernetes container orchestration service, simplifying the process around creating, scaling and upgrading your Kubernetes cluster. You are not paying for the master nodes, since that’s part of the managed offer.
-
-**Azure Container Registry (ACR)** is a dedicated enterprise container registry with advanced features like Helm chart repository, geo-replication of your registry across the globe, container build capabilities, security scanning for your images, etc.
 
 ## Prerequisites & Setup
 * Completed "main workshop" from this repository
@@ -69,11 +63,11 @@ Then, you need to add some Variables for this build pipeline definition by provi
 * projectName
   - Since we are setting this up for the Parrot project, just put: Parrot
 * registryLogin
-  - You could get it by running this command from Azure Cloud Shell: az acr credential show -n acr-name --query username
+  - Your user name
 * registryName
-  - You could get it by running this command from Azure Cloud Shell: az acr show -n acr-name --query name
+  - use the registry name created for the "main workshop"
 * registryPassword
-  - You could get it by running this command from Azure Cloud Shell: az acr credential show -n acr-name --query passwords[0].value
+  - Your password
 
 ![Image 5](./media/AzureDevOps_5.png) 
 
@@ -117,7 +111,7 @@ You can now reorder the tasks, select each task, and update the different fields
   - Chart Type: Name
   - Chart Name: $(registryName)/$(projectName)
   - Release Name: $(projectName)
-  - Namespace: phippyandfriends
+  - Namespace: <your namespace>
   - Install if release not present: true
   - Wait: true
 
@@ -130,11 +124,11 @@ Then, you need to add some Variables for this release pipeline definition by pro
 * projectName
   - Since we are setting this up for the Parrot project, just put: Parrot
 * registryLogin
-  - You could get it by running this command from Azure Cloud Shell: az acr credential show -n acr-name --query username
+  - Your user name
 * registryName
-  - You could get it by running this command from Azure Cloud Shell: az acr show -n acr-name --query name
+  - The registry name created for the "main workshop"
 * registryPassword
-  - You could get it by running this command from Azure Cloud Shell: az acr credential show -n acr-name --query passwords[0].value
+  - Your password
 
 ![Image 9](./media/AzureDevOps_9.png) 
 
