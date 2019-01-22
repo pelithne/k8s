@@ -3,7 +3,7 @@
 ### Note: This is an adapted version of a tutorial found here: 
 https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
 
-The difference from the original is that we will reuse some of the resuources used in the "main kubernetes workshop" from this repository.
+The difference from the original is that we will reuse some of the resources created and used in the "main kubernetes workshop" from this repository.
 
 In this tutorial, we will setup a CI/CD pipeline to deploy your apps on a Kubernetes cluster with Azure DevOps by leveraging a Linux agent, Docker and Helm. The combination of these technologies will illustrate how you can easily setup a CI/CD pipeline, leverage Configuration-as-Code and Infrastructure-as-Code, and accelerate your DevOps journey with containers.
 
