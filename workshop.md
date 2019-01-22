@@ -557,9 +557,7 @@ Now open a local web browser to the IP address.
 ## Extra tasks if you finish early
 
 ### Create CI/CD pipeline to deploy to Kubernetes
-The tutorial below instructs you to create a new Container Registry, AKS cluster, Resource Group and Namespace. Instead of this you can use what was created during (and before) the workshop.
-
-https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
+https://github.com/pelithne/kubernetes-workshop/blob/master/devops-and-aks.md
 
 
 ## Cleaning up
