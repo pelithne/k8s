@@ -15,7 +15,7 @@ Here are the technologies we’ll walk through, that were not already used in th
 
 
 ## Prerequisites & Setup
-* Completed "main workshop" from this repository (but not the final "claen up" step!)
+* Completed "main workshop" from this repository (but not the final "clean up" step!)
 * Azure DevOps account: we will use an Azure DevOps project for a Git repo and build/release pipelines. Sign into your account here: https://azure.microsoft.com/en-us/services/devops/
 
 
