@@ -124,13 +124,13 @@ Arguments: ````--version $(build.buildId) --set image.repository=$(registryName)
 Then, you need to add some Variables for this release pipeline definition by providing your own values:
 
 * projectName
-  - Since we are setting this up for the Parrot project, just put: Parrot
+  - Since we are setting this up for the Parrot project, just put: parrot (must be lower case)
 * registryLogin
-  - Your user name
+  - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query username````
 * registryName
-  - The registry name created for the "main workshop"
+  - You could get it by running this command from Azure Cloud Shell: ````az acr show -n acr-name --query name````
 * registryPassword
-  - Your password
+  - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query passwords[0].value````
 
 ![Image 9](./media/AzureDevOps_9.png) 
 
