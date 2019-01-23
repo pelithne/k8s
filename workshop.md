@@ -32,7 +32,7 @@ git clone https://github.com/pelithne/azure-vote-app.git
 Change directories so that you are working from the cloned directory.
 
 ```console
-cd azure-vote
+cd azure-vote-app
 ```
 
 Inside the directory is the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.
