@@ -17,18 +17,15 @@ Here are the technologies we’ll walk through, that were not already used in th
 ## Prerequisites & Setup
 * Completed "main workshop" from this repository (but not the final "clean up" step!)
 * Azure DevOps account: we will use an Azure DevOps project for a Git repo and build/release pipelines. Sign into your account here: https://azure.microsoft.com/en-us/services/devops/
-
-
-
-## Create new project in Azure Devops
-After logging into your Azure DevOps account, simply click "New Project" in the top right corner, and select a name for the project (for instance "pippyandfriends") 
-
-## Install Helm
+ - After logging into your Azure DevOps account, simply click "New Project" in the top right corner, and select a name for the project (for instance "pippyandfriends") 
+* Install Helm
 ````
 $ kubectl create serviceaccount tiller --namespace kube-system
 $ kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
 $ kubectl create clusterrolebinding default-view --clusterrole=view --serviceaccount=<your namespace>:default
 ````
+
+
 
 ## The DevOps Workflow with Containers
 This is the DevOps workflow with containers illustrated in this tutorial:
@@ -41,9 +38,9 @@ This is the DevOps workflow with containers illustrated in this tutorial:
 
 
 ## Source control
-We will use the existing Azure/phippyandfriends GitHub repo. This repo has a few services, each of them represents an individual character of the Children’s Guide to Kubernetes and their new friend NodeBrady. Each service is written in a different language, showing how an AKS cluster can run anything you can bring it. Parrot is in .NET Core, CaptainKube is in Go, Phippy in PHP and NodeBrady in Node.js.
+We will use the existing Azure/phippyandfriends GitHub repo. This repo has a few services, each of them representing an individual character of the Children’s Guide to Kubernetes and their new friend NodeBrady. Each service is written in a different language, showing how an AKS cluster can run anything you can bring it. Parrot is in .NET Core, CaptainKube is in Go, Phippy in PHP and NodeBrady in Node.js.
 
-First, you will need to import this repo https://github.com/Azure/phippyandfriends into your own Azure repos (from the Azure DevOps project you just created earlier):
+First, you will need to import this repo https://github.com/Azure/phippyandfriends into your own Azure repo. Click on "Repos", then on "Files" and select "import a repository":
 
 ![Image 2](./media/AzureDevOps_2-1024x626.png) 
 
@@ -54,14 +51,14 @@ Once imported you will be able to browse the source code of the four different a
 Each app has its own folder and the same structure within it:
 
 * **Files of the app itself**, depending of the programming languages: Parrot is in .NET Core, CaptainKube is in Go, Phippy in PHP and NodeBrady in Node.js.
-* **Dockerfile file** is a script leveraged by Docker, composed of various commands (instructions) and arguments listed successively to automatically perform actions on a base image in order to create a new Docker image by packaging the app.
+* **Dockerfile file** is a script leveraged by Docker, composed of various instructions and arguments listed successively to automatically perform actions on a base image in order to create a new Docker image by packaging the app.
 * **charts/* folder** contains the files defining Helm Chart of the app. Helm Charts helps you define, install and upgrade your app in Kubernetes.
 
 With the next section we will also leverage the azure-build-pipeline.yml which plays an important role as Configuration-as-Code for the Azure build pipeline definition.
 
 ## Create a Build pipeline
 We will now create an Azure build pipeline for the Parrot app to be able to both build/push its Docker image and package/push its Helm chart. For that we will need to create a build pipeline definition using the azure-build-pipeline.yml file. From the menu Pipelines > Builds, follow the steps illustrated below:
-![Image 4](./media/buildpipeline.gif) 
+![Image 4](./media/buildpipeline-slower.gif) 
 
 Then, you need to add some Variables for this build pipeline definition by providing your own values:
 
@@ -94,7 +91,7 @@ Now both the Docker image and the Helm chart could be used for any Kubernetes cl
 
 ## Create a Release pipeline
 We will now create an Azure release pipeline for the Parrot app to be able to deploy it via its associated Helm chart. From the menu Pipelines > Releases, follow the steps illustrated below:
-![Image 7](./media/releasepipeline.gif) 
+![Image 7](./media/releasepipeline-slower.gif) 
 
 You can now reorder the tasks, select each task, and update the different fields with this info below:
 
