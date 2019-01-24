@@ -559,6 +559,10 @@ Now open a local web browser to the IP address.
 ### Create CI/CD pipeline to deploy to Kubernetes
 https://github.com/pelithne/kubernetes-workshop/blob/master/devops-and-aks.md
 
+https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale
+
+https://docs.microsoft.com/en-us/azure/aks/kubernetes-helm
+
 
 ## Cleaning up
 To stop your running containers, you can run the following command:
