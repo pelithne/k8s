@@ -557,10 +557,14 @@ Now open a local web browser to the IP address.
 ## Extra tasks if you finish early
 
 ### Create CI/CD pipeline to deploy to Kubernetes
+
+#### AKS and Azure DevOps
 https://github.com/pelithne/kubernetes-workshop/blob/master/devops-and-aks.md
 
+#### Scaling in Kubernetes
 https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale
 
+#### Helm
 https://docs.microsoft.com/en-us/azure/aks/kubernetes-helm
 
 
