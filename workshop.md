@@ -506,7 +506,7 @@ Change
     spec:
       containers:
       - name: azure-vote-front
-        image: <ACR name>.azurecr.io/pelithne/azure-vote-front:v1
+        image: <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
   ````
 
 To
@@ -514,7 +514,7 @@ To
     spec:
       containers:
       - name: azure-vote-front
-        image: <ACR name>.azurecr.io/pelithne/azure-vote-front:v2
+        image: <ACR name>.azurecr.io/<unique name>/azure-vote-front:v2
   ````
 And the run:
 
