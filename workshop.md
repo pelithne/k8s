@@ -458,7 +458,14 @@ docker build -t azure-vote-front ./azure-vote
 
 ### Test the application locally
 
-To verify that the updated container image shows your changes, open a local web browser to http://localhost:8080.
+First you need to start the application again, on your local machine using docker.
+
+````
+docker run -d --name azure-vote-back --net mynet redis
+docker run --name azure-vote-front -d -p 8080:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
+````
+
+Then, to verify that the updated container image shows your changes, open a local web browser to http://localhost:8080.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated.png)
 
