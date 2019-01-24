@@ -228,7 +228,7 @@ kubectl create namespace <your unique namespace name>
 ```
 Then set the default namespace for your current session
 ```console
-kubectl config set-context <AKS cluster name> --namespace=<your unique namespace name>
+kubectl config set-context --current=true --namespace=<your unique namespace name>
 ```
 This is mainly for convenience. You can skip this step, but then you have to include a ´--namespace´ flag on all kubectl commands.
 
