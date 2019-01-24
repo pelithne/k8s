@@ -73,10 +73,11 @@ Then, you need to add some Variables for this build pipeline definition by provi
 
 ### Hint: 
 ````
+Check out slack for this: 
 Mats Iremark [9:30 AM]
 We have a container registry just for this workshop. 
 Its url is workshopaks.azurecr.io and 
-credentials are user: workshopaks password: leTIet6Z3A+xBsdK6GTNqrikn1V8ouLF
+credentials are user: <very secret> password: <even more secret>
 ````
 
 
