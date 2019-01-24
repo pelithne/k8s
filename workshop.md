@@ -215,7 +215,7 @@ You will be using an existing Kubernetes cluster. The name (and, if needed, cred
 
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
-az aks get-credentials --resource-group Group-KubernetesWorkshop-Dev --name <AKS cluster name>
+az aks get-credentials --resource-group <Resource group name> --name <AKS cluster name>
 ```
 
 ### Kubernetes Namespaces
