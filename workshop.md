@@ -219,7 +219,7 @@ az aks get-credentials --resource-group <Resource group name> --name <AKS cluste
 ```
 
 ### Kubernetes Namespaces
-### NOTE: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
+#### Note: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
 A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
 
 To create a namespace, run the following command, and give it a name that you think will be unique within the cluster.
