@@ -50,6 +50,8 @@ This network will be used by the containers that are started below, to allow the
 ### Create container images
 
 Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will create two images, one base image and one for the azure-vote-front.
+
+#### Note: If you are behind a proxy, you can add an HTTPS proxy to the build command (--build-arg HTTPS_PROXY=http://xx.xx.xx.xx:xx)
 ```console
  docker build -t azure-vote-front ./azure-vote
 ```
