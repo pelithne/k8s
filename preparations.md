@@ -85,7 +85,7 @@ alias kubectl=~/.azure-kubectl/kubectl.exe
 
 ### Verify installation  - for all operating systems above
 
-#### Note: If you are behind a proxy, you can add an env parameter to docker run (--env HTTPS_PROXY="https://127.0.0.1:3001")
+#### Note: If you are behind a proxy, you can add an env parameter to docker run (--env HTTPS_PROXY=http://xx.xx.xx.xx:xx)
 Run:
 ```console
 docker run hello-world
