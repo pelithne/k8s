@@ -39,7 +39,7 @@ Inside the directory is the application source code, a pre-created Docker compos
 
 ### Create a docker network
 
-### Note: if you are using WSL, and if you have not installed docker there, you need to use `docker.exe` on the command line. 
+#### Note: if you are using WSL, and if you have not installed docker there, you need to use `docker.exe` on the command line. 
 
 This network will be used by the containers that are started below, to allow them to communicate with each other
 
