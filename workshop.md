@@ -2,9 +2,11 @@
 
 Welcome to this Azure Kubernetes Workshop instruction. The workshop contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. 
 
-This workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
+This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
 
-Furthermore, the workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
+Furthermore, the workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
+
+
 
 ## Running Docker Containers locally
 
