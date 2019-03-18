@@ -71,16 +71,6 @@ Then, you need to add some Variables for this build pipeline definition by provi
 * registryPassword
   - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query passwords[0].value````
 
-### Hint: 
-````
-Check out slack for this: 
-Mats Iremark [9:30 AM]
-We have a container registry just for this workshop. 
-Its url is workshopaks.azurecr.io and 
-credentials are user: <very secret> password: <even more secret>
-````
-
-
 
 ![Image 5](./media/AzureDevOps_5.png) 
 
