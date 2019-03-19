@@ -106,9 +106,25 @@ docker stop azure-vote-front azure-vote-back
 docker rm azure-vote-front azure-vote-back
 ```
 
-## Using the Azure Container Registry
+## Moving to the Cloud
 
+### Creating a Resource Group
+All resources in azure live inside a **Resource Group**. For this workshop you will create one Resource Group (RG), to hold all the resources you create. You can create the RG with a one-liner, using the **Azure CLI.**
+````
+az group create --name <Your RG name> --location westeurope
+````
+
+
+### Using the Azure Container Registry
+
+<!--
 This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
+-->
+
+You can create you own private container registry in **Azure**, to store all your docker container images.  For this workshop you will create an Azure Container Registry (ACR) to store your images, with this command:
+````
+az acr create --resource-group <Your RG name from above> --name <Your ACR Name> --sku Basic
+````
 
 ### Login to Container Registry
 
@@ -117,14 +133,14 @@ In order to use the registry, you must first login with your credentials. You ma
 Use the ```az acr login``` command and provide the name given to the container registry.
 
 ```azurecli
-az acr login --name <ACR name>
+az acr login --name <Your ACR Name>
 ```
 
 The command returns a *Login Succeeded* message once completed.
 
 ### Tag a container image
 
-To see a list of your current local images, once again use the ```docker images``` command:
+To see a list of your current **local** images, once again use the ```docker images``` command:
 
 ```
 $ docker images
@@ -135,7 +151,7 @@ redis                        latest                5958914cc558        11 days a
 tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
 
-To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<ACR name>.azurecr.io`
+To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<Your ACR Name>.azurecr.io`
 
 You should also tag your image with a unique name to distinguish it from other container images in the registry. 
 
@@ -144,7 +160,7 @@ Finally, to indicate the image version, add *:v1* to the end of the image name.
 The resulting command:
 
 ```console
-docker tag azure-vote-front <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
+docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 To verify the tags are applied, run ```docker images``` again. An image is tagged with the ACR instance address and a version number.
@@ -161,7 +177,7 @@ tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-docker push <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
+docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
@@ -171,7 +187,7 @@ It may take a few minutes to complete the image push to ACR.
 To return a list of images that have been pushed to your ACR instance, use the ```az acr repository list``` command:
 
 ```azurecli
-az acr repository list --name <ACR name> --output table
+az acr repository list --name <Your ACR Name> --output table
 ```
 
 The following example output lists the *azure-vote-front* images as available in the registry (if you are the only user in the registry, you probably only pushed one image, and the result will only show that image). 
@@ -187,7 +203,7 @@ yet-another-unique-name/azure-vote-front
 To see the tags for a specific image, use the ```az acr repository show-tags``` command as follows:
 
 ```azurecli
-az acr repository show-tags --name <ACR name> --repository <unique name>/azure-vote-front --output table
+az acr repository show-tags --name <Your ACR Name> --repository <unique name>/azure-vote-front --output table
 ```
 
 The following example output shows the *v1* image tagged in a previous step:
@@ -263,7 +279,7 @@ Provide the ACR login server and `<unique name>` name so that your manifest file
 ```yaml
 containers:
 - name: azure-vote-front
-  image: <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
+  image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
@@ -481,13 +497,13 @@ To correctly use the updated image, tag the *azure-vote-front* image with the lo
 Use ```docker tag``` to tag the image and update the image version to *:v2* as below. 
 
 ```console
-docker tag azure-vote-front <ACR name>.azurecr.io/<unique name>/azure-vote-front:v2
+docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 Now use ```docker push``` to upload the image to your registry. If you experience issues pushing to your ACR registry, ensure that you have run the ```az acr login``` command.
 
 ```console
-docker push <ACR name>.azurecr.io/<unique name>/azure-vote-front:v2
+docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 ### Deploy the updated application
@@ -509,14 +525,14 @@ If you do not have multiple front-end pods, scale the *azure-vote-front* deploym
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version .
 
-Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `<ACR name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<ACR name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
+Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
 
 Change
  ```yaml
     spec:
       containers:
       - name: azure-vote-front
-        image: <ACR name>.azurecr.io/<unique name>/azure-vote-front:v1
+        image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
   ````
 
 To
@@ -524,7 +540,7 @@ To
     spec:
       containers:
       - name: azure-vote-front
-        image: <ACR name>.azurecr.io/<unique name>/azure-vote-front:v2
+        image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
   ````
 And the run:
 
@@ -591,7 +607,7 @@ kubectl delete namespace <your unique namespace name>
 
 Finally, remove the docker image from the container registry:
 ```console
-az acr repository delete --name <ACR name> --repository <unique name>/azure-vote-front
+az acr repository delete --name <Your ACR Name> --repository <unique name>/azure-vote-front
 ```
 
 
