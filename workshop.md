@@ -2,12 +2,6 @@
 
 Welcome to this Azure Kubernetes Workshop instruction. The workshop contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. 
 
-This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
-
-Furthermore, the workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
-
-
-
 ## Running Docker Containers locally
 
 In this first step in the tutorial, you will prepare a multi-container application for use in your local docker environment. Existing tools such as Git and Docker are used to locally build and test an application. You will learn how to:
@@ -116,6 +110,8 @@ docker rm azure-vote-front azure-vote-back
 
 We use an existing container registry that can be used during the workshop. The `ACR name` (and, if necessary credentials) will be provided to you.
 
+This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
+
 ### Login to Container Registry
 
 In order to use the registry, you must first login with your credentials. You may have to login to azure again using ```az login``` command before you can login to the Container Registry.
@@ -213,6 +209,10 @@ Kubernetes provides a distributed platform for containerized applications. You b
  * Update a Kubernetes manifest files
  * Run an application in Kubernetes
  * Test the application
+ 
+
+The workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
+
 
 ### Validate towards Kubernetes Cluster
 You will be using an existing Kubernetes cluster. The name (and, if needed, credentials) will be provided to you. 
