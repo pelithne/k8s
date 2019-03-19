@@ -276,7 +276,7 @@ az aks create --resource-group <Your RG name> --name <Your AKS name> --service-p
 
 ##### note: the command above disables role based access control (RBAC) for the sake of simplicity
 
-#### note 2: This command can take between 5 and 7 minutes to finish, so this might be a good time for a leg stretcher.
+#### note 2: This command can take 15 minutes to finish, so this might be a good time for a leg stretcher.
 
 #### Validate towards Kubernetes Cluster
 
