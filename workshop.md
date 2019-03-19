@@ -137,7 +137,7 @@ tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks a
 
 To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<ACR name>.azurecr.io`
 
-Also, since you are using a shared repository, you need to tag your image with a unique name to distinguish it from other users containers. Select a name that is very likely to be unique amont the workshop participants.
+You should also tag your image with a unique name to distinguish it from other container images in the registry. 
 
 Finally, to indicate the image version, add *:v1* to the end of the image name.
 
@@ -174,7 +174,7 @@ To return a list of images that have been pushed to your ACR instance, use the `
 az acr repository list --name <ACR name> --output table
 ```
 
-The following example output lists the *azure-vote-front* images as available in the registry. The list will (eventually) contain images from all workshop participants: 
+The following example output lists the *azure-vote-front* images as available in the registry (if you are the only user in the registry, you probably only pushed one image, and the result will only show that image). 
 
 ```
 Result
