@@ -106,7 +106,8 @@ docker stop azure-vote-front azure-vote-back
 docker rm azure-vote-front azure-vote-back
 ```
 
-## Moving to the Cloud
+## Moving it all to the Cloud
+Now you have tried running your dockerized application locally on your machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
 
 ### Creating a Resource Group
 All resources in azure live inside a **Resource Group**. For this workshop you will create one Resource Group (RG), to hold all the resources you create. You can create the RG with a one-liner, using the **Azure CLI.**
@@ -121,7 +122,7 @@ az group create --name <Your RG name> --location westeurope
 This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
 -->
 
-You can create you own private container registry in **Azure**, to store all your docker container images.  For this workshop you will create an Azure Container Registry (ACR) to store your images, with this command:
+You can create you own container registry in **Azure**, to store all your docker container images. For this workshop you will create an Azure Container Registry (ACR) to store your images, with this command:
 ````
 az acr create --resource-group <Your RG name from above> --name <Your ACR Name> --sku Basic
 ````
@@ -224,16 +225,59 @@ Kubernetes provides a distributed platform for containerized applications. You b
  * Run an application in Kubernetes
  * Test the application
  
-
+<!--
 The workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
+-->
 
+### Create your Kubernetes Cluster
 
-### Validate towards Kubernetes Cluster
-You will be using an existing Kubernetes cluster. The name (and, if needed, credentials) will be provided to you. 
+#### Create Service principal
+
+To begin with, you need to create a service principal. This is needed to give your Kubernetes Cluster rights to access other services, in this case to read from your **Azure Container Registry**.
+````
+az ad sp create-for-rbac --skip-assignment
+````
+You should see output similar to below. Make a note of the 'appid' and 'password', as you will use them later.
+
+````
+{
+  "appId": "3636e464-09b9-4d14-999f-9d64825e9e45",
+  "displayName": "azure-cli-2019-03-19-14-20-20",
+  "name": "http://azure-cli-2019-03-19-14-20-20",
+  "password": "cf0f7f0d-9564-4e26-b137-1aefd9db3d50",
+  "tenant": "3a10cb8b-866e-4408-b7fd-4a7ca62328c9"
+}
+````
+
+#### Grant access for AKS to read ACR
+To access images stored in ACR, you must grant the AKS service principal the correct rights to pull images from ACR.
+
+First, get the ACR resource ID using az acr show. Update the <Your ACR name> registry name to that of your ACR instance and the resource group where the ACR instance is located.
+
+````
+az acr show --resource-group <Your RG name> --name <Your ACR name> 
+````
+
+To grant the correct access for the AKS cluster to pull images stored in ACR, assign the *AcrPull role* using the ````az role assignment create```` command. Replace <appId> and <acrId> with the values gathered in the previous two steps.
+ 
+````
+az role assignment create --assignee <appId> --scope <acrId> --role acrpull
+````
+
+#### Create Kubernetes Cluster
+Create an AKS cluster using ````az aks create````. Provide your own <appId> and <password> from the previous step where the service principal was created.
+ 
+```` 
+az aks create --resource-group <Your RG name> --name <Your AKS name> --service-principal <appId> --client-secret <password> --generate-ssh-keys --disable-rbac
+````
+
+##### note: the command above disables role based access control (RBAC) for the sake of simplicity
+
+#### Validate towards Kubernetes Cluster
 
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
-az aks get-credentials --resource-group <Resource group name> --name <AKS cluster name>
+az aks get-credentials --resource-group <Your RG name> --name <AKS cluster name>
 ```
 <!--
 ### Kubernetes Namespaces
@@ -256,7 +300,7 @@ kubectl config view | grep namespace
 ```
 -->
 
-### Update the manifest file
+#### Update the manifest file
 
 You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./azure-vote directory
 
@@ -286,7 +330,7 @@ Please also take some time to study the manifest file, to get a better understan
 
 Save and close the file.
 
-## Deploy the application
+### Deploy the application
 
 To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the defined Kubernetes objects. Specify the sample manifest file, as shown in the following example:
 
