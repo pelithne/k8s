@@ -108,13 +108,11 @@ docker rm azure-vote-front azure-vote-back
 
 ## Using the Azure Container Registry
 
-We use an existing container registry that can be used during the workshop. The `ACR name` (and, if necessary credentials) will be provided to you.
-
 This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
 
 ### Login to Container Registry
 
-In order to use the registry, you must first login with your credentials. You may have to login to azure again using ```az login``` command before you can login to the Container Registry.
+In order to use the registry, you must first login with your credentials. You may have to login to **Azure** again using ```az login``` command before you can login to the Container Registry.
 
 Use the ```az acr login``` command and provide the name given to the container registry.
 
@@ -221,7 +219,7 @@ In order to use `kubectl` you need to connect to the Kubernetes cluster, using t
 ```console
 az aks get-credentials --resource-group <Resource group name> --name <AKS cluster name>
 ```
-
+<!--
 ### Kubernetes Namespaces
 #### Note: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
 A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
@@ -240,6 +238,7 @@ You can verify that your newly created namespace is the active one:
 ```console
 kubectl config view | grep namespace
 ```
+-->
 
 ### Update the manifest file
 
@@ -585,11 +584,12 @@ To stop your running containers, you can run the following command:
 ```console
 kubectl delete -f azure-vote-all-in-one-redis.yaml
 ```
-
+<!--
 After this, you can remove the namespace you created previously:
 ```console
 kubectl delete namespace <your unique namespace name>
 ```
+-->
 
 Finally, remove the docker image from the container registry:
 ```console
