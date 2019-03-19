@@ -274,7 +274,7 @@ Create an AKS cluster using ````az aks create````. Provide your own <appId> and 
 az aks create --resource-group <Your RG name> --name <Your AKS name> --service-principal <appId> --client-secret <password> --generate-ssh-keys --disable-rbac --node-vm-size Standard_DS1_v2
 ````
 
-##### note: the command above disables role based access control (RBAC) for the sake of simplicity
+#### note: the command above disables role based access control (RBAC) for the sake of simplicity
 
 #### note 2: This command can take 15 minutes to finish, so this might be a good time for a leg stretcher.
 
