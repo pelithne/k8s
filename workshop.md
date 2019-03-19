@@ -271,7 +271,7 @@ az role assignment create --assignee <appId> --scope <acrId> --role acrpull
 Create an AKS cluster using ````az aks create````. Provide your own <appId> and <password> from the previous step where the service principal was created.
  
 ```` 
-az aks create --resource-group <Your RG name> --name <Your AKS name> --service-principal <appId> --client-secret <password> --generate-ssh-keys --disable-rbac
+az aks create --resource-group <Your RG name> --name <Your AKS name> --service-principal <appId> --client-secret <password> --generate-ssh-keys --disable-rbac --node-vm-size Standard_DS1_v2
 ````
 
 ##### note: the command above disables role based access control (RBAC) for the sake of simplicity
