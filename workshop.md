@@ -221,6 +221,7 @@ You now have a container image that is stored in a private Azure Container Regis
 
 Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into a Kubernetes cluster. You learn how to:
 
+ * Create a Kubernetes Cluster
  * Update a Kubernetes manifest files
  * Run an application in Kubernetes
  * Test the application
@@ -230,10 +231,11 @@ The workshop assumes that a Kubernetes cluster is already created in AKS. If thi
 -->
 
 ### Create your Kubernetes Cluster
+Creating a Kubernetes cluster requires a few steps to be completed, as detailed below.
 
 #### Create Service principal
 
-To begin with, you need to create a service principal. This is needed to give your Kubernetes Cluster rights to access other services, in this case to read from your **Azure Container Registry**.
+To begin with, you need to create a service principal. This is needed to give your Kubernetes Cluster rights to access other services, in this case to read from your **Azure Container Registry**. You can think of the service principal as a representation of the KUbernetes cluster.
 ````
 az ad sp create-for-rbac --skip-assignment
 ````
@@ -255,10 +257,11 @@ To access images stored in ACR, you must grant the AKS service principal the cor
 First, get the ACR resource ID using az acr show. Update the <Your ACR name> registry name to that of your ACR instance and the resource group where the ACR instance is located.
 
 ````
-az acr show --resource-group <Your RG name> --name <Your ACR name> 
+az acr show --name <Your ACR name> --query "id" --output tsv
 ````
+The acrID will look similar to ````/subscriptions/be82972d-790f-45c3-86a7-e1df4582749e/resourceGroups/registry/providers/Microsoft.ContainerRegistry/registries/plithneracr```` 
 
-To grant the correct access for the AKS cluster to pull images stored in ACR, assign the *AcrPull role* using the ````az role assignment create```` command. Replace <appId> and <acrId> with the values gathered in the previous two steps.
+To grant the access for the AKS cluster to pull images from the ACR, you should assign the *AcrPull role* using the ````az role assignment create```` command. Replace <appId> and <acrId> with the values gathered in the previous two steps.
  
 ````
 az role assignment create --assignee <appId> --scope <acrId> --role acrpull
