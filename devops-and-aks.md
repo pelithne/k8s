@@ -58,6 +58,14 @@ We will now create an Azure build pipeline for the Parrot app to be able to both
 
 ![Image 4](./media/buildpipeline-slower.gif) 
 
+The animation can be a bit hard to follow, but in short you should complete the following steps:
+* Select repo - phippy and friends
+* Choose a template - Configuration as code - YAML
+* Rename the pipeline - "Parrot"
+* Select Agent pool - hosted Ubuntu
+* Select YAML file path - azure-build-pipeline.yaml
+
+
 Then, you need to add some Variables for this build pipeline definition by providing your own values:
 
 * projectName
