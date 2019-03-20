@@ -24,6 +24,10 @@ Using all defaults during install appears to work fine. When installation finish
 ### For Mac Users
 Git SCM for Mac: https://git-scm.com/download/mac
 
+### For Linux Users (Debian based distros)
+Instructions here: https://git-scm.com/download/linux
+
+
 ### Verify installation - for all operating systems above
 When installation has finished, make sure that you can clone a repository. For instance, you can clone the repo that we will use during the workshop (after switching to a suitable folder on your local machine):
 ```console
@@ -43,6 +47,9 @@ Use the MSI Installer found here: https://docs.microsoft.com/en-us/cli/azure/ins
 
 ### For Mac users
 For Mac you can use brew. Instructions here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos?view=azure-cli-latest
+
+### For Linux Users
+Instructions found here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest
 
 ### Verify installation  - for all operating systems above
 Run (in cmd, powershell or any other shell you ended up using)
@@ -82,6 +89,11 @@ alias kubectl=~/.azure-kubectl/kubectl.exe
 
 ### Mac users
 * Install Docker for Mac: https://store.docker.com/editions/community/docker-ce-desktop-mac
+
+### Linux users
+* Debian: https://docs.docker.com/v17.12/install/linux/docker-ce/debian/#set-up-the-repository
+* Ubuntu: https://docs.docker.com/v17.12/install/linux/docker-ce/ubuntu/
+* Centos: https://docs.docker.com/v17.12/install/linux/docker-ce/centos/
 
 ### Verify installation  - for all operating systems above
 
