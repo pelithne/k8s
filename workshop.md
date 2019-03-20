@@ -1,6 +1,6 @@
 # Azure Kubernetes Service (AKS) Workshop
 
-Welcome to this Azure Kubernetes Workshop instruction. The workshop contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. 
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. 
 
 ## Running Docker Containers locally
 
