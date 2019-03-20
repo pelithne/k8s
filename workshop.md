@@ -1,6 +1,16 @@
 # Azure Kubernetes Service (AKS) Workshop
 
-This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. 
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. You will do things like:
+
+ * Clone a github repository
+ * Create docker container images
+ * Run a 2-container application on your local machine
+ * Upload images to a container registry
+ * Create a Kubernetes cluster in Azure
+ * Deploy the application in Kubernetes
+ * Scale/modify/update the application 
+ * and much more... and for those of you who finish early, there are some extra assignements involving Azure DevOps and Helm
+ 
 
 ## Running Docker Containers locally
 
