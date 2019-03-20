@@ -53,6 +53,9 @@ With the next section we will also leverage the azure-build-pipeline.yml which p
 
 ## Create a Build pipeline
 We will now create an Azure build pipeline for the Parrot app to be able to both build/push its Docker image and package/push its Helm chart. For that we will need to create a build pipeline definition using the azure-build-pipeline.yml file. From the menu Pipelines > Builds, follow the steps illustrated below:
+
+#### pro-tip: refresh your page to start the animation from the beginning
+
 ![Image 4](./media/buildpipeline-slower.gif) 
 
 Then, you need to add some Variables for this build pipeline definition by providing your own values:
