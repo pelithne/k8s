@@ -1,11 +1,11 @@
 ## Introduction
 
-### Note: This is an adapted version of a tutorial found here: 
+#### Note: This is an adapted version of a tutorial found here: 
 https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
 
-The difference from the original is that we will reuse some of the resources created and used in the "main kubernetes workshop" from this repository.
+The main difference from the original is that we will reuse some of the resources created and used in the "main kubernetes workshop" from this repository.
 
-In this tutorial, we will setup a CI/CD pipeline to deploy your apps on a Kubernetes cluster with Azure DevOps by leveraging a Linux agent, Docker and Helm. The combination of these technologies will illustrate how you can easily setup a CI/CD pipeline, leverage Configuration-as-Code and Infrastructure-as-Code, and accelerate your DevOps journey with containers.
+In this tutorial, we will setup a CI/CD pipeline to deploy your apps on a Kubernetes cluster with Azure DevOps by using a Linux build agent, Docker and Helm. The combination of these technologies will illustrate how you can easily setup a CI/CD pipeline, leverage Configuration-as-Code and Infrastructure-as-Code, and accelerate your DevOps journey with containers.
 
 Here are the technologies we’ll walk through, that were not already used in the "main workshop":
 
@@ -17,7 +17,8 @@ Here are the technologies we’ll walk through, that were not already used in th
 ## Prerequisites & Setup
 * Completed "main workshop" from this repository (but not the final "clean up" step!)
 * Azure DevOps account: we will use an Azure DevOps project for a Git repo and build/release pipelines. Sign into your account here: https://azure.microsoft.com/en-us/services/devops/
- - After logging into your Azure DevOps account, simply click "New Project" in the top right corner, and select a name for the project (for instance "pippyandfriends") 
+ - If you do not have one, it's simple to create a free account.
+ - After logging in to your Azure DevOps account, simply click "New Project" in the top right corner, and select a name for the project (for instance "pippyandfriends") 
 * Install Helm
 
 
@@ -59,11 +60,11 @@ Then, you need to add some Variables for this build pipeline definition by provi
 * projectName
   - Since we are setting this up for the Parrot project, just put: parrot (must be lower case)
 * registryLogin
-  - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query username````
+  - You can get it by running this command from az cli: ````az acr credential show -n acr-name --query username````
 * registryName
-  - You could get it by running this command from Azure Cloud Shell: ````az acr show -n acr-name --query name````
+  - You can get it by running this command from az cli: ````az acr show -n acr-name --query name````
 * registryPassword
-  - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query passwords[0].value````
+  - You can get it by running this command from az cli: ````az acr credential show -n acr-name --query passwords[0].value````
 
 
 ![Image 5](./media/AzureDevOps_5.png) 
@@ -72,13 +73,18 @@ You could now Save & Queue a new build which will push both the Docker image and
 
 ![Image 6](./media/AzureDevOps_6.png) 
 
-From there you can run some Azure CLI commands from Azure Cloud Shell to check what you pushed in ACR:
+From there you can run some Azure CLI commands from az cli to check what you pushed in ACR:
 ````
-# List Docker images from your ACR
+List Docker images from your ACR
+````
 $ az acr repository list -n acr-name
+````
 # List Helm charts from your ACR
+````
 $ az acr helm list -n acr-name
+````
 # Show details of a specific Helm chart from your ACR
+````
 $ az acr helm show chart-name -n acr-name
 ````
 
@@ -121,11 +127,11 @@ Then, you need to add some Variables for this release pipeline definition by pro
 * projectName
   - Since we are setting this up for the Parrot project, just put: parrot (must be lower case)
 * registryLogin
-  - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query username````
+  - You can get it by running this command from az cli: ````az acr credential show -n acr-name --query username````
 * registryName
-  - You could get it by running this command from Azure Cloud Shell: ````az acr show -n acr-name --query name````
+  - You can get it by running this command from az cli: ````az acr show -n acr-name --query name````
 * registryPassword
-  - You could get it by running this command from Azure Cloud Shell: ````az acr credential show -n acr-name --query passwords[0].value````
+  - You can get it by running this command from az cli: ````az acr credential show -n acr-name --query passwords[0].value````
 
 ![Image 9](./media/AzureDevOps_9.png) 
 
@@ -133,7 +139,7 @@ You can now Save and Release > Create a Release to run this release pipeline, wh
 
 ![Image 10](./media/AzureDevOps_10.png) 
 
-Once deployed successfully, you can now run this command from your Azure Cloud Shell to get the EXTERNAL-IP value of the service/parrot-parrot:
+Once deployed successfully, you can now run this command from your az cli to get the EXTERNAL-IP value of the service/parrot-parrot:
 
 $ kubectl get all -n <your namespace>
 
@@ -150,7 +156,7 @@ You should now have four build definitions and four release definitions that you
 ![Image 13](./media/AzureDevOps_13-1024x842.png) 
 
 Conclusion
-Congratulations! You have deployed 4 different apps in a Kubernetes cluster by leveraging Azure DevOps, Azure Container Registry, Azure Kubernetes Service, Docker and Helm! You have also used Azure Cloud Shell to run some Azure and Kubernetes commands.
+Congratulations! You have deployed 4 different apps in a Kubernetes cluster by leveraging Azure DevOps, Azure Container Registry, Azure Kubernetes Service, Docker and Helm! You have also used az cli to run some Azure and Kubernetes commands.
 
 ![Image 14](./media/AzureDevOps_14.png) 
 
