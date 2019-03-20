@@ -24,7 +24,7 @@ Using all defaults during install appears to work fine. When installation finish
 ### For Mac Users
 Git SCM for Mac: https://git-scm.com/download/mac
 
-### For Linux Users (Debian based distros)
+### For Linux Users
 Instructions here: https://git-scm.com/download/linux
 
 
