@@ -757,7 +757,7 @@ helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry
 
 Much better!
 
-![azure vote beer](./media/beer.png)
+![azure vote beer](./media/beer2.png)
 
 <!--
 
