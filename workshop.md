@@ -658,7 +658,18 @@ The first thing you need to do is to install Helm. This involves installing the 
 The easiest way might be to use the **Azure Cloud Shell** for this. **Azure Cloud Shell** runs in yor browser, and comes pre-installed with **Helm**, as well as **kubectl**, **az cli** and **git**. You start the cloud shell in the portal on the "shell" button in the top left tool bar:
 ![Image of Azure Cloud Shell](./media/cloudshell.png)
 
-If you don't want to run the cloud shell, you can install the Helm client locally.
+If you use cloud shell, you need to clone the repo again:
+````
+git clone https://github.com/pelithne/azure-vote-app.git
+````
+
+And you need to login to your ACR
+```azurecli
+az acr login --name <Your ACR Name>
+```
+After that you should be good to go.
+
+If you don't want to run the cloud shell, you can install the Helm client locally (but it can be a bit tricky on some platforms).
 
 Install helm client for macOS
 ````
@@ -671,46 +682,23 @@ sudo snap install helm --classic
 ````
 
 ### Configure Helm
-To deploy a the server side component of **Helm** named **Tiller** into an AKS cluster, use the helm init command. 
+Once you have installed the helm client, or logged into you Cloud Shell, you need to initialize helm.
+
+To deploy a the server side component of **Helm** named **Tiller** into an AKS cluster, use the ````helm init```` command. 
 ````
 helm init
 ````
 
-If no error are reported, you are good to go. If you want to, you can check if helm work by running the ````helm version````command:
+If no error are reported, you are good to go. If you want to, you can check if helm works by running the ````helm version````command:
 ````
 helm version
 ````
 
-Client and server versions should match.
-
-### Install Wordpress
-One way to look at helm, is as a packet manager. You can use it to easily install applications. For instance you can install wordpress in your AKS cluster by running a single command:
+Client and server versions should match, and you should get output similar to:
 
 ````
-helm install stable/wordpress
-````
-It takes a minute or two for the EXTERNAL-IP address of the Wordpress service to be populated and allow you to access it with a web browser. To find the ip address, you can use ````kubectl```` just like before:
-````
-kubectl get services
-````
-
-### Delete Wordpress
-We don't really need Wordpress (this was just an example of how you can use helm as a packet manager), so lets delete it. 
-
-First you need to know the release name that you just deployed. To easily find that you can use the ````helm list```` command. You can also find the name at the top of the output from the ````helm install```` command.
-
-````
-helm list
-````
- The output will look something like:
-````
- NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
-dull-seastar    1               Thu Mar 21 14:34:47 2019        DEPLOYED        wordpress-5.1.2         5.0.3           default
-````
-
-Now you can delete the deployment with ````helm delete```` for the *NAME* listed:
-````
-helm delete dull-seastar
+Client: &version.Version{SemVer:"v2.11.0", GitCommit:"2e55dbe1fdb5fdb96b75ff144a339489417b146b", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.11.0", GitCommit:"2e55dbe1fdb5fdb96b75ff144a339489417b146b", GitTreeState:"clean"}
 ````
 
 ### Helm and Azure Vote!
@@ -758,6 +746,50 @@ helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry
 Much better!
 
 ![azure vote beer](./media/beer2.png)
+
+
+
+
+### Install Wordpress
+One way to look at helm, is as a packet manager. You can use it to easily search for and install applications. To look for exising applications, use ```` helm search````
+
+````
+helm search 
+````
+
+This will give you a (long) list of applications available in the default helm repository. 
+
+Now, you could for instance install wordpress in your AKS cluster by running a single command:
+````
+helm install stable/wordpress
+````
+It takes a minute or two for the EXTERNAL-IP address of the Wordpress service to be populated and allow you to access it with a web browser. To find the ip address, you can use ````kubectl```` just like before:
+````
+kubectl get services
+````
+
+### Cleaning up
+To keep things tidy in the cluster, delete the applications you just deployed with helm
+
+First you need to know the release names that you deployed. To easily find that you can use the ````helm list```` command. You can also find the name at the top of the output from the ````helm install```` command.
+
+````
+helm list
+````
+ The output will look something like:
+````
+NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
+dull-seastar    1               Thu Mar 21 14:34:47 2019        DEPLOYED        wordpress-5.1.2         5.0.3           default
+warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        azure-vote-0.1.0                        default
+````
+
+Now you can delete the deployments with ````helm delete```` for the *NAME* listed:
+````
+helm delete dull-seastar
+helm delete warped-elk
+````
+
+This will remove all the pods and services, and other resources related to the applications.
 
 <!--
 
