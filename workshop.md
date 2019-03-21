@@ -656,7 +656,7 @@ You will now use Helm to deploy the same application you just deployed using ```
 The first thing you need to do is to install Helm. This involves installing the helm client on your local machine, and then to activate helm in you Kubernetes cluster, by installing the server side component called **Tiller**. 
 
 The easiest way might be to use the **Azure Cloud Shell** for this. **Azure Cloud Shell** runs in yor browser, and comes pre-installed with **Helm**, as well as **kubectl**, **az cli** and **git**. You start the cloud shell in the portal on the "shell" button in the top left tool bar:
-![Image of Azure Cloud Shell](./media/cloud-shell.png)
+![Image of Azure Cloud Shell](./media/cloudshell.png)
 
 If you don't want to run the cloud shell, you can install the Helm client locally.
 
@@ -757,7 +757,7 @@ helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry
 
 Much better!
 
-
+![azure vote beer](./media/beer.png)
 
 <!--
 
