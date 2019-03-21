@@ -639,35 +639,141 @@ Now open a local web browser to the IP address.
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
 
 
-## Extra tasks if you finish early!
-
-### Create CI/CD pipeline to deploy to Kubernetes
-
-#### AKS and Azure DevOps
-https://github.com/pelithne/kubernetes-workshop/blob/master/devops-and-aks.md
-
-
-#### Helm
-https://docs.microsoft.com/en-us/azure/aks/kubernetes-helm
-
-
-## Cleaning up
-To stop your running containers, you can run the following command:
-
-```console
+### Clean up
+Close the application you have running in your AKS cluster, using ````kubectl delete```` command, with the same manifels (yaml) file you used when starting the application.
+````
 kubectl delete -f azure-vote-all-in-one-redis.yaml
-```
+````
+This will remove the pods and services created with the ````kubectl```` apply command.
+
+
+## HELM!
+Helm is an open-source packaging tool that helps you install and manage the lifecycle of Kubernetes applications. Similar to Linux package managers such as APT and Yum, Helm is used to manage Kubernetes charts, which are packages of preconfigured Kubernetes resources.
+
+You will now use Helm to deploy the same application you just deployed using ````kubectl````.
+
+### Install Helm
+The first thing you need to do is to install Helm. This involves installing the helm client on your local machine, and then to activate helm in you Kubernetes cluster, by installing the server side component called **Tiller**. 
+
+The easiest way might be to use the **Azure Cloud Shell** for this. **Azure Cloud Shell** runs in yor browser, and comes pre-installed with **Helm**, as well as **kubectl**, **az cli** and **git**. You start the cloud shell in the portal on the "shell" button in the top left tool bar:
+![Image of Azure CLoud Shell](./media/cloud-shell.png)
+
+If you don't want to run the cloud shell, you can install the Helm client locally.
+
+Install helm client for macOS
+````
+brew install kubernetes-helm
+````
+
+Install helm in Ubuntu (including WSL on Windows 10)
+````
+sudo snap install helm --classic
+````
+
+### Configure Helm
+To deploy a the server side component of **Helm** named **Tiller** into an AKS cluster, use the helm init command. 
+````
+helm init
+````
+
+If no error are reported, you are good to go. If you want to, you can check if helm work by running the ````helm version````command:
+````
+helm version
+````
+
+Client and server versions should match.
+
+### Install Wordpress
+One way to look at helm, is as a packet manager. You can use it to easily install applications. For instance you can install wordpress in your AKS cluster by running a single command:
+
+````
+helm install stable/wordpress
+````
+It takes a minute or two for the EXTERNAL-IP address of the Wordpress service to be populated and allow you to access it with a web browser. To find the ip address, you can use ````kubectl```` just like before:
+````
+kubectl get services
+````
+
+### Delete Wordpress
+We don't really need Wordpress (this was just an example of how you can use helm as a packet manager), so lets delete it. 
+
+First you need to know the release name that you just deployed. To easily find that you can use the ````helm list```` command. You can also find the name at the top of the output from the ````helm install```` command.
+
+````
+helm list
+````
+ The output will look something like:
+````
+ NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
+dull-seastar    1               Thu Mar 21 14:34:47 2019        DEPLOYED        wordpress-5.1.2         5.0.3           default
+````
+
+Now you can delete the deployment with ````helm delete```` for the *NAME* listed:
+````
+helm delete dull-seastar
+````
+
+### Helm and Azure Vote!
+In the repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**. 
+
+First you need to update your helm chart to point to the container image you uploaded earlier to the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-chart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
+
+Change the line:
+````
+image: microsoft/azure-vote-front:v1
+````
+to
+````
+image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+````
+
+### Deploy Azure-vote app using Helm
+Deploying the azure-vote app using helm can be done with this command
+````
+helm install ./azvote-chart
+````
+
+After some time, you should be able to access the vote app in your browser. To find out when it is available, use ````kubectl get services````
+
+### Helm Upgrade
+One of the advantages with Helm is that configuration values can be separated from values that are more static. Have a look at the file ````values.yaml```` which contains configurations that we can change dynamically. For example, you can upgrade your current deployment and give it new configuration values from the command line.
+
+To modify the application, you need to know the *release name*. Use **helm list** to find out:
+````
+helm list
+````
+
+
+This will, once again, give output like this:
+````
+NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
+warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        azure-vote-0.1.0                        default
+````
+
+Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
+````
+helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry Lager" --set value2="Craft Ale"
+````
+
+Much better!
+
+
+
 <!--
+
+## Clean up
+
+
 After this, you can remove the namespace you created previously:
 ```console
 kubectl delete namespace <your unique namespace name>
 ```
--->
+
 
 Finally, remove the docker image from the container registry:
 ```console
 az acr repository delete --name <Your ACR Name> --repository <unique name>/azure-vote-front
 ```
-
+-->
 
 
