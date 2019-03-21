@@ -4,12 +4,16 @@ This workshop/tutorial contains a number of different sections, each addressing 
 
  * Clone a github repository
  * Create docker container images
- * Run a 2-container application on your local machine
+ * Run an application on your local machine
  * Upload images to a container registry
  * Create a Kubernetes cluster in Azure
- * Deploy the application in Kubernetes
- * Scale/modify/update the application 
- * and much more... and for those of you who finish early, there are some extra assignements involving Azure DevOps and Helm
+ * Deploy an application in Kubernetes
+ * Scale/modify/update an application in Kubernetes
+ * Deploy an application using Helm
+ * Modify an application using Helm
+ * and much more... 
+ 
+ The basic idea with the workshop, is to deploy the same application over and over (and over) again, but using more and more andvanced methods.
  
 
 ## Running Docker Containers locally
