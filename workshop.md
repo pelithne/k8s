@@ -744,7 +744,7 @@ warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        
 
 Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
 ````
-helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry Lager" --set value2="Craft Ale"
+helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry Lager" --set value2="Cask Ale"
 ````
 
 Much better!
