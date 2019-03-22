@@ -13,7 +13,7 @@ This workshop/tutorial contains a number of different sections, each addressing 
  * Modify an application using Helm
  * and much more... 
  
- The basic idea with the workshop, is to deploy the same application over and over (and over) again, but using more and more andvanced methods.
+ The basic idea with the workshop, is to deploy the same application over and over (and over) again, but using more and more "advanced" methods.
  
 
 ## Running Docker Containers locally
