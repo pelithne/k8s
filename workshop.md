@@ -659,7 +659,7 @@ You will now use Helm to deploy the same application you just deployed using ```
 ### Install Helm
 The first thing you need to do is to install Helm. This involves installing the helm client on your local machine, and then to activate helm in you Kubernetes cluster, by installing the server side component called **Tiller**. 
 
-The easiest way might be to use the **Azure Cloud Shell** for this. **Azure Cloud Shell** runs in yor browser, and comes pre-installed with **Helm**, as well as **kubectl**, **az cli** and **git**. You start the cloud shell in the portal on the "shell" button in the top left tool bar:
+The easiest way might be to use the **Azure Cloud Shell** for this. **Azure Cloud Shell** runs in yor browser, and comes pre-installed with **Helm**, as well as **kubectl**, **az cli** and **git**. You start the cloud shell in the portal on the "shell" button in the top left tool bar. You will be asked to create a storage account, accept that and give it a name. Then when the cloud shell starts, select *bash*.
 ![Image of Azure Cloud Shell](./media/cloudshell.png)
 
 If you use cloud shell, you need to clone the repo again:
