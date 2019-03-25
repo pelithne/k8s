@@ -31,7 +31,7 @@ Instructions here: https://git-scm.com/download/linux
 ### Verify installation - for all operating systems above
 When installation has finished, make sure that you can clone a repository. For instance, you can clone the repo that we will use during the workshop (after switching to a suitable folder on your local machine):
 ```console
-git clone https://github.com/pelithne/azure-voting-app-redis.git
+git clone https://github.com/pelithne/azure-vote-app.git
 ```
 
 Then go into the folder ```azure-voting-app-redis``` and make sure there are some files in there. 
