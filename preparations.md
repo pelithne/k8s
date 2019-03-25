@@ -61,7 +61,7 @@ and login with your usual credentials, to connect to the Azure cloud.
 ## Kubectl
 You can use the Azure CLI to install kubectl, like so:
 ```console
-az aks kubernetes install-cli
+az aks install-cli
 ```
 Follow the instructions to add kubectl to you PATH.
 
