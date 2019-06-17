@@ -266,13 +266,15 @@ az aks create --resource-group <Your RG name> --name <Your AKS name> --service-p
 
 #### note: This command can take 15 minutes to finish, so this might be a good time for a leg stretcher.
 
+-->
+
 #### Validate towards Kubernetes Cluster
 
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
 az aks get-credentials --resource-group <Your RG name> --name <AKS cluster name>
 ```
--->
+
 
 
 ### Kubernetes Namespaces
