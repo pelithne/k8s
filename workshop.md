@@ -4,7 +4,7 @@ This workshop/tutorial contains a number of different sections, each addressing 
 
  * Clone a github repository
  * Create docker container images
- * Run an application on your local machine
+ * Run an application on your local machineyour
  * Upload images to a container registry
  * Create a Kubernetes cluster in Azure
  * Deploy an application in Kubernetes
@@ -132,14 +132,16 @@ az group create --name <Your RG name> --location westeurope
 
 ### Using the Azure Container Registry
 
-<!--
 This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
--->
 
+
+
+<!--
 You can create you own container registry in **Azure**, to store all your docker container images. For this workshop you will create an Azure Container Registry (ACR) to store your images, with this command:
 ````
 az acr create --resource-group <Your RG name from above> --name <Your ACR Name> --sku Basic
 ````
+-->
 
 ### Login to Container Registry
 
@@ -245,41 +247,11 @@ The workshop assumes that a Kubernetes cluster is already created in AKS. If thi
 -->
 
 ### Create your Kubernetes Cluster
+#### Note: The following steps are not needed if a cluster has already been created for you. If so, you can move on to **Kubernetes Namespaces** below
+
 Creating a Kubernetes cluster requires a few steps to be completed, as detailed below.
 
-#### Create Service principal
 
-To begin with, you need to create a service principal. This is needed to give your Kubernetes Cluster rights to access other services, in this case to read from your **Azure Container Registry**. You can think of the service principal as a representation of the KUbernetes cluster.
-````
-az ad sp create-for-rbac --skip-assignment
-````
-You should see output similar to below. Make a note of the 'appid' and 'password', as you will use them later.
-
-````
-{
-  "appId": "3636e464-09b9-4d14-999f-9d64825e9e45",
-  "displayName": "azure-cli-2019-03-19-14-20-20",
-  "name": "http://azure-cli-2019-03-19-14-20-20",
-  "password": "cf0f7f0d-9564-4e26-b137-1aefd9db3d50",
-  "tenant": "3a10cb8b-866e-4408-b7fd-4a7ca62328c9"
-}
-````
-
-#### Grant access for AKS to read ACR
-To access images stored in ACR, you must grant the AKS service principal the correct rights to pull images from ACR.
-
-First, get the ACR resource ID using az acr show. Update the <Your ACR name> registry name to that of your ACR instance and the resource group where the ACR instance is located.
-
-````
-az acr show --name <Your ACR name> --query "id" --output tsv
-````
-The acrID will look similar to ````/subscriptions/be82972d-790f-45c3-86a7-e1df4582749e/resourceGroups/registry/providers/Microsoft.ContainerRegistry/registries/plithneracr```` 
-
-To grant the access for the AKS cluster to pull images from the ACR, you should assign the *AcrPull role* using the ````az role assignment create```` command. Replace <appId> and <acrId> with the values gathered in the previous two steps.
- 
-````
-az role assignment create --assignee <appId> --scope <acrId> --role acrpull
-````
 
 #### Create Kubernetes Cluster
 #### Note: This step only needs to be performed if a cluster has not already been created for the workshop. Ask your instuctor if you ar euncertain.
