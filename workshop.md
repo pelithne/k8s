@@ -282,6 +282,7 @@ az role assignment create --assignee <appId> --scope <acrId> --role acrpull
 ````
 
 #### Create Kubernetes Cluster
+#### Note: This step only needs to be performed if a cluster has not already been created for the workshop. Ask your instuctor if you ar euncertain.
 Create an AKS cluster using ````az aks create````. Provide your own <appId> and <password> from the previous step where the service principal was created.
  
 ```` 
@@ -290,7 +291,7 @@ az aks create --resource-group <Your RG name> --name <Your AKS name> --service-p
 
 #### note: the command above disables role based access control (RBAC) for the sake of simplicity
 
-#### note 2: This command can take 15 minutes to finish, so this might be a good time for a leg stretcher.
+#### note: This command can take 15 minutes to finish, so this might be a good time for a leg stretcher.
 
 #### Validate towards Kubernetes Cluster
 
