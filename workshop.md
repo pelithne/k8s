@@ -123,12 +123,13 @@ docker rm azure-vote-front azure-vote-back
 ## Moving it all to the Cloud
 Now you have tried running your dockerized application locally on your machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
 
+<!--
 ### Creating a Resource Group
 All resources in azure live inside a **Resource Group**. For this workshop you will create one Resource Group (RG), to hold all the resources you create. You can create the RG with a one-liner, using the **Azure CLI.**
 ````
 az group create --name <Your RG name> --location westeurope
 ````
-
+-->
 
 ### Using the Azure Container Registry
 
