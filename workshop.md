@@ -680,8 +680,6 @@ Then set the default namespace for your current session, to the one you created 
 kubectl config set-context --current=true --namespace=<your unique namespace name>
 ```
 
-After that you should be good to go.
-
 If you don't want to run the cloud shell, you can install the Helm client locally (but it can be a bit tricky on some platforms).
 
 Install helm client for macOS
@@ -715,9 +713,14 @@ Server: &version.Version{SemVer:"v2.11.0", GitCommit:"2e55dbe1fdb5fdb96b75ff144a
 ````
 
 ### Helm and Azure Vote!
-In the repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**. 
+The repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**. 
 
-First you need to update your helm chart to point to the container image you uploaded earlier to the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-chart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
+Start by changing the directory into the repository you just cloned
+````
+ cd azure-vote-app/
+ ````
+
+Then you need to update your helm chart to point to the container image you uploaded earlier to the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-chart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
 
 Change the line:
 ````
@@ -729,6 +732,8 @@ image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ````
 
 ### Deploy Azure-vote app using Helm
+
+
 Deploying the azure-vote app using helm can be done with this command
 ````
 helm install ./azvote-chart
@@ -745,7 +750,7 @@ helm list
 ````
 
 
-This will, once again, give output like this:
+This will, once again, give output similar to this (but with a different **NAME**):
 ````
 NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
 warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        azure-vote-0.1.0                        default
@@ -753,7 +758,7 @@ warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        
 
 Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
 ````
-helm upgrade warped-elk ./azvote-chart --set title="Beer" --set value1="Industry Lager" --set value2="Cask Ale"
+helm upgrade <NAME> ./azvote-chart --set title="Cricket" --set value1="Industry Lager" --set value2="Craft Beer"
 ````
 
 Much better!
