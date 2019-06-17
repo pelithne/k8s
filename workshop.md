@@ -472,10 +472,10 @@ resources:
      cpu: 500m
 ```
 
-The following example uses the ```kubectl autoscale``` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances:
+The following example uses the ```kubectl autoscale``` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances. In this case however, with almost no load on your application, it will instead scale down to the minimum number of pods (1).
 
 ```console
-kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=3 --max=10
+kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=1 --max=10
 ```
 
 To see the status of the autoscaler, use the ```kubectl get hpa``` command as follows:
