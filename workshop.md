@@ -690,6 +690,12 @@ And you need to login to your ACR
 ```azurecli
 az acr login --name <Your ACR Name>
 ```
+
+Then set the default namespace for your current session, to the one you created earlier
+```console
+kubectl config set-context --current=true --namespace=<your unique namespace name>
+```
+
 After that you should be good to go.
 
 If you don't want to run the cloud shell, you can install the Helm client locally (but it can be a bit tricky on some platforms).
