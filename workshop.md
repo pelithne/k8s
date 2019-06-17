@@ -670,11 +670,6 @@ If you use cloud shell, you need to clone the repo again:
 git clone https://github.com/pelithne/azure-vote-app.git
 ````
 
-And you need to login to your ACR
-```azurecli
-az acr login --name <Your ACR Name>
-```
-
 Then set the default namespace for your current session, to the one you created earlier
 ```console
 kubectl config set-context --current=true --namespace=<your unique namespace name>
