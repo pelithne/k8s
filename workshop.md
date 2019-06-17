@@ -6,7 +6,6 @@ This workshop/tutorial contains a number of different sections, each addressing 
  * Create docker container images
  * Run an application on your local machineyour
  * Upload images to a container registry
- * Create a Kubernetes cluster in Azure
  * Deploy an application in Kubernetes
  * Scale/modify/update an application in Kubernetes
  * Deploy an application using Helm
