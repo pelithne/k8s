@@ -238,15 +238,17 @@ You now have a container image that is stored in a private Azure Container Regis
 
 Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into a Kubernetes cluster. You learn how to:
 
+<!--
  * Create a Kubernetes Cluster
+-->
  * Update a Kubernetes manifest files
  * Run an application in Kubernetes
  * Test the application
  
-<!--
-The workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
--->
 
+The workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
+
+<!--
 ### Create your Kubernetes Cluster
 #### Note: The following steps are not needed if a cluster has already been created for you. If so, you can move on to **Kubernetes Namespaces** below
 
@@ -255,7 +257,6 @@ Creating a Kubernetes cluster requires a few steps to be completed, as detailed 
 
 
 #### Create Kubernetes Cluster
-#### Note: This step only needs to be performed if a cluster has not already been created for the workshop. Ask your instuctor if you ar euncertain.
 Create an AKS cluster using ````az aks create````. Provide your own <appId> and <password> from the previous step where the service principal was created.
  
 ```` 
@@ -272,27 +273,9 @@ In order to use `kubectl` you need to connect to the Kubernetes cluster, using t
 ```console
 az aks get-credentials --resource-group <Your RG name> --name <AKS cluster name>
 ```
-<!--
-### Kubernetes Namespaces
-#### Note: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
-A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
-
-To create a namespace, run the following command, and give it a name that you think will be unique within the cluster.
-```console
-kubectl create namespace <your unique namespace name>
-```
-Then set the default namespace for your current session
-```console
-kubectl config set-context --current=true --namespace=<your unique namespace name>
-```
-This is mainly for convenience. You can skip this step, but then you have to include a ´--namespace´ flag on all kubectl commands.
-
-You can verify that your newly created namespace is the active one:
-```console
-kubectl config view | grep namespace
-```
 -->
 
+
 ### Kubernetes Namespaces
 #### Note: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
 A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
@@ -311,6 +294,7 @@ You can verify that your newly created namespace is the active one:
 ```console
 kubectl config view | grep namespace
 ```
+
 
 #### Update the manifest file
 
