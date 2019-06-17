@@ -319,6 +319,25 @@ kubectl config view | grep namespace
 ```
 -->
 
+### Kubernetes Namespaces
+#### Note: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
+A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
+
+To create a namespace, run the following command, and give it a name that you think will be unique within the cluster.
+```console
+kubectl create namespace <your unique namespace name>
+```
+Then set the default namespace for your current session
+```console
+kubectl config set-context --current=true --namespace=<your unique namespace name>
+```
+This is mainly for convenience. You can skip this step, but then you have to include a ´--namespace´ flag on all kubectl commands.
+
+You can verify that your newly created namespace is the active one:
+```console
+kubectl config view | grep namespace
+```
+
 #### Update the manifest file
 
 You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./azure-vote directory
