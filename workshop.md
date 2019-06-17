@@ -638,11 +638,20 @@ Now open a local web browser to the IP address.
 
 
 ### Clean up
-Close the application you have running in your AKS cluster, using ````kubectl delete```` command, with the same manifels (yaml) file you used when starting the application.
+First, clean up you local system by stopping and removing the container instances:
+
+```console
+docker stop azure-vote-front azure-vote-back
+docker rm azure-vote-front azure-vote-back
+```
+
+Then close the application you have running in your AKS cluster, using ````kubectl delete```` command, with the same manifels (yaml) file you used when starting the application.
 ````
 kubectl delete -f azure-vote-all-in-one-redis.yaml
 ````
 This will remove the pods and services created with the ````kubectl```` apply command.
+
+
 
 
 ## HELM!
