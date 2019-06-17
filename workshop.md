@@ -348,7 +348,23 @@ service "azure-vote-front" created
 
 ### Test the application
 
-A kubernetes-service is created which exposes the application to the internet. This process can take a few minutes. To monitor progress, use the `kubectl get service` command with the `--watch` argument:
+A kubernetes-service is created which exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. In order to monitor the progress of the download, you can use ``kubectl get pods`` and ``kubectl describe pod``, like this:
+
+First use ``kubectl get pods`` to find the name of your pod:
+```consolse
+kubectl get pods
+```
+
+Then use ``kubectl describe pod`` with the name of your pod:
+```consolse
+kubectl describe pod <pod name>
+```
+
+You can also use ``kubectl describe`` to trouble shoot any problems you might have with the deployment (for instance, a common problem is image pull error, which can be caused by incorrect credentials or incorrect address/path to the container in ACR.
+
+Once your container has been pulled and started, showing state **READY**, you can instead start monitoring the service to see when a public IP address has been created.
+
+To monitor progress, use the `kubectl get service` command with the `--watch` argument:
 
 ```console
 kubectl get service azure-vote-front --watch
