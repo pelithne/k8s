@@ -132,14 +132,14 @@ az group create --name <Your RG name> --location westeurope
 
 ### Using the Azure Container Registry
 
-This workshop assumes that a Container Registry is already created using ACR. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
+This workshop assumes that a Container Registry is already created using Azure Container Registry (ACR). If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
 
 
 
 <!--
 You can create you own container registry in **Azure**, to store all your docker container images. For this workshop you will create an Azure Container Registry (ACR) to store your images, with this command:
 ````
-az acr create --resource-group <Your RG name from above> --name <Your ACR Name> --sku Basic
+az acr create --resource-group <Your RG name from above> --name <ACR Name> --sku Basic
 ````
 -->
 
