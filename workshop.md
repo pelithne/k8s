@@ -790,6 +790,7 @@ It takes a minute or two for the EXTERNAL-IP address of the Wordpress service to
 ````
 kubectl get services
 ````
+Now you should be able to browse to your newly created Wordpress instance, by entering the public IP address into your browser.
 
 ### Cleaning up
 To keep things tidy in the cluster, delete the applications you just deployed with helm
