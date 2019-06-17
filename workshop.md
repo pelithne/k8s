@@ -62,7 +62,7 @@ Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will 
 
 #### Note: If you are behind a proxy, you can add an HTTPS proxy to the build command (--build-arg HTTPS_PROXY=http://xx.xx.xx.xx:xx)
 ```console
- docker build -t azure-vote-front .
+ docker build -t azure-vote-front ./azure-vote
 ```
 Please review ./azure-vote/Dockerfile to get an understanding for container images get created based on this file.
 
