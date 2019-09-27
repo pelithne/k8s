@@ -1,13 +1,14 @@
-# Azure Kubernetes Service (AKS) Workshop
+# TechDays pre-day Kubernetes and DevOps
 
-This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, and creating pipelines in Azure DevOps. You will do things like:
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, and creating pipelines in Azure DevOps. 
 
 You will go through the following steps to complete the workshop:
 * Create a VM (Virtual machine) to use as your development environment
 * Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Build and test docker images "locally" on your development VM
 * Push images to ACR (Azure Container Registry)
-* 
+* Deploy application to Kubernetes
+* Setup CI/CD pipelines using Azure DevOps
  
 ## Create development VM
 #### Note: if you want to run excercises locally on your laptop, you can do that. It requires that you have the right tools installed (az cli, kubectl, docker, git, ssh). If you choose to do it this way, you are going to have to sort out a lot of things on your own (but that's not necessarily a bad thing right!)
