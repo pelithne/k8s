@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+        "resourceName": {
+			"value": "AKS"
+		},
+		"dnsPrefix": {
+			"value": "AKS"
+		},
+        "sshRSAPublicKey": {
+            "reference": {
+                "keyVault": {
+                  "id": "/subscriptions/6f66105f-d352-482f-970b-a1d2a478fb64/resourceGroups/KeyVaultRG/providers/Microsoft.KeyVault/vaults/pelithneKeyVault"
+                },
+                "secretName": "AKS-secret"
+            }
+        },
+		"servicePrincipalClientId": {
+			"value": "52b63a54-cdfb-44e7-8955-624c74ef11f3"
+		},
+		"agentVMSize": {
+            "value": "Standard_B2s"
+        },
+        "agentCount": {
+            "value": 3
+        },
+        "kubernetesVersion": {
+            "value": "1.14.5"
+        },
+        "servicePrincipalClientSecret": {
+            "reference": {
+              "keyVault": {
+                "id": "/subscriptions/6f66105f-d352-482f-970b-a1d2a478fb64/resourceGroups/KeyVaultRG/providers/Microsoft.KeyVault/vaults/pelithneKeyVault"
+              },
+              "secretName": "aks-sp"
+            }
+          }
+	}
+}
