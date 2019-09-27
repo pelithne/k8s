@@ -1,29 +1,34 @@
 # Azure Kubernetes Service (AKS) Workshop
 
-This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running docker containers locally and in the cloud. You will do things like:
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, and creating pipelines in Azure DevOps. You will do things like:
 
- * Clone a github repository
- * Create docker container images
- * Run an application on your local machineyour
- * Upload images to a container registry
- * Deploy an application in Kubernetes
- * Scale/modify/update an application in Kubernetes
- * Deploy an application using Helm
- * Modify an application using Helm
- * and much more... 
+You will go through the following steps to complete the workshop:
+* Create a VM (Virtual machine) to use as your development environment
+* Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
+* Build and test docker images "locally" on your development VM
+* Push images to ACR (Azure Container Registry)
+* 
  
- The basic idea with the workshop, is to deploy the same application over and over (and over) again, but using more and more "advanced" methods.
- 
+## Create development VM
+#### Note: if you want to run excercises locally on your laptop, you can do that. It requires that you have the right tools installed (az cli, kubectl, docker, git, ssh). If you choose to do it this way, you are going to have to sort out a lot of things on your own (but that's not necessarily a bad thing right!)
 
-## Running Docker Containers locally
+TDB 
 
-In this first step in the tutorial, you will prepare a multi-container application for use in your local docker environment. Existing tools such as Git and Docker are used to locally build and test an application. You will learn how to:
+Note: Port 80 open in NSG!
+
+## Create Kubernetes Cluster using AKS
+
+TBD
+
+## Build and run containers on your development machine
+
+In this step in the tutorial, you will prepare a multi-container application for use in your development environment. Existing tools such as Git and Docker are used to locally build and test an application. You will learn how to:
 
  * Clone a sample application source from GitHub
  * Create a container image from the sample application source
  * Test the multi-container application in a local Docker environment
 
-Once completed, the following application runs in your local development environment:
+Once completed, the following application will run in your local development environment:
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png) 
 
@@ -44,11 +49,9 @@ Change directories so that you are working from the cloned directory.
 cd azure-vote-app
 ```
 
-Inside the directory is the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.
+Inside the directory you will find the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.
 
 ### Create a docker network
-
-#### Note: if you are using WSL, and if you have not installed docker there, you need to use `docker.exe` on the command line. 
 
 This network will be used by the containers that are started below, to allow them to communicate with each other
 
@@ -60,23 +63,21 @@ This network will be used by the containers that are started below, to allow the
 
 Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will create two images, one base image and one for the azure-vote-front.
 
-#### Note: If you are behind a proxy, you can add an HTTPS proxy to the build command (--build-arg HTTPS_PROXY=http://xx.xx.xx.xx:xx)
 ```console
  docker build -t azure-vote-front ./azure-vote
 ```
-Please review ./azure-vote/Dockerfile to get an understanding for container images get created based on this file.
+Please review ./azure-vote/Dockerfile to get an understanding of how the container images are created based on this file (take the time; it's a small file!).
 
-### Run the application locally
-First start the redis cache container. The command below will start a container with name "azure-vote-back" using the official redis docker container. The app will use the network "mynet" created in the previous step. If this is the first time the command is executed, the image will be downloaded to your computer (this can take a while). 
+### Run the application on your development machine
+First start the redis cache container (the back-end container). The command below will start a container with name "azure-vote-back" using the official redis docker image. The app will use the network ´´´mynet´´´ created in the previous step. If this is the first time the command is executed, the image will be downloaded to your computer (this can take a while). 
 
-Note that in the command below, the container is instructed to use the network ```mynet``` that was created in a previous step.
 ```console
 docker run -d --name azure-vote-back --net mynet redis
 ```
 
-Now start the frontend container. The command below will start a container with name "azure-vote-front" using the previously built container. Additionally port 8080 will be exposed (so that the application can be accessed locally using a browser) and insert an environment variable ("REDIS") that will be used to connect to the redis cache.
+Now start the frontend container. The command below will start a container with name "azure-vote-front" using the previously built container. Additionally port 8080 will be exposed (so that the application can be accessed using a browser) and insert an environment variable ("REDIS") that will be used to connect to the redis cache.
 ```console
-docker run --name azure-vote-front -d -p 8080:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
+docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
 ```
 
 When completed, use the ```docker images``` command to see the created images. Three images have been downloaded or created. The *azure-vote-front* image contains the front-end application and uses the `nginx-flask` image as a base. The `redis` image is used to start a Redis instance.
@@ -100,9 +101,12 @@ CONTAINER ID        IMAGE             COMMAND                  CREATED          
 b68fed4b66b6        redis             "docker-entrypoint..."   57 seconds ago      Up 30 seconds       0.0.0.0:6379->6379/tcp          azure-vote-back
 ```
 
-### Test application locally
+### Test application
+The application you started in the previous step runs on your development machine in Azure. The VM you created has a public IP address, and this is what you should use to access the application.
 
-To see the running application, enter http://localhost:8080 in a local web browser. If you are using Docker Toolbox, the default address will be http://192.168.99.100:8080.
+To find the public IP of your VM, you can check in the Azure Portal. Navigate to the VM that was created in the beginning of the workshop. In the ````Overview```` you will find the ````Public IP address```` 
+
+To see the running application, enter http://<VM Public IP address> in a local web browser.
 
 The sample application loads, as shown in the following example:
 
@@ -120,28 +124,13 @@ docker rm azure-vote-front azure-vote-back
 ```
 
 ## Moving it all to the Cloud
-Now you have tried running your dockerized application locally on your machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
+Now you have tried running your dockerized application on your dev machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
 
-<!--
-### Creating a Resource Group
-All resources in azure live inside a **Resource Group**. For this workshop you will create one Resource Group (RG), to hold all the resources you create. You can create the RG with a one-liner, using the **Azure CLI.**
-````
-az group create --name <Your RG name> --location westeurope
-````
--->
 
 ### Using the Azure Container Registry
 
 This workshop assumes that a Container Registry is already created using Azure Container Registry (ACR). If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
 
-
-
-<!--
-You can create you own container registry in **Azure**, to store all your docker container images. For this workshop you will create an Azure Container Registry (ACR) to store your images, with this command:
-````
-az acr create --resource-group <Your RG name from above> --name <ACR Name> --sku Basic
-````
--->
 
 ### Login to Container Registry
 
@@ -157,7 +146,7 @@ The command returns a *Login Succeeded* message once completed.
 
 ### Tag a container image
 
-To see a list of your current **local** images, once again use the ```docker images``` command:
+To see a list of your current **local** images on your deveopment machine, once again use the ```docker images``` command:
 
 ```
 $ docker images
@@ -170,7 +159,7 @@ tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks a
 
 To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<Your ACR Name>.azurecr.io`
 
-You should also tag your image with a unique name to distinguish it from other container images in the registry. 
+You should also tag your image with a unique name to distinguish it from other container images in the registry. he unique name could for instance be your corporate ID.
 
 Finally, to indicate the image version, add *:v1* to the end of the image name.
 
@@ -180,7 +169,7 @@ The resulting command:
 docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
-To verify the tags are applied, run ```docker images``` again. An image is tagged with the ACR instance address and a version number.
+To verify the tags are applied, run ```docker images``` again. A new image will have appeared, that is tagged with the ACR instance address and a version number.
 
 ```
 azure-vote-front                                   latest                00c4df2b3d4b        11 minutes ago      192MB
@@ -217,35 +206,21 @@ another-unique-name/azure-vote-front
 yet-another-unique-name/azure-vote-front
 ```
 
-To see the tags for a specific image, use the ```az acr repository show-tags``` command as follows:
-
-```azurecli
-az acr repository show-tags --name <Your ACR Name> --repository <unique name>/azure-vote-front --output table
-```
-
-The following example output shows the *v1* image tagged in a previous step:
-
-```
-Result
---------
-v1
-```
+You can also use the **Azure Portal** to view the Container Registry and it's contents. Feel fere to do so as an extra exercise.
 
 You now have a container image that is stored in a private Azure Container Registry instance. This image is deployed from ACR to a Kubernetes cluster in the next step.
 
 ## Run applications in Azure Kubernetes Service (AKS)
 
-Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into a Kubernetes cluster. You learn how to:
+Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into a Kubernetes cluster. You will learn how to:
 
 <!--
  * Create a Kubernetes Cluster
 -->
- * Update a Kubernetes manifest files
+ * Update Kubernetes manifest files
  * Run an application in Kubernetes
  * Test the application
  
-
-The workshop assumes that a Kubernetes cluster is already created in AKS. If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
 
 <!--
 ### Create your Kubernetes Cluster
@@ -275,28 +250,6 @@ In order to use `kubectl` you need to connect to the Kubernetes cluster, using t
 az aks get-credentials --resource-group <Your RG name> --name <AKS cluster name>
 ```
 
-
-
-### Kubernetes Namespaces
-#### Note: It is important that you can create and use your namespace, so make sure this step i successful before continuing!
-A namespace is like a tennant in the cluster. Each namespace works like a "virtual cluster" which allows users to interact with the cluster as though it was private to them.
-
-To create a namespace, run the following command, and give it a name that you think will be unique within the cluster.
-```console
-kubectl create namespace <your unique namespace name>
-```
-Then set the default namespace for your current session
-```console
-kubectl config set-context --current=true --namespace=<your unique namespace name>
-```
-This is mainly for convenience. You can skip this step, but then you have to include a ´--namespace´ flag on all kubectl commands.
-
-You can verify that your newly created namespace is the active one:
-```console
-kubectl config view | grep namespace
-```
-
-
 #### Update the manifest file
 
 You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./azure-vote directory
@@ -307,7 +260,7 @@ The sample manifest file from the git repo cloned in the first tutorial uses the
 vi azure-vote-all-in-one-redis.yaml
 ```
 
-Replace *microsoft* with your ACR login server name and your `<unique name>`. The image name is found on line 47 of the manifest file. The following example shows the default image name:
+Replace *microsoft* with your ACR login server name **and** your `<unique name>`. The following example shows the original content that you need to replace:
 
 ```yaml
 containers:
@@ -532,16 +485,16 @@ To re-create the front-end image and test the updated application, use ```docker
 docker build -t azure-vote-front ./azure-vote
 ```
 
-### Test the application locally
+### Test the application on your dev machine
 
 First you need to start the application again, on your local machine using docker.
 
 ````
 docker run -d --name azure-vote-back --net mynet redis
-docker run --name azure-vote-front -d -p 8080:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
+docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
 ````
 
-Then, to verify that the updated container image shows your changes, open a local web browser to http://localhost:8080.
+Then, to verify that the updated container image shows your changes, open a local web browser to http://<Public VM address>.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated.png)
 
@@ -582,7 +535,7 @@ If you do not have multiple front-end pods, scale the *azure-vote-front* deploym
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version .
 
-Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47.
+Open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change `image:` from `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2`.
 
 Change
  ```yaml
@@ -632,7 +585,7 @@ To view the updated application, first get the external IP address of the `azure
 kubectl get service azure-vote-front
 ```
 
-Now open a local web browser to the IP address.
+Now open a web browser to the IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
 
