@@ -11,7 +11,7 @@ You will go through the following steps to complete the workshop:
 * Setup CI/CD pipelines using Azure DevOps
  
 ## Create development VM
-#### Note: if you want to run excercises locally on your laptop, you can do that. It requires that you have the right tools installed (az cli, kubectl, docker, git, ssh). If you choose to do it this way, you are going to have to sort out a lot of things on your own (but that's not necessarily a bad thing right!)
+#### Note: if you want to run excercises locally on your laptop, you can do that. It requires that you have the right tools installed (az cli, kubectl, docker, git, ssh). If you choose to do it this way, you are going to have to sort out a lot of things on your own. Some help can be found here: https://github.com/pelithne/kubernetes-workshop/blob/master/preparations.md
 
 TDB 
 
@@ -38,16 +38,18 @@ Once completed, the following application will run in your local development env
 
 The sample application used in this tutorial is a basic voting app. The application consists of a front-end web component and a back-end Redis instance. The web component is packaged into a custom container image. The Redis instance uses an unmodified image from Docker Hub.
 
-Use```git``` to clone the sample application to your development environment (if you already cloned the repo during preparations, you can skip this obviously):
+The application code is located under **application**  in this repository. Use ```git``` to clone the repository to your development environment:
 
 ```console
-git clone https://github.com/pelithne/azure-vote-app.git
+git clone https://github.com/pelithne/techdays2019
 ```
 
-Change directories so that you are working from the cloned directory.
+Change directories so that you are working from the cloned directory, and then ````cd```` into ````application/azure-vote-app```` which is where the application code is located.
 
 ```console
-cd azure-vote-app
+cd techdays2019
+
+cd application/azure-vote-app
 ```
 
 Inside the directory you will find the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.

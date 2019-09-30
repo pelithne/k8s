@@ -83,22 +83,6 @@
           "properties":{  
             "kubernetesVersion": "[parameters('kubernetesVersion')]",
             "dnsPrefix": "[parameters('dnsPrefix')]",
-             "agentPoolProfiles":[  
-                {  
-                   "name":"agentpool1",
-                   "count": "[parameters('agentCount')]",
-                   "vmSize": "[parameters('agentVMSize')]",
-                   "storageProfile":"ManagedDisks",
-                   "osType":"Linux",
-                   "maxPods":30,
-                   "type":"VirtualMachineScaleSets",
-                   "availabilityZones":[  
-                      "1",
-                      "2",
-                      "3"
-                   ]
-                }
-             ],
              "networkProfile": {
                  "networkPlugin": "kubenet",
                  "networkPolicy": "",
