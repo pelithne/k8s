@@ -83,6 +83,27 @@ docker rm azure-vote-front <container name>
 
 ### Azure CLI (az cli) commands
 
+Login to Azure
+```azurecli
+az login
+```
+
+Login to Azure Container Registry (ACR)
+```azurecli
+az acr login --name <Your ACR Name>
+```
+
+List ACR repositories
+```azurecli
+az acr repository list --name <Your ACR Name> --output table
+```
+
+Create Kubernetes (AKS) cluster
+```` 
+az aks create --resource-group <Your RG name> --name <Your AKS name> --service-principal <appId> --client-secret <password> --generate-ssh-keys --disable-rbac --node-vm-size Standard_DS1_v2
+````
+
+Get credentials for AKS cluster (for connecting to the cluster master nodes)
 ```console
 az aks get-credentials --resource-group <Your RG name> --name <AKS cluster name>
 ```
