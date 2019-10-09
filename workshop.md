@@ -59,7 +59,7 @@ Inside the directory you will find the application source code, a pre-created Do
 This network will be used by the containers that are started below, to allow them to communicate with each other
 
 ```console
- docker network create mynet
+docker network create mynet
 ```
 
 ### Create container images
@@ -67,7 +67,7 @@ This network will be used by the containers that are started below, to allow the
 Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will create two images, one base image and one for the azure-vote-front.
 
 ```console
- docker build -t azure-vote-front ./azure-vote
+docker build -t azure-vote-front .
 ```
 Please review ./azure-vote/Dockerfile to get an understanding of how the container images are created based on this file (take the time; it's a small file!).
 
@@ -78,7 +78,7 @@ First start the redis cache container (the back-end container). The command belo
 docker run -d --name azure-vote-back --net mynet redis
 ```
 
-Now start the frontend container. The command below will start a container with name "azure-vote-front" using the previously built container. Additionally port 8080 will be exposed (so that the application can be accessed using a browser) and insert an environment variable ("REDIS") that will be used to connect to the redis cache.
+Now start the frontend container. The command below will start a container with name "azure-vote-front" using the previously built container. Additionally port 80 will be exposed (so that the application can be accessed using a browser) and insert an environment variable ("REDIS") that will be used to connect to the redis cache.
 ```console
 docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
 ```
@@ -107,11 +107,11 @@ b68fed4b66b6        redis             "docker-entrypoint..."   57 seconds ago   
 ### Test application
 The application you started in the previous step runs on your development machine in Azure. The VM you created has a public IP address, and this is what you should use to access the application.
 
-To find the public IP of your VM, you can check in the Azure Portal. Navigate to the VM that was created in the beginning of the workshop. In the ````Overview```` you will find the ````Public IP address```` 
+To find the public IP of your VM, you can check in the Azure Portal. Navigate to the VM that was created in the beginning of the workshop. In the ````Overview```` look for the  ````Public IP address```` 
 
-To see the running application, enter http://<VM Public IP address> in a local web browser.
+To see the running application, enter http://\<VM Public IP address> in a local web browser.
 
-The sample application loads, as shown in the following example:
+If all goes well, the sample application loads, as shown in the following example:
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
 
@@ -126,7 +126,7 @@ docker stop azure-vote-front azure-vote-back
 docker rm azure-vote-front azure-vote-back
 ```
 
-## Moving it all to the Cloud
+## Moving it all to K8S
 Now you have tried running your dockerized application on your dev machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
 
 
