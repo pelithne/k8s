@@ -115,7 +115,7 @@ Inside the directory you will find the application source code, a pre-created Do
 This network will be used by the containers that are started below, to allow them to communicate with each other
 
 ```console
-docker network create mynet
+sudo docker network create mynet
 ```
 
 ### Create container images
@@ -123,7 +123,7 @@ docker network create mynet
 Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will create two images, one base image and one for the azure-vote-front.
 
 ```console
-docker build -t azure-vote-front .
+sudo docker build -t azure-vote-front .
 ```
 Please review ./azure-vote/Dockerfile to get an understanding of how the container images are created based on this file (take the time; it's a small file!).
 
@@ -131,18 +131,18 @@ Please review ./azure-vote/Dockerfile to get an understanding of how the contain
 First start the redis cache container (the back-end container). The command below will start a container with name "azure-vote-back" using the official redis docker image. The app will use the network ´´´mynet´´´ created in the previous step. If this is the first time the command is executed, the image will be downloaded to your computer (this can take a while). 
 
 ```console
-docker run -d --name azure-vote-back --net mynet redis
+sudo docker run -d --name azure-vote-back --net mynet redis
 ```
 
 Now start the frontend container. The command below will start a container with name "azure-vote-front" using the previously built container. Additionally port 80 will be exposed (so that the application can be accessed using a browser) and insert an environment variable ("REDIS") that will be used to connect to the redis cache.
 ```console
-docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
+sudo docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
 ```
 
 When completed, use the ```docker images``` command to see the created images. Three images have been downloaded or created. The *azure-vote-front* image contains the front-end application and uses the `nginx-flask` image as a base. The `redis` image is used to start a Redis instance.
 
 ```
-$ docker images
+$ sudo docker images
 
 REPOSITORY                   TAG                   IMAGE ID            CREATED             SIZE
 azure-vote-front             latest                00c4df2b3d4b        11 minutes ago      192MB
@@ -153,7 +153,7 @@ tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks a
 To see the running containers, run ```docker ps```:
 
 ```
-$ docker ps
+$ sudo docker ps
 
 CONTAINER ID        IMAGE             COMMAND                  CREATED             STATUS              PORTS                           NAMES
 82411933e8f9        azure-vote-front  "/usr/bin/supervisord"   57 seconds ago      Up 30 seconds       443/tcp, 0.0.0.0:8080->80/tcp   azure-vote-front
@@ -178,8 +178,8 @@ Now that the application's functionality has been validated, the running contain
 Stop and remove the container instances:
 
 ```console
-docker stop azure-vote-front azure-vote-back
-docker rm azure-vote-front azure-vote-back
+sudo docker stop azure-vote-front azure-vote-back
+sudo docker rm azure-vote-front azure-vote-back
 ```
 
 ## Moving it all to K8S
@@ -208,7 +208,7 @@ The command returns a *Login Succeeded* message once completed.
 To see a list of your current **local** images on your deveopment machine, once again use the ```docker images``` command:
 
 ```
-$ docker images
+$ sudo docker images
 
 REPOSITORY                   TAG                   IMAGE ID            CREATED             SIZE
 azure-vote-front             latest                00c4df2b3d4b        11 minutes ago      192MB
@@ -225,7 +225,7 @@ Finally, to indicate the image version, add *:v1* to the end of the image name.
 The resulting command:
 
 ```console
-docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+sudo docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 To verify the tags are applied, run ```docker images``` again. A new image will have appeared, that is tagged with the ACR instance address and a version number.
@@ -242,7 +242,7 @@ tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+sudo docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
@@ -541,7 +541,7 @@ Save and close the file.
 To re-create the front-end image and test the updated application, use ```docker build``` the same way as in a previous step. 
 
 ```console
-docker build -t azure-vote-front ./azure-vote
+sudo docker build -t azure-vote-front ./azure-vote
 ```
 
 ### Test the application on your dev machine
@@ -549,8 +549,8 @@ docker build -t azure-vote-front ./azure-vote
 First you need to start the application again, on your local machine using docker.
 
 ````
-docker run -d --name azure-vote-back --net mynet redis
-docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
+sudo docker run -d --name azure-vote-back --net mynet redis
+sudo docker run --name azure-vote-front -d -p 80:80 --net mynet -e "REDIS=azure-vote-back" azure-vote-front
 ````
 
 Then, to verify that the updated container image shows your changes, open a local web browser to http://<Public VM address>.
@@ -566,13 +566,13 @@ To correctly use the updated image, tag the *azure-vote-front* image with the lo
 Use ```docker tag``` to tag the image and update the image version to *:v2* as below. 
 
 ```console
-docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
+sudo docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 Now use ```docker push``` to upload the image to your registry. If you experience issues pushing to your ACR registry, ensure that you have run the ```az acr login``` command.
 
 ```console
-docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
+sudo docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
 ```
 
 ### Deploy the updated application
@@ -653,8 +653,8 @@ Now open a web browser to the IP address.
 First, clean up you local system by stopping and removing the container instances:
 
 ```console
-docker stop azure-vote-front azure-vote-back
-docker rm azure-vote-front azure-vote-back
+sudo docker stop azure-vote-front azure-vote-back
+sudo docker rm azure-vote-front azure-vote-back
 ```
 
 Then close the application you have running in your AKS cluster, using ````kubectl delete```` command, with the same manifels (yaml) file you used when starting the application.
