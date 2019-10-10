@@ -19,22 +19,22 @@ You will use a virtual machine with Ubuntu, to perform most of the excercises in
 ### Create the development VM
 You can run the scripts to start the VM anywhere you like, but for simplicity we sugguest that you use the ````Azure Cloud Shell````
 
-Start could shell by typing the address ````shell.azure.com```` into your browser. If you have not used coud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run ````bash```` as your shell (not powershell)
+Start cloud shell by typing the address ````shell.azure.com```` into your browser. If you have not used cloud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run ````bash```` as your shell (not powershell)
 
-When the shell is up and running, you need to clone the repository that contains the configuration files and scripts to use to create the development VM. 
+When the shell is up and running, you need to clone the repository that contains the configuration files and scripts to use to create the development VM.
 
 ````
 git clone https://github.com/pelithne/techdays2019.git/
 ````
 
-The change directory to the cloned repo, and then go to the ````vmsetup```` directory
+Then change directory to the cloned repo, and then go to the ````vmsetup```` directory
 
 ````
 cd techdays2019
 cd vmsetup
 ````
 
-Before you can create the VM, you need to create a ````Resource Group````, which is where all your resources will be located. The name of the Resource Group can be anything you like. 
+Before you can create the VM, you need to create a ````Resource Group````, which is where all your resources will be located. The name of the Resource Group can be anything you like (within reason...). 
 
 The command below creates a Resource Group named "techdays" and places it in the ````West Europe" region (Amsterdam).
 
@@ -42,31 +42,31 @@ The command below creates a Resource Group named "techdays" and places it in the
 az group create -n techdays -l westeurope
 ````
 
-Now you can create the Development VM. The command below creates a VM named "dev" in the Resource Group "techdays" you created in the previous step. It also uses an ````ARM Template```` to configure the VM with the right operating system and tools (config.json).
+Now you can create the Development VM. The command below creates a VM deployment named "dev" in the Resource Group "techdays" you created in the previous step. It also uses an ````ARM Template```` to configure the VM with the right operating system and tools (ubuntu.json).
 
 ````
 az group deployment create -n dev -g techdays --template-file ubuntu.json
 ````
 
-When applying this command, you will get a number of questions:
+When applying this command, you will get a few questions:
 
 * Please provide string value for 'adminUsername' (? for help): 
-* Please provide securestring value for 'adminPassword' (? for help): (min 8 letters, at least one upper case and one special character)
+* Please provide securestring value for 'adminPassword' (? for help): (min 8 characters, at least one upper case and one special character)
 * Please provide string value for 'vmName' (? for help):
 
-Wait for operataion to complete. 
 
+After questions are answered, the VM will be created, and the script located in config.sh will be automatically downloaded from ``github`` and executed. Because of this, the VM creation will take a bit longer than usual. **Coffee time?**
 
-To login to the VM you an you can either look for the output line that describes how to ssh into the machine, e.g.
+When VM creation is completed, you can login to the VM either using the output line that describes how to ssh into the machine (look for ````ssh```` ), e.g.
 ````
 "sshCommand": {
         "type": "String",
         "value": "ssh <adminUsername>@techdays1972t6imtd2wocm.westeurope.cloudapp.azure.com"
 ````
 
-Or find the right url or ip by looking in the portal at the public ip that has been created
+Or find the right url or ip by going to the Azure Portal and selecting the VM that was just created. In the toolbar for the current blade, you will find a connect icon. Click that icon to get instructions on how to connect.
 
-Log into you WS VM
+Log into your Development VM
 ````
 ssh <adminUsername>@<texchdaysNNNXXXX>.westeurope.cloudapp.azure.com
 ```` 
@@ -79,7 +79,7 @@ TBD
 
 In this step in the tutorial, you will prepare a multi-container application for use in your development environment. Existing tools such as Git and Docker are used to locally build and test an application. You will learn how to:
 
- * Clone a sample application source from GitHub
+ * Clone a sample application source from GitHub 
  * Create a container image from the sample application source
  * Test the multi-container application in a local Docker environment
 
@@ -92,7 +92,9 @@ Once completed, the following application will run in your local development env
 
 The sample application used in this tutorial is a basic voting app. The application consists of a front-end web component and a back-end Redis instance. The web component is packaged into a custom container image. The Redis instance uses an unmodified image from Docker Hub.
 
-The application code is located under **application**  in this repository. Use ```git``` to clone the repository to your development environment:
+The application code is located under **application**  in the same repository from which you are currently reading this instruction. Use ```git``` to clone the repository to your development environment.
+
+#### Note: you have already done this before, but that was in the cloud shell. YOu need to clone the repository to your Development VM as well.
 
 ```console
 git clone https://github.com/pelithne/techdays2019
@@ -106,7 +108,7 @@ cd techdays2019
 cd application/azure-vote-app
 ```
 
-Inside the directory you will find the application source code, a pre-created Docker compose file, and a Kubernetes manifest file. These files are used throughout the tutorial.
+Inside the directory you will find the application source code, a pre-created Dockerfile and a Kubernetes manifest. These files will be used throughout the tutorial.
 
 ### Create a docker network
 
