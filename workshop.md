@@ -188,20 +188,31 @@ Now you have tried running your dockerized application on your dev machine. In t
 
 ### Using the Azure Container Registry
 
-This workshop assumes that a Container Registry is already created using Azure Container Registry (ACR). If this is not the case for you, please follow these instructions to create one: https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr
+An Azure Container Registry has already been created wor this workshop. This is where you will push your docker images, so that they can be deployed to your Kubernetes cluster.
 
 
 ### Login to Container Registry
 
-In order to use the registry, you must first login with your credentials. You may have to login to **Azure** again using ```az login``` command before you can login to the Container Registry.
+In order to use the registry, you must first login with a set of preconfigured credentials. 
 
-Use the ```az acr login``` command and provide the name given to the container registry.
+#### Note: You may have to login to **Azure** again using ```az login``` command before you can login to the Container Registry.
+
+Use the ```az acr login``` command and provide the name given to the container registry. The name of the registry is ````techdays2019````, the username is ````techdays2019```` and the password will be handed out to you.
 
 ```azurecli
-az acr login --name <Your ACR Name>
+az acr login --name techdays2019
 ```
+You will get warnings/errors like below, that you can ignore:
 
-The command returns a *Login Succeeded* message once completed.
+````
+Unable to get AAD authorization tokens with message: Please run 'az login' to setup account.
+Unable to get admin user credentials with message: Please run 'az login' to setup account.
+````
+
+Then you will be asked to provide the username and password mentioned above.
+
+
+The command returns a *Login Succeeded* message once completed (and some warnings you can ignore for now)
 
 ### Tag a container image
 
