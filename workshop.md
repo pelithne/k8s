@@ -10,12 +10,66 @@ You will go through the following steps to complete the workshop:
 * Deploy application to Kubernetes
 * Setup CI/CD pipelines using Azure DevOps
  
-## Create development VM
-#### Note: if you want to run excercises locally on your laptop, you can do that. It requires that you have the right tools installed (az cli, kubectl, docker, git, ssh). If you choose to do it this way, you are going to have to sort out a lot of things on your own. Some help can be found here: https://github.com/pelithne/kubernetes-workshop/blob/master/preparations.md
+## Development VM
+You will use a virtual machine with Ubuntu, to perform most of the excercises in the workshop. In order to make this easy, we provide a script that will set this VM up for you, with the tools required. 
 
-TDB 
+#### Note: if you want to run excercises locally on your laptop, you can do that. You will need the right tools (az cli, kubectl, docker, git, ssh). If you choose to do it this way, you are going to have to sort out a lot of things on your own. Some help can be found here: https://github.com/pelithne/kubernetes-workshop/blob/master/preparations.md
 
-Note: Port 80 open in NSG!
+
+### Create the development VM
+You can run the scripts to start the VM anywhere you like, but for simplicity we sugguest that you use the ````Azure Cloud Shell````
+
+Start could shell by typing the address ````shell.azure.com```` into your browser. If you have not used coud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run ````bash```` as your shell (not powershell)
+
+When the shell is up and running, you need to clone the repository that contains the configuration files and scripts to use to create the development VM. 
+
+````
+git clone https://github.com/pelithne/techdays2019.git/
+````
+
+The change directory to the cloned repo, and then go to the ````vmsetup```` directory
+
+````
+cd techdays2019
+cd vmsetup
+````
+
+Before you can create the VM, you need to create a ````Resource Group````, which is where all your resources will be located. The name of the Resource Group can be anything you like. 
+
+The command below creates a Resource Group named "techdays" and places it in the ````West Europe" region (Amsterdam).
+
+````
+az group create -n techdays -l westeurope
+````
+
+Now you can create the Development VM. The command below creates a VM named "dev" in the Resource Group "techdays" you created in the previous step. It also uses an ````ARM Template```` to configure the VM with the right operating system and tools (config.json).
+
+````
+az group deployment create -n dev -g techdays --template-file config.json
+````
+
+When applying this command, you will get a number of questions:
+
+* Please provide string value for 'adminUsername' (? for help): 
+* Please provide securestring value for 'adminPassword' (? for help): (min 8 letters, at least one upper case and one special character)
+* Please provide string value for 'vmName' (? for help):
+
+Wait for operataion to complete. 
+
+
+To login to the VM you an you can either look for the output line that describes how to ssh into the machine, e.g.
+````
+"sshCommand": {
+        "type": "String",
+        "value": "ssh <adminUsername>@techdays1972t6imtd2wocm.westeurope.cloudapp.azure.com"
+````
+
+Or find the right url or ip by looking in the portal at the public ip that has been created
+
+Log into you WS VM
+````
+ssh <adminUsername>@<texchdaysNNNXXXX>.westeurope.cloudapp.azure.com
+```` 
 
 ## Create Kubernetes Cluster using AKS
 
