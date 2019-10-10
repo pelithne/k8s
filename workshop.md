@@ -45,7 +45,7 @@ az group create -n techdays -l westeurope
 Now you can create the Development VM. The command below creates a VM named "dev" in the Resource Group "techdays" you created in the previous step. It also uses an ````ARM Template```` to configure the VM with the right operating system and tools (config.json).
 
 ````
-az group deployment create -n dev -g techdays --template-file config.json
+az group deployment create -n dev -g techdays --template-file ubuntu.json
 ````
 
 When applying this command, you will get a number of questions:
