@@ -1,0 +1,203 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "adminUsername": {
+        "type": "string",
+        "metadata": {
+          "description": "User name for the Virtual Machine."
+        }
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Password for the Virtual Machine"
+        }
+      },
+      "vmName": {
+        "type": "string",
+        "metadata": {
+          "description": "VM name"
+        }
+      }  
+    },
+    "variables": {      
+      "ubuntuOSVersion": "18.04-LTS",
+      "uniqueDnsLabelPrefix": "[concat('techdays19', uniquestring(resourceGroup().id))]",
+      "location": "[resourceGroup().location]",
+      "imagePublisher": "Canonical",
+      "imageOffer": "UbuntuServer",
+      "addressPrefix": "10.0.0.0/16",
+      "subnet1Name": "Subnet-1",
+      "subnet1Prefix": "10.0.0.0/24",
+      "nicName": "sshNIC",
+      "publicIPAddressName": "sshPublicIP",
+      "publicIPAddressType": "Dynamic",
+      "virtualNetworkName": "SimpleUbuntuVNET",
+      "networkSecurityGroupName": "networkSecurityGroup1",
+      "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+      "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]"
+    },
+    "resources": [
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "name": "[variables('networkSecurityGroupName')]",
+        "location": "[variables('location')]",
+        "properties": {
+          "securityRules": [
+            {
+              "name": "ssh_rule",
+              "properties": {
+                "description": "Locks inbound down to ssh default port 22.",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 123,
+                "direction": "Inbound"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIPAddressName')]",
+        "location": "[variables('location')]",
+        "properties": {
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+          "dnsSettings": {
+            "domainNameLabel": "[variables('uniqueDnsLabelPrefix')]"
+          }
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('virtualNetworkName')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+        ],
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[variables('addressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('subnet1Name')]",
+              "properties": {
+                "addressPrefix": "[variables('subnet1Prefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('nicName')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+                },
+                "subnet": {
+                  "id": "[variables('subnet1Ref')]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2016-04-30-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[parameters ('vmName')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_A1"
+          },
+          "osProfile": {
+            "computerName": "[parameters ('vmName')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"  
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('imagePublisher')]",
+              "offer": "[variables('imageOffer')]",
+              "sku": "[variables('ubuntuOSVersion')]",
+              "version": "latest"
+            },
+            "osDisk": {
+              "createOption": "FromImage"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              }
+            ]
+          }
+        }       
+      },
+      {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmName'),'/installcustomscript')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/MS-Alexander/UbunutuPasswordWS/master/ConfigWS.sh"
+          ]
+        },
+         "protectedSettings": {
+              "commandToExecute": "sudo sh ConfigWS.sh"
+            }
+      }
+    }
+      
+    ],
+    "outputs": {
+      "sshCommand": {
+        "type": "string",
+        "value": "[concat('ssh ', parameters('adminUsername'), '@', variables('uniqueDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      },
+      "PublicIPname":{
+        "type":"string",
+        "value": "[variables('publicIPAddressName')]"
+      }
+    }
+  }
