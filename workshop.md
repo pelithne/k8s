@@ -411,17 +411,456 @@ To see the application in action, open a web browser to the external IP address.
 
 If the application did not load, it might be due to an authorization problem with your image registry. To view the status of your containers, use the `kubectl get pods` command. If the container images cannot be pulled, see [allow access to Container Registry with a Kubernetes secret](https://docs.microsoft.com/azure/container-registry/container-registry-auth-aks#access-with-kubernetes-secret).
 
-In the next step you will learn how to use Kubernetes scaling features.
+In the next step you will learn how to use Kubernetes DevOps features.
+
+
+## Azure DevOps with AKS
+
+![Image of Azure DevOps](./media/index-hero.jpg)
+
+In this step you will make a CI/CD pipeline for the AKS cluster.  
+
+* Automatically build an application on check-in 
+* Automatically build the docker container for the application
+* Autamtically deploy the docker container in AKS
+
+
+### Register an account at Azure DevOps
+
+You can create a free Azure DevOps account at: <https://azure.microsoft.com/en-us/services/devops/>. Azure DevOps is SaaS service from Microsoft. You need a Microsoft account to get started. If you do not have one you need to create a free one here: <https://account.microsoft.com/account?lang=en-us>
+
+* Give the project name "Techdays 2019"
+
+You should now have project like this:
+
+![Image of Azure DevOps](./media/devopsproject.JPG)
+
+The left hand side shows you:
+
+* **Overview** - overview of the Azure DeOps project like wiki, dashboards and more
+* **Boards** - supporting a Agile workmethology with sprints and backlog
+* **Repos** - your source code
+* **Pipelines** - you build and release - the essance of CI/CD
+* **TestPlans** - you testing overview
+* **Artifacts** - your build artifacts that you might share in other projects, like nuget packages and such.
+
+### Create your Repository
+
+Click on "Repos".
+
+Click "Manage SSH Keys":
+
+![Image Git Credentials](./media/git_ssh.jpg)
+
+Open a bash shell and type:
+
+```console
+>more ~/.ssh/id_rsa.pub
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLB1EeE9g1SydPORo3lvC6N+dOJ7vv0kcnPBUfsWWkuop4QjjxY/MP9PaBLYT7f6vS3J5mDOlLw0EzbmUv
+ab5MPNhWEb8EawPP1W/XNAVBjH6l+j+ZYSrXwbIPhG+jrZhTMYX421+p+ADQHpQZ1HesZz
+lO00N3RqhtrSKFKe8MMAFPCS+pCUQcaNHFsnqJ5z1fftFVeIHP0Zl17bjJi/DbwoIjU+1P6fSTz9diIQJc0syk/cwvcUX2hd6g0qsRv8sdNg8NlI3PlhWI+k
+bcctCV7SI83nQLeO0+eh arash.rassoulpour@microsoft.com
+
+>
+```
+Click on "+New Key" and fill in the public RSA key you got from above.
+
+Click on the Initialize button in the Azure Repos:
+
+![Image Git Credentials](./media/git_init.JPG)
+
+Then clone the repository to your computer and go down in the directory of your repository. Create a file and commit and push it to Azure DevOps Repos.
+
+```console
+>git clone git@ssh.dev.azure.com:v3/arratechdays2019/Techdays2019/Test
+
+Cloning into 'Test'...
+Warning: Permanently added the RSA host key for IP address '52.236.147.103' to the list of known hosts.
+warning: You appear to have cloned an empty repository.
+
+>cd Test
+>echo Hello > "hello.txt"
+>git add *
+>git commit -m "hello.txt added"
+>git push
+```
+
+Check inside the Azure DeOps Repo and your hello.txt file should apprear.
+
+
+![Image Git Hello](./media/git_hello.jpg)
+
+Copy all files under: techdays2019\application\\* to the folder of the git repository created.
+
+```console
+> ls
+
+README.md  azure-pipelines.yml  azure-vote-all-in-one-redis.yaml  azure-vote-app  azvote-helmchart  hello.txt
+
+> git add *
+
+> git commit -m "added application"
+
+[master 9875fbe] added application
+ 15 files changed, 461 insertions(+)
+ create mode 100755 README.md
+ create mode 100755 azure-pipelines.yml
+ create mode 100755 azure-vote-all-in-one-redis.yaml
+ create mode 100755 azure-vote-app/Dockerfile
+ create mode 100755 azure-vote-app/azure-vote/config_file.cfg
+ create mode 100755 azure-vote-app/azure-vote/main.py
+ create mode 100755 azure-vote-app/azure-vote/static/default.css
+ create mode 100755 azure-vote-app/azure-vote/templates/index.html
+ create mode 100755 azvote-helmchart/.helmignore
+ create mode 100755 azvote-helmchart/Chart.yaml
+ create mode 100755 azvote-helmchart/templates/NOTES.txt
+ create mode 100755 azvote-helmchart/templates/_helpers.tpl
+ create mode 100755 azvote-helmchart/templates/deployments.yaml
+ create mode 100755 azvote-helmchart/templates/services.yaml
+ create mode 100755 azvote-helmchart/values.yaml
+
+> git push
+
+Counting objects: 23, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (21/21), done.
+Writing objects: 100% (23/23), 5.35 KiB | 456.00 KiB/s, done.
+Total 23 (delta 1), reused 0 (delta 0)
+remote: Analyzing objects... (23/23) (186 ms)
+remote: Storing packfile... done (137 ms)
+remote: Storing index... done (73 ms)
+To ssh.dev.azure.com:v3/arratechdays2019/Techdays2019/Test
+   5ee10b2..9875fbe  master -> master
+
+>
+```
+
+### Connect Azure and Azure DevOps
+
+Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
+
+With the **same account**, it's important to have the same account logged in at the same time because it will link the same account Id on both ends.
+
+* Login to Azure portal: https://portal.azure.com
+
+* Login to Azure DevOps: https://dev.azure.com/
+
+In Azure DevOps, connect you Azure Subscription by the following instruction: <https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops#create-an-azure-resource-manager-service-connection-using-automated-security>. Create 2 connections from Azure DevOps to Azure:
+
+1. Azure Resource Manager - to deploy anything in Azure in any resource group
+2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry.
+
+
+
+![Image Git Subscription](./media/subscription.jpg)
+
+Click OK and login with your account and the link between Azure and Azure DevOps is created.
+
+Create an service connection with the Azure Container Registry in the same page, this will bind a conneciton from Azure DevOps to your container registry to build and save your images:
+
+![Image Git Subscription](./media/serviceconnection_acr.JPG)
+
+### Create Build and Release Pipelines
+
+We are going to:
+
+* Create a build pipeline
+* Create a release pipeline that is chained to the build pipeline
+
+Go to Pipelines and create a new pipeline:
+
+![Image Git Subscription](./media/new_pipeline.JPG)
+
+Choose "Azure Repos Git" and then select your repository that you have pushed to Azure DevOps Repo.
+
+It will automatically select the **azure-pipelines.yml** file that is part of the repository. It contains a Yaml file with the configuration of a build. We will change this definition so don't bother about the syntax in the file for now.
+
+![Image Git Subscription](./media/pipeline_1.JPG)
+
+Run the pipeline and see the steps in the build, it will fail since we are not done with the configuration.
+
+#### Build Pipeline
+
+To make a build we need to follow the same steps you have done manually:
+
+1. Go to your new Pipeline
+2. Now edit the pipeline and type "docker" in the search bar. Fill in the details and press ok.
+
+![Image Git Subscription](./media/docker_pipeline.JPG)
+
+![Image Git Subscription](./media/docker_pipeline2.JPG)
+
+The final yaml file should looke similar to this:
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Azure Container Registry'
+    repository: techdays2019/azure-vote-front
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: $(Build.BuildId)
+```
+
+* trigger: will automatically trigger on checkin in master branch
+
+* pool: the vm type the build will be conducted on
+
+* task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
+
+* containerRegistry: your Azure Container Registy
+
+* repository: the repository inside Azure Container Registy to store your Docker image
+
+* command: both build and push the image
+
+* Dockerfile: the path and name to the Dockerfile. '**' will start searching in the directory specified
+
+* tags: the Docker build tag to be appended. $(Build.BuildId) is an predefined environment variable in Azure DevOps that is incremeted at every build, more information about Azure DeOps built in environment variables can be found here: <https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml>
+
+The Release stage requires that the release pipeline has access to the manifestfile which is doen't have because the build stage has not delivered any result. In order to acheive that let's add another step to our build pipeline called "Copy and Publish Build Artifacts".
+
+Open and edit the build definition again and add "Copy and Publish Build Artifacts".
+
+![Image Git Subscription](./media/devops_publish.jpg)
+
+The manifest file will get edited in the release pipeline to point to a specific image with a specific BuildId.
+
+Add the "azure-vote-all-in-one-redis.yaml" to the contents, the final Build definition should look similar to wthe the new task: CopyPublishBuildArtifacts@1.
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Azure Container Registry'
+    repository: techdays2019/azure-vote-front
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: $(Build.BuildId)
+
+- task: CopyPublishBuildArtifacts@1
+  inputs:
+    Contents: 'azure-vote-all-in-one-redis.yaml'
+    ArtifactName: 'AKS Build'
+    ArtifactType: 'Container'
+
+```
+
+This will give you ability to grab the "azure-vote-all-in-one-redis.yaml" file in the build repository as you will see in the release section to finalize the release.
+
+Save the build pipeline and let it run. Then rename the build pipeline to "Docker build and push" by click on the "..." in the right corner.
+
+![Image Git Subscription](./media/devops_rename.jpg)
+
+Start the build and watch the repository in the Azure Container Registry in Azure to see the new build image has been added.
+
+![Image Git Subscription](./media/docker_pipeline4.JPG)
+
+Open Azure portal and the Azure Container Registry and you will find the image of the build with it's build id coming from the build pipeline. The "azure-vote-front" is the service you just built.
+
+![Image Git Subscription](./media/acr.JPG)
+
+#### Release Pipeline
+
+You just built and pushed the service azure-vote-front to Azure Container Registry. The next step is to deploy the container into AKS.
+
+Let's start with creating a Release pipeline. Got to "Pipelines->Releases" and click on "New Release".
+
+![Image Git Subscription](./media/devops_release.jpg)
+
+Select "Deploy to Kubernetes to a Kubernetes cluster".
+
+![Image Git Subscription](./media/devops_release2.jpg)
+
+Give the stage name "Development" and save it.
+
+![Image Git Subscription](./media/devops_release3.jpg)
+
+Click on the "Add" artifacts and choose the build pipeline "Test" we created earlier. We now have the build pipeline chained with the release pipeline. To make the build and deployment be triggered in a chain of events, click on the lightning and enable "Continuous deployment trigger". To enter the Release pipeline, click on the "1 job, 1 task".
+
+![Image Git Subscription](./media/devops_release4.jpg)
+
+Add another step in the build definition by selecting "Deploy to Kubernetes" in the right pane, make sure to choose the one containing "manifest file", see picture below:
+
+![Image Git Subscription](./media/devops_release5.jpg)
+
+Fill in the details and make sure the $(Build.BuildId) is filled in the "Containers" section. This will override the image in the the manifest and update to the latest build that triggered the release, hence carrying the BuildId with itself in the pipeline. Everytime a build is triggered due to any change in the master branch, the change will Docker build a new image with a tag specified by BuildId. The image will be pushed to Azure Container Registry and eventually, the "deploy" stage will update the "azure-vote-all-in-one.yaml" with the new image that contains the tag BuildId and deploy it into AKS. Hence, full automatic pipeline for build and deploy.
+
+Fill in the details like the example below:
+
+![Image Git Subscription](./media/devops_release6.jpg)
+
+Now go back to the Build pipeline and build it and watch the build pipeline start first and when it's sucessessfully finished, starting the release pipeline. 
+
+### All-In-One
+
+Let's change some code and watch the whole chain roll from Code commit ->Build->Release. 
+
+Open the file: azure-vote-app/azure-vote/config_file.cfg and change the code:
+
+```py
+# UI Configurations
+TITLE = 'Azure Voting App'
+VOTE1VALUE = 'Yellow'  <-- changed
+VOTE2VALUE = 'Pink'    <-- changed
+SHOWHOST = 'false'
+```
+
+Watch the Build and Release pipeline finalize.
+
+![Image Git Subscription](./media/devops_release7.jpg)
+
+![Image Git Subscription](./media/devops_release8.jpg)
+
+Watch the build automatically triggered in Azure DevOps. 
+
+If you get errors, you might need to set the permission for the AKS cluster to pull images from AKS. This can be done by the following command (<https://docs.microsoft.com/en-us/cli/azure/ext/aks-preview/aks?view=azure-cli-latest>)
+
+```console
+
+az aks update -n <name of AKS cluster> -g <resource group of AKS> --attach-acr <name of Azure Container Registry>
+
+```
+
+To use the Kubernetes dashboard, enable permission for the cluster-admin:
+For more information about the Kubernetes dashboard: <https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/>
+
+```console
+
+kubectl create clusterrolebinding kubernetes-dashboard -n kube-system --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
+```
+
+To start the Kubernetes dashboard:
+
+```console
+
+az aks browse --resource-group <resource group of AKS> --name <name of AKS cluster>
+
+```
+
+Click on the IP-address and port that is exposed from the cluster:
+
+![Image Git Subscription](./media/aks_dashboard.JPG)
+
+To see the change in the application we need the public endpoint of the application. Run the kubectl command to get the service endpoint:
+
+```console
+>kubectl get services
+NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        AGE
+azure-vote-back    ClusterIP      10.0.208.112   <none>           6379/TCP      2d23h
+azure-vote-front   LoadBalancer   10.0.243.181   52.233.236.177   80:31448/TCP  2d23h
+kubernetes         ClusterIP      10.0.0.1       <none>           443/TCP       5d6h
+
+```
+
+Open the public IP-addess, in this case 52.233.236.177 and watch the Yellow and Pink buttons have changed.
+
+![Image Git Subscription](./media/devops_final.jpg)
+
+#### Alternative solution - Release Pipeline & Future improvement
+
+Azure DevOps is constantly developing. One future improvement is to have build and release configurations in the same place. The feature is currently in preview and in order to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
+
+Here is an example of multistage pipeline:
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+
+stages:
+- stage: 'Build_Development'
+  jobs:
+  - job:
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Azure Container Registry'
+        repository: techdays2019/azure-vote-front
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildId)
+
+
+# stage 'Release to Development' runs if 'Build Development' succeeds
+- stage: 'Release_to_Development'
+  condition: succeeded('Build_Development')
+  jobs:
+  - job:
+    steps:
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'AKS'
+        namespace: 'default'
+        manifests: 'azure-vote-all-in-one-redis.yaml'
+        containers: 'techdays2019/azure-vote-front:$(Build.BuildId)'
+```
 
 
 ## Scale applications in Azure Kubernetes Service (AKS)
 
-In this step you will scale out the pods in the app and try pod autoscaling. 
+In this step you will scale out the pods in the app and try pod autoscaling.
 
- * Scale the Kubernetes nodes
- * Manually scale Kubernetes pods that run your application
- * Configure autoscaling pods that run the app front-end
+* Use Azure DeOps to scale number of pods
+* Manually scale Kubernetes pods that run your application
+* Configure autoscaling pods that run the app front-end
 
+### Azure DevOps to scale pods
+
+You can use Azure DeOps to configure the number of pods in the cluster for one service. This is a very easy task since all of your infrastructure of Kubernetes resides within the "azure-vote-all-in-one-redis.yaml" file.
+
+Open the "azure-vote-all-in-one-redis.yaml" file.
+
+Change "replicas" from 1 to 4 and the commit the file. The commit will trigger an automatic build and deploy by running the DevOps pipeline you just defined earlier.
+
+```yaml
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 4
+
+```
+
+Once you have committed the file, open Azure DevOps and watch the automatic build been triggered.
+
+![Image Git Subscription](./media/devops_cd.jpg)
+
+Once the build is finished you can now run kubectle and watch the number of pods, you should now have 4 "azure-vote-front-*" pods.
+
+```console
+
+>kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+azure-vote-back-5b84769c69-z4r7j    1/1     Running   0          2d16h
+azure-vote-front-55fb564887-fgl5t   1/1     Running   0          2m15s
+azure-vote-front-55fb564887-s7vgv   1/1     Running   0          2m15s
+azure-vote-front-55fb564887-tvjxd   1/1     Running   0          2m15s
+azure-vote-front-55fb564887-xwd9t   1/1     Running   0          2d16h
+>
+
+```
 
 ### Manually scale pods
 
@@ -463,6 +902,7 @@ metadata:
 spec:
   replicas: 3
   ````
+  
 And the run:
 
 ````
@@ -512,9 +952,6 @@ azure-vote-front   Deployment/azure-vote-front   0% / 50%   3         10        
 
 After a few minutes, with minimal load on the Azure Vote app, the number of pod replicas will decrease automatically. You can use `kubectl get pods` again to see the unneeded pods being removed.
 
-
-
-
 ## Update an application in Azure Kubernetes Service (AKS)
 
 After an application has been deployed in Kubernetes, it can be updated by specifying a new container image or image version. When doing so, the update is staged so that only a portion of the deployment is concurrently updated. This staged update enables the application to keep running during the update. It also provides a rollback mechanism if a deployment failure occurs.
@@ -525,6 +962,26 @@ In this step the sample Azure Vote app is updated. You learn how to:
  * Create an updated container image
  * Push the container image to Azure Container Registry
  * Deploy the updated container image
+
+### Azure DevOps: Update an application
+
+Let's make a change to the sample application, then update the version already deployed to your AKS cluster. The sample application source code can be found inside of the *azure-vote* directory. Open the *config_file.cfg* file with an editor, such as `vi`:
+
+```console
+vi azure-vote/azure-vote/config_file.cfg
+```
+
+Change the values for *VOTE1VALUE* and *VOTE2VALUE* to different colors. The following example shows the updated color values:
+
+```
+# UI Configurations
+TITLE = 'Azure Voting App'
+VOTE1VALUE = 'Blue'
+VOTE2VALUE = 'Purple'
+SHOWHOST = 'false'
+```
+
+Save and close the file.
 
 
 ### Update an application
