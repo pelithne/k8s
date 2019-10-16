@@ -1169,38 +1169,10 @@ This will remove the pods and services created with the ````kubectl```` apply co
 ## HELM!
 Helm is an open-source packaging tool that helps you install and manage the lifecycle of Kubernetes applications. Similar to Linux package managers such as APT and Yum, Helm is used to manage Kubernetes charts, which are packages of preconfigured Kubernetes resources.
 
-You will now use Helm to deploy the same application you just deployed using ````kubectl````.
+In this exercise you will use Helm to deploy the same application you just deployed using ````kubectl````.
 
-### Install Helm
-The first thing you need to do is to install Helm. This involves installing the helm client on your local machine, and then to activate helm in you Kubernetes cluster, by installing the server side component called **Tiller**. 
-
-The easiest way might be to use the **Azure Cloud Shell** for this. **Azure Cloud Shell** runs in your browser, and comes pre-installed with **Helm**, as well as **kubectl**, **az cli** and **git**. You start the cloud shell in the portal on the "shell" button in the top left tool bar. You will be asked to create a storage account, accept that and give it a name. Then when the cloud shell starts, select *bash*.
-![Image of Azure Cloud Shell](./media/cloudshell.png)
-
-If you use cloud shell, you need to clone the repo again:
-````
-git clone https://github.com/pelithne/azure-vote-app.git
-````
-
-Then set the default namespace for your current session, to the one you created earlier
-```console
-kubectl config set-context --current=true --namespace=<your unique namespace name>
-```
-
-If you don't want to run the cloud shell, you can install the Helm client locally (but it can be a bit tricky on some platforms).
-
-Install helm client for macOS
-````
-brew install kubernetes-helm
-````
-
-Install helm in Ubuntu (including WSL on Windows 10)
-````
-sudo snap install helm --classic
-````
-
-### Configure Helm
-Once you have installed the helm client, or logged into you Cloud Shell, you need to initialize helm.
+### Using Helm
+Your development VM already has helm installed, but you need to initialize helm, so that you can use it towards your Kubernetes cluster. 
 
 To deploy a the server side component of **Helm** named **Tiller** into an AKS cluster, use the ````helm init```` command. 
 ````
@@ -1222,12 +1194,12 @@ Server: &version.Version{SemVer:"v2.11.0", GitCommit:"2e55dbe1fdb5fdb96b75ff144a
 ### Helm and Azure Vote!
 The repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**. 
 
-Start by changing the directory into the repository you just cloned
+Start by changing the directory to where the **helm chart** is located.
 ````
- cd azure-vote-app/
+ cd application/azvote-helmchart/
  ````
 
-Then you need to update your helm chart to point to the container image you uploaded earlier to the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-chart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
+Then you need to update your helm chart to point to the container image you uploaded earlier to the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-helmchart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
 
 Change the line:
 ````
@@ -1243,7 +1215,7 @@ image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
 
 Deploying the azure-vote app using helm can be done with this command
 ````
-helm install ./azvote-chart
+helm install ./azvote-helmchart
 ````
 
 After some time, you should be able to access the vote app in your browser. To find out when it is available, use ````kubectl get services````
