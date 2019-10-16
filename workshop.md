@@ -9,6 +9,8 @@ You will go through the following steps to complete the workshop:
 * Push images to ACR (Azure Container Registry)
 * Deploy application to Kubernetes
 * Setup CI/CD pipelines using Azure DevOps
+* Use Helm to create templated Kubernetes applications
+* and more...
  
 ## Development VM
 You will use a virtual machine with Ubuntu, to perform most of the excercises in the workshop. In order to make this easy, we provide a script that will set this VM up for you, with the tools required. 
@@ -183,7 +185,7 @@ Now you have tried running your dockerized application on your dev machine. In t
 
 
 ### Create Kubernetes Cluster
-Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command:
+Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays2019````):
  
 ```` 
 az aks create --resource-group techdays2019 --name <Your AKS name> --disable-rbac --generate-ssh-keys --node-vm-size Standard_DS1_v2
@@ -1288,22 +1290,3 @@ helm delete warped-elk
 ````
 
 This will remove all the pods and services, and other resources related to the applications.
-
-<!--
-
-## Clean up
-
-
-After this, you can remove the namespace you created previously:
-```console
-kubectl delete namespace <your unique namespace name>
-```
-
-
-Finally, remove the docker image from the container registry:
-```console
-az acr repository delete --name <Your ACR Name> --repository <unique name>/azure-vote-front
-```
--->
-
-
