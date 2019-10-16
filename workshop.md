@@ -71,10 +71,6 @@ Log into your Development VM
 ssh <adminUsername>@<texchdaysNNNXXXX>.westeurope.cloudapp.azure.com
 ```` 
 
-## Create Kubernetes Cluster using AKS
-
-TBD
-
 ## Build and run containers on your development machine
 
 In this step in the tutorial, you will prepare a multi-container application for use in your development environment. Existing tools such as Git and Docker are used to locally build and test an application. You will learn how to:
@@ -186,16 +182,23 @@ sudo docker rm azure-vote-front azure-vote-back
 Now you have tried running your dockerized application on your dev machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
 
 
-### Using the Azure Container Registry
+### Create Kubernetes Cluster
+Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command:
+ 
+```` 
+az aks create --resource-group techdays2019 --name <Your AKS name> --disable-rbac --generate-ssh-keys --node-vm-size Standard_DS1_v2
+````
 
-An Azure Container Registry has already been created wor this workshop. This is where you will push your docker images, so that they can be deployed to your Kubernetes cluster.
+The creation time for the cluster can be up to 10 minutes, so lets move on...
+
+### Azure Container Registry
+
+An Azure Container Registry has already been created for this workshop. This is where you will push your docker images, so that they can be deployed to your Kubernetes cluster.
 
 
 ### Login to Container Registry
 
 In order to use the registry, you must first login with a set of preconfigured credentials. 
-
-#### Note: You may have to login to **Azure** again using ```az login``` command before you can login to the Container Registry.
 
 Use the ```az acr login``` command and provide the name given to the container registry. The name of the registry is ````techdays2019````, the username is ````techdays2019```` and the password will be handed out to you.
 
@@ -211,6 +214,11 @@ Unable to get admin user credentials with message: Please run 'az login' to setu
 
 Then you will be asked to provide the username and password mentioned above.
 
+````
+Username: techdays2019
+Password:
+Login Succeeded
+````
 
 The command returns a *Login Succeeded* message once completed (and some warnings you can ignore for now)
 
@@ -227,23 +235,23 @@ redis                        latest                5958914cc558        11 days a
 tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
 
-To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<Your ACR Name>.azurecr.io`
+To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `techdays2019.azurecr.io`
 
-You should also tag your image with a unique name to distinguish it from other container images in the registry. he unique name could for instance be your corporate ID.
+You should also tag your image with a unique name to distinguish it from other container images in the registry (since this is a shared resource for everyone in the workshop). The unique name could for instance be your corporate ID.
 
 Finally, to indicate the image version, add *:v1* to the end of the image name.
 
 The resulting command:
 
 ```console
-sudo docker tag azure-vote-front <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+sudo docker tag azure-vote-front techdays.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
-To verify the tags are applied, run ```docker images``` again. A new image will have appeared, that is tagged with the ACR instance address and a version number.
+To verify the tags are applied, run ```docker images``` again. A new image will have appeared, that is tagged with the ACR address, a unique name and a version number.
 
 ```
 azure-vote-front                                   latest                00c4df2b3d4b        11 minutes ago      192MB
-ACR-name.azurecr.io/unique-name/azure-vote-front   latest                00c4df2b3d48        11 minutes ago      192MB
+techdays2019.azurecr.io/pelithne/azure-vote-front   latest                00c4df2b3d48        11 minutes ago      192MB
 redis                                              latest                5958914cc558        11 days ago         94.9MB
 tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
@@ -253,7 +261,7 @@ tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-sudo docker push <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+sudo docker push techdays2019.azurecr.io/<unique name>/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
@@ -263,7 +271,7 @@ It may take a few minutes to complete the image push to ACR.
 To return a list of images that have been pushed to your ACR instance, use the ```az acr repository list``` command:
 
 ```azurecli
-az acr repository list --name <Your ACR Name> --output table
+az acr repository list --name techdays2019 --output table
 ```
 
 The following example output lists the *azure-vote-front* images as available in the registry (if you are the only user in the registry, you probably only pushed one image, and the result will only show that image). 
@@ -276,9 +284,7 @@ another-unique-name/azure-vote-front
 yet-another-unique-name/azure-vote-front
 ```
 
-You can also use the **Azure Portal** to view the Container Registry and it's contents. Feel fere to do so as an extra exercise.
-
-You now have a container image that is stored in a private Azure Container Registry instance. This image is deployed from ACR to a Kubernetes cluster in the next step.
+You now have a container image that is stored in an Azure Container Registry. This image will be deployed from ACR to a Kubernetes cluster in the next step.
 
 ## Run applications in Azure Kubernetes Service (AKS)
 
