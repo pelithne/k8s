@@ -456,7 +456,10 @@ Click on "Repos".
 
 Click "Manage SSH Keys":
 
-![Image Git Credentials](./media/git_ssh.jpg)
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/git_ssh.jpg">
+</p>
 
 Open a bash shell and type:
 
@@ -474,7 +477,9 @@ Click on "+New Key" and fill in the public RSA key you got from above.
 
 Click on the Initialize button in the Azure Repos:
 
-![Image Git Credentials](./media/git_init.JPG)
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/git_init.JPG">
+</p>
 
 Then clone the repository to your computer and go down in the directory of your repository. Create a file and commit and push it to Azure DevOps Repos.
 
@@ -494,8 +499,10 @@ warning: You appear to have cloned an empty repository.
 
 Check inside the Azure DeOps Repo and your hello.txt file should apprear.
 
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/git_hello.jpg">
+</p>
 
-![Image Git Hello](./media/git_hello.jpg)
 
 Copy all files under: techdays2019\application\\* to the folder of the git repository created.
 
@@ -582,7 +589,11 @@ Choose "Azure Repos Git" and then select your repository that you have pushed to
 
 It will automatically select the **azure-pipelines.yml** file that is part of the repository. It contains a Yaml file with the configuration of a build. We will change this definition so don't bother about the syntax in the file for now.
 
-![Image Git Subscription](./media/pipeline_1.JPG)
+
+
+<p align="left">
+  <img width="50%" height="75%" hspace="0" src="./media/pipeline_1.JPG">
+</p>
 
 Run the pipeline and see the steps in the build, it will fail since we are not done with the configuration.
 
@@ -593,9 +604,13 @@ To make a build we need to follow the same steps you have done manually:
 1. Go to your new Pipeline
 2. Now edit the pipeline and type "docker" in the search bar. Fill in the details and press ok.
 
-![Image Git Subscription](./media/docker_pipeline.JPG)
+<p align="left">
+  <img width="90%" height="75%" hspace="0" src="./media/docker_pipeline.JPG">
+</p>
 
-![Image Git Subscription](./media/docker_pipeline2.JPG)
+<p align="left">
+  <img width="40%" height="75%" hspace="0" src="./media/docker_pipeline2.JPG">
+</p>
 
 The final yaml file should looke similar to this:
 
@@ -636,7 +651,9 @@ The Release stage requires that the release pipeline has access to the manifestf
 
 Open and edit the build definition again and add "Copy and Publish Build Artifacts".
 
-![Image Git Subscription](./media/devops_publish.jpg)
+<p align="left">
+  <img width="50%" height="75%" hspace="0" src="./media/devops_publish.jpg">
+</p>
 
 The manifest file will get edited in the release pipeline to point to a specific image with a specific BuildId.
 
@@ -694,7 +711,10 @@ Select "Deploy to Kubernetes to a Kubernetes cluster".
 
 Give the stage name "Development" and save it.
 
-![Image Git Subscription](./media/devops_release3.jpg)
+
+<p align="left">
+  <img width="60%" height="75%" hspace="0" src="./media/devops_release3.jpg">
+</p>
 
 Click on the "Add" artifacts and choose the build pipeline "Test" we created earlier. We now have the build pipeline chained with the release pipeline. To make the build and deployment be triggered in a chain of events, click on the lightning and enable "Continuous deployment trigger". To enter the Release pipeline, click on the "1 job, 1 task".
 
@@ -730,7 +750,10 @@ Watch the Build and Release pipeline finalize.
 
 ![Image Git Subscription](./media/devops_release7.jpg)
 
-![Image Git Subscription](./media/devops_release8.jpg)
+
+<p align="left">
+  <img width="55%" height="75%" hspace="0" src="./media/devops_release8.jpg">
+</p>
 
 Watch the build automatically triggered in Azure DevOps. 
 
@@ -776,7 +799,10 @@ kubernetes         ClusterIP      10.0.0.1       <none>           443/TCP       
 
 Open the public IP-addess, in this case 52.233.236.177 and watch the Yellow and Pink buttons have changed.
 
-![Image Git Subscription](./media/devops_final.jpg)
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_final.jpg">
+</p>
 
 #### Alternative solution - Release Pipeline & Future improvement
 
@@ -1244,10 +1270,10 @@ helm upgrade <NAME> ./azvote-chart --set title="Cricket" --set value1="Industry 
 
 Much better!
 
-![azure vote beer](./media/beer4.png)
 
-
-
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/beer4.png">
+</p>
 
 ### Install Wordpress
 One way to look at helm, is as a packet manager. You can use it to easily search for and install applications. To look for exising applications, use ```` helm search````
