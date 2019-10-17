@@ -188,7 +188,7 @@ Now you have tried running your dockerized application on your dev machine. In t
 Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
  
 ```` 
-az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --node-vm-size Standard_DS1_v2 --attach-acr techdays2019
+az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --attach-acr techdays2019
 ````
 
 The creation time for the cluster can be up to 10 minutes, so lets move on...
