@@ -217,19 +217,9 @@ In order to use the registry, you must first login.
 
 Use the ```az acr login``` command and provide the name given to the container registry. 
 
-The password to use can be found in the Azure Portal. Go to your newly created Container Registry, and look for **Access Keys** in the left navigation pane. In the blade that opens up, you will find password1 and password2 that has been generated for you. You can use either of them below.
-
 ```azurecli
-az acr login --name <your unique name>
+sudo az acr login --name <your unique name>
 ```
-
-Then you will be asked to provide the username and password mentioned above.
-
-````
-Username: <your unique name>
-Password:
-Login Succeeded
-````
 
 The command returns a *Login Succeeded* message once completed.
 
@@ -260,7 +250,7 @@ To verify the tags are applied, run ```docker images``` again. A new image will 
 
 ```
 azure-vote-front                                   latest                00c4df2b3d4b        11 minutes ago      192MB
-pelithneacr.azurecr.io/azure-vote-front            latest                00c4df2b3d48        11 minutes ago      192MB
+pelithneacr.azurecr.io/azure-vote-front            v1                    00c4df2b3d48        11 minutes ago      192MB
 redis                                              latest                5958914cc558        11 days ago         94.9MB
 tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
@@ -270,7 +260,7 @@ tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-sudo docker push <your unique name>.azurecr.io/azure-vote-front:v1
+ sudo docker push <your unique name>.azurecr.io/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
@@ -303,7 +293,11 @@ az aks get-credentials --resource-group techdays --name <your AKS name>
 
 #### Update the manifest file
 
-You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./azure-vote directory
+You have uploaded a docker image with the sample application, to an Azure Container Registry (ACR). To deploy the application, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./application directory
+
+````
+cd application
+````
 
 The sample manifest file from the git repo cloned in the first tutorial uses the login server name of *microsoft*. Open this manifest file with a text editor, such as `vi`:
 
@@ -319,7 +313,7 @@ containers:
   image: microsoft/azure-vote-front:v1
 ```
 
-Provide the ACR login server and `<unique name>` name so that your manifest file looks like the following example:
+Provide the ACR login server so that your manifest file looks like the following example:
 
 ```yaml
 containers:
@@ -337,17 +331,6 @@ To deploy your application, use the ```kubectl apply``` command. This command pa
 
 ```console
 kubectl apply -f azure-vote-all-in-one-redis.yaml
-```
-
-The Kubernetes objects are created within the cluster, as shown in the following example:
-
-```
-$ kubectl apply -f azure-vote-all-in-one-redis.yaml
-
-deployment "azure-vote-back" created
-service "azure-vote-back" created
-deployment "azure-vote-front" created
-service "azure-vote-front" created
 ```
 
 ### Test the application
@@ -389,8 +372,6 @@ azure-vote-front   10.0.34.242   52.179.23.131   80:30676/TCP   2m
 To see the application in action, open a web browser to the external IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
-
-If the application did not load, it might be due to an authorization problem with your image registry. To view the status of your containers, use the `kubectl get pods` command. If the container images cannot be pulled, see [allow access to Container Registry with a Kubernetes secret](https://docs.microsoft.com/azure/container-registry/container-registry-auth-aks#access-with-kubernetes-secret).
 
 In the next step you will learn how to use Kubernetes DevOps features.
 
@@ -454,7 +435,7 @@ With the **same account**, it's important to have the same account logged in at 
 In Azure DevOps, connect you Azure Subscription by the following instruction: <https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops#create-an-azure-resource-manager-service-connection-using-automated-security>. Create 2 connections from Azure DevOps to Azure:
 
 1. Azure Resource Manager - to deploy anything in Azure in any resource group
-2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry.
+2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
 
 
 
