@@ -38,7 +38,7 @@ cd vmsetup
 
 Before you can create the VM, you need to create a ````Resource Group````, which is where all your resources will be located. The name of the Resource Group can be anything you like (within reason...). 
 
-The command below creates a Resource Group named "techdays" and places it in the ````West Europe" region (Amsterdam).
+The command below creates a Resource Group named "techdays" and places it in the ````West Europe```` region (Amsterdam).
 
 ````
 az group create -n techdays -l westeurope
