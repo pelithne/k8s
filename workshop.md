@@ -378,7 +378,10 @@ In the next step you will learn how to use Kubernetes DevOps features.
 
 ## Azure DevOps with AKS
 
-![Image of Azure DevOps](./media/index-hero.jpg)
+<p align="left">
+  <img width="85%" height="85%" hspace="0" src="./media/index-hero.jpg">
+</p>
+
 
 In this step you will make a CI/CD pipeline for the AKS cluster. You will learn how to:  
 
@@ -395,7 +398,10 @@ Once you have logged in to your Azure Devops account, you will create a **projec
 
 You should now have project like this:
 
-![Image of Azure DevOps](./media/devopsproject.JPG)
+<p align="left">
+  <img width="85%" hspace="0" src="./media/devopsproject.JPG">
+</p>
+
 
 The left hand side shows you:
 
@@ -412,12 +418,12 @@ Click on "Repos".
 
 Select "import a repository"
 <p align="left">
-  <img width="50%" height="75%" hspace="0" src="./media/import-repo-1.png">
+  <img width="50%" height="50%" hspace="0" src="./media/import-repo-1.png">
 </p>
 
 Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/techdays2019
 <p align="left">
-  <img width="50%" height="75%" hspace="0" src="./media/import-repo-2.png">
+  <img width="50%" height="50%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
 When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application```` folder.
@@ -457,13 +463,15 @@ We are going to:
 
 Go to Pipelines and create a new pipeline:
 
-![Image Git Subscription](./media/new_pipeline.JPG)
+<p align="left">
+  <img width="85%" hspace="0" src="./media/new_pipeline.JPG">
+</p>
 
 Choose "Azure Repos Git" and then select your repository that you have pushed to Azure DevOps Repo.
 
 
 <p align="left">
-  <img width="50%" height="50%" hspace="0" src="./media/pipeline_1.JPG">
+  <img width="40%" hspace="0" src="./media/pipeline_1.JPG">
 </p>
 
 Choose "Existing Azure Pipelines YAML file" and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
