@@ -426,27 +426,27 @@ When the import is finished, you will have your own version of the repository in
 
 Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
 
-With the **same account**, it's important to have the same account logged in at the same time because it will link the same account Id on both ends.
-
-* Login to Azure portal: https://portal.azure.com
-
-* Login to Azure DevOps: https://dev.azure.com/
-
 In Azure DevOps, you need to create two service connections from Azure DevOps to Azure:
 
 1. Azure Resource Manager - to deploy anything in Azure in any resource group
 2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
 
-To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. The go to **Service Connections**. Select "New service connection" and select ````Azure Resource Manager```from the drop-down list. 
+To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. Select "New service connection" and select ````Azure Resource Manager```from the drop-down list. 
 
 Give the connection a name, and fill out the other fields in the form, similar to this:
-![Image Git Subscription](./media/subscription.jpg)
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/subscription.jpg">
+</p>
 
 Click OK and login with your account and the link between Azure and Azure DevOps is created.
 
 Create another service connection with the Azure Container Registry in the same page, this will bind a conneciton from Azure DevOps to your container registry to build and save your images:
 
-![Image Git Subscription](./media/serviceconnection_acr.JPG)
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/serviceconnection_acr.JPG">
+</p>
+
 
 ### Create Build and Release Pipelines
 
@@ -466,7 +466,7 @@ It will automatically select the **azure-pipelines.yml** file that is part of th
 
 
 <p align="left">
-  <img width="50%" height="75%" hspace="0" src="./media/pipeline_1.JPG">
+  <img width="50%" height="50%" hspace="0" src="./media/pipeline_1.JPG">
 </p>
 
 Run the pipeline and see the steps in the build, it will fail since we are not done with the configuration.
@@ -479,11 +479,11 @@ To make a build we need to follow the same steps you have done manually:
 2. Now edit the pipeline and type "docker" in the search bar. Fill in the details and press ok.
 
 <p align="left">
-  <img width="90%" height="75%" hspace="0" src="./media/docker_pipeline.JPG">
+  <img width="90%" height="90%" hspace="0" src="./media/docker_pipeline.JPG">
 </p>
 
 <p align="left">
-  <img width="40%" height="75%" hspace="0" src="./media/docker_pipeline2.JPG">
+  <img width="40%" height="40%" hspace="0" src="./media/docker_pipeline2.JPG">
 </p>
 
 The final yaml file should looke similar to this:
@@ -526,7 +526,7 @@ The Release stage requires that the release pipeline has access to the manifestf
 Open and edit the build definition again and add "Copy and Publish Build Artifacts".
 
 <p align="left">
-  <img width="50%" height="75%" hspace="0" src="./media/devops_publish.jpg">
+  <img width="50%" height="50%" hspace="0" src="./media/devops_publish.jpg">
 </p>
 
 The manifest file will get edited in the release pipeline to point to a specific image with a specific BuildId.
@@ -587,7 +587,7 @@ Give the stage name "Development" and save it.
 
 
 <p align="left">
-  <img width="60%" height="75%" hspace="0" src="./media/devops_release3.jpg">
+  <img width="60%" height="60%" hspace="0" src="./media/devops_release3.jpg">
 </p>
 
 Click on the "Add" artifacts and choose the build pipeline "Test" we created earlier. We now have the build pipeline chained with the release pipeline. To make the build and deployment be triggered in a chain of events, click on the lightning and enable "Continuous deployment trigger". To enter the Release pipeline, click on the "1 job, 1 task".
@@ -626,7 +626,7 @@ Watch the Build and Release pipeline finalize.
 
 
 <p align="left">
-  <img width="55%" height="75%" hspace="0" src="./media/devops_release8.jpg">
+  <img width="55%" height="55%" hspace="0" src="./media/devops_release8.jpg">
 </p>
 
 Watch the build automatically triggered in Azure DevOps. 
