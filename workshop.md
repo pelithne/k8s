@@ -432,18 +432,19 @@ With the **same account**, it's important to have the same account logged in at 
 
 * Login to Azure DevOps: https://dev.azure.com/
 
-In Azure DevOps, connect you Azure Subscription by the following instruction: <https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops#create-an-azure-resource-manager-service-connection-using-automated-security>. Create 2 connections from Azure DevOps to Azure:
+In Azure DevOps, you need to create two service connections from Azure DevOps to Azure:
 
 1. Azure Resource Manager - to deploy anything in Azure in any resource group
 2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
 
+To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. The go to **Service Connections**. Select "New service connection" and select ````Azure Resource Manager```from the drop-down list. 
 
-
+Give the connection a name, and fill out the other fields in the form, similar to this:
 ![Image Git Subscription](./media/subscription.jpg)
 
 Click OK and login with your account and the link between Azure and Azure DevOps is created.
 
-Create an service connection with the Azure Container Registry in the same page, this will bind a conneciton from Azure DevOps to your container registry to build and save your images:
+Create another service connection with the Azure Container Registry in the same page, this will bind a conneciton from Azure DevOps to your container registry to build and save your images:
 
 ![Image Git Subscription](./media/serviceconnection_acr.JPG)
 
