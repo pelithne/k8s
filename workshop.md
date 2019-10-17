@@ -335,7 +335,7 @@ The sample manifest file from the git repo cloned in the first tutorial uses the
 vi azure-vote-all-in-one-redis.yaml
 ```
 
-Replace *microsoft* with your ACR login server name **and** your `<unique name>`. The following example shows the original content that you need to replace:
+Replace *microsoft* with your ACR login server name **and** your `<unique name>`. The following example shows the original content where you need to replace the **image**:
 
 ```yaml
 containers:
@@ -423,18 +423,18 @@ In the next step you will learn how to use Kubernetes DevOps features.
 
 ![Image of Azure DevOps](./media/index-hero.jpg)
 
-In this step you will make a CI/CD pipeline for the AKS cluster.  
+In this step you will make a CI/CD pipeline for the AKS cluster. You will learn how to:  
 
 * Automatically build an application on check-in 
 * Automatically build the docker container for the application
-* Autamtically deploy the docker container in AKS
+* Autamtically deploy the docker container to AKS
 
 
 ### Register an account at Azure DevOps
 
-You can create a free Azure DevOps account at: <https://azure.microsoft.com/en-us/services/devops/>. Azure DevOps is SaaS service from Microsoft. You need a Microsoft account to get started. If you do not have one you need to create a free one here: <https://account.microsoft.com/account?lang=en-us>
+You can create a free Azure DevOps account at: <https://azure.microsoft.com/en-us/services/devops/>. Azure DevOps is SaaS service from Microsoft. You need a Microsoft account to get started. If you do not have one you can create a free account here: <https://account.microsoft.com/account?lang=en-us>
 
-* Give the project name "Techdays 2019"
+Once you have logged in to your Azure Devops account, you will create a **project**. Give the project a name, like "Techdays 2019"
 
 You should now have project like this:
 
@@ -453,100 +453,17 @@ The left hand side shows you:
 
 Click on "Repos".
 
-Click "Manage SSH Keys":
-
-
+Select "import a repository"
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/git_ssh.jpg">
+  <img width="50%" height="75%" hspace="0" src="./media/import-repo-1.png.">
 </p>
 
-Open a bash shell and type:
-
-```console
->more ~/.ssh/id_rsa.pub
-
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLB1EeE9g1SydPORo3lvC6N+dOJ7vv0kcnPBUfsWWkuop4QjjxY/MP9PaBLYT7f6vS3J5mDOlLw0EzbmUv
-ab5MPNhWEb8EawPP1W/XNAVBjH6l+j+ZYSrXwbIPhG+jrZhTMYX421+p+ADQHpQZ1HesZz
-lO00N3RqhtrSKFKe8MMAFPCS+pCUQcaNHFsnqJ5z1fftFVeIHP0Zl17bjJi/DbwoIjU+1P6fSTz9diIQJc0syk/cwvcUX2hd6g0qsRv8sdNg8NlI3PlhWI+k
-bcctCV7SI83nQLeO0+eh arash.rassoulpour@microsoft.com
-
->
-```
-Click on "+New Key" and fill in the public RSA key you got from above.
-
-Click on the Initialize button in the Azure Repos:
-
+Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/techdays2019
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/git_init.JPG">
-</p>
-
-Then clone the repository to your computer and go down in the directory of your repository. Create a file and commit and push it to Azure DevOps Repos.
-
-```console
->git clone git@ssh.dev.azure.com:v3/arratechdays2019/Techdays2019/Test
-
-Cloning into 'Test'...
-Warning: Permanently added the RSA host key for IP address '52.236.147.103' to the list of known hosts.
-warning: You appear to have cloned an empty repository.
-
->cd Test
->echo Hello > "hello.txt"
->git add *
->git commit -m "hello.txt added"
->git push
-```
-
-Check inside the Azure DeOps Repo and your hello.txt file should apprear.
-
-<p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/git_hello.jpg">
+  <img width="50%" height="75%" hspace="0" src="./media/import-repo-2.png.">
 </p>
 
 
-Copy all files under: techdays2019\application\\* to the folder of the git repository created.
-
-```console
-> ls
-
-README.md  azure-pipelines.yml  azure-vote-all-in-one-redis.yaml  azure-vote-app  azvote-helmchart  hello.txt
-
-> git add *
-
-> git commit -m "added application"
-
-[master 9875fbe] added application
- 15 files changed, 461 insertions(+)
- create mode 100755 README.md
- create mode 100755 azure-pipelines.yml
- create mode 100755 azure-vote-all-in-one-redis.yaml
- create mode 100755 azure-vote-app/Dockerfile
- create mode 100755 azure-vote-app/azure-vote/config_file.cfg
- create mode 100755 azure-vote-app/azure-vote/main.py
- create mode 100755 azure-vote-app/azure-vote/static/default.css
- create mode 100755 azure-vote-app/azure-vote/templates/index.html
- create mode 100755 azvote-helmchart/.helmignore
- create mode 100755 azvote-helmchart/Chart.yaml
- create mode 100755 azvote-helmchart/templates/NOTES.txt
- create mode 100755 azvote-helmchart/templates/_helpers.tpl
- create mode 100755 azvote-helmchart/templates/deployments.yaml
- create mode 100755 azvote-helmchart/templates/services.yaml
- create mode 100755 azvote-helmchart/values.yaml
-
-> git push
-
-Counting objects: 23, done.
-Delta compression using up to 8 threads.
-Compressing objects: 100% (21/21), done.
-Writing objects: 100% (23/23), 5.35 KiB | 456.00 KiB/s, done.
-Total 23 (delta 1), reused 0 (delta 0)
-remote: Analyzing objects... (23/23) (186 ms)
-remote: Storing packfile... done (137 ms)
-remote: Storing index... done (73 ms)
-To ssh.dev.azure.com:v3/arratechdays2019/Techdays2019/Test
-   5ee10b2..9875fbe  master -> master
-
->
-```
 
 ### Connect Azure and Azure DevOps
 
