@@ -463,7 +463,7 @@ Then type in the URL to the repository (this is becoming familiar by now... :-) 
   <img width="50%" height="75%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
-When the import is finished, you will have your own version of the repository in Azure Devops. The part that you will work with in this part of the tutorial are located in the ```àpplication````folder.
+When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application```` folder.
 
 ### Connect Azure and Azure DevOps
 
