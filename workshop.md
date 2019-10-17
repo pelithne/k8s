@@ -3,7 +3,7 @@
 This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, and creating pipelines in Azure DevOps. 
 
 You will go through the following steps to complete the workshop:
-* Create a VM (Virtual machine) to use as your development environment
+* Create a VM (Virtual machine) to use as your development envirfonment
 * Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Build and test docker images "locally" on your development VM
 * Push images to ACR (Azure Container Registry)
@@ -1069,7 +1069,7 @@ The repository that you cloned in the beginning of the tutorial (or during prepa
 
 Start by changing the directory to where the **helm chart** is located.
 ````
- cd application/azvote-helmchart/
+cd application/azvote-helmchart
  ````
 
 Then you need to update your helm chart to point to the container image you uploaded earlier to the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-helmchart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
@@ -1080,7 +1080,7 @@ image: microsoft/azure-vote-front:v1
 ````
 to
 ````
-image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+image: <Your ACR Name>.azurecr.io/azure-vote-front:v1
 ````
 
 ### Deploy Azure-vote app using Helm
