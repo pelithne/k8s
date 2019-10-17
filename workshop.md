@@ -466,7 +466,7 @@ Choose "Azure Repos Git" and then select your repository that you have pushed to
   <img width="50%" height="50%" hspace="0" src="./media/pipeline_1.JPG">
 </p>
 
-Choose ```Existing Azure Pipelines YAML file```` and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
+Choose "Existing Azure Pipelines YAML file" and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
 
 <p align="left">
   <img width="50%" height="50%" hspace="0" src="./media/azure-pipelines.png">
@@ -479,7 +479,8 @@ Run the pipeline and see the steps in the build, it will fail since we are not d
 To make a build we need to follow the same steps you have done manually:
 
 1. Go to your new Pipeline
-2. Now edit the pipeline and type "docker" in the search bar. Fill in the details and press ok.
+2. Edit the pipeline, and put the cursor at the end of the file
+3. type "docker" in the search bar to the right. Fill in the details like below, and press ok.
 
 <p align="left">
   <img width="90%" height="90%" hspace="0" src="./media/docker_pipeline.JPG">
@@ -514,7 +515,7 @@ steps:
 
 * task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
 
-* containerRegistry: your Azure Container Registy
+* containerRegistry: your Azure Container Registy Service Connection
 
 * repository: the repository inside Azure Container Registy to store your Docker image
 
