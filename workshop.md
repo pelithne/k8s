@@ -183,6 +183,12 @@ sudo docker rm azure-vote-front azure-vote-back
 ## Moving it all to K8S
 Now you have tried running your dockerized application on your dev machine. In the next steps you will go through the steps needed to deploy it in **Azure Kubernetes Service**.
 
+### Login to azure
+To be able to use the Azure CLI, you need to be logged in to Azure. Do that by running the following command, and then follow the instructions.
+````
+az login
+````
+
 
 ### Create Kubernetes Cluster
 Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
