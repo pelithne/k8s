@@ -204,34 +204,34 @@ The creation time for the cluster can be up to 10 minutes, so lets move on...
 
 ### Azure Container Registry
 
-An Azure Container Registry has already been created for this workshop. This is where you will push your docker images, so that they can be deployed to your Kubernetes cluster.
+You will create a private Azure Container Registry to store the images that you will deploy to Kubernetes. The name of the the ACR needs to be globally unique. You could for instance use your corporate signum.
+
+````
+az acr create --name <your unique name> --resource-group techdays --sku basic
+````
 
 
 ### Login to Container Registry
 
-In order to use the registry, you must first login with a set of preconfigured credentials. 
+In order to use the registry, you must first login. 
 
-Use the ```az acr login``` command and provide the name given to the container registry. The name of the registry is ````techdays2019````, the username is ````techdays2019```` and the password will be handed out to you.
+Use the ```az acr login``` command and provide the name given to the container registry. 
+
+The password to use can be found in the Azure Portal. Go to your newly created Container Registry, and look for **Access Keys** in the left navigation pane. In the blade that opens up, you will find password1 and password2 that has been generated for you. You can use either of them below.
 
 ```azurecli
-az acr login --name techdays2019
+az acr login --name <your unique name>
 ```
-You will get warnings/errors like below, that you can ignore:
-
-````
-Unable to get AAD authorization tokens with message: Please run 'az login' to setup account.
-Unable to get admin user credentials with message: Please run 'az login' to setup account.
-````
 
 Then you will be asked to provide the username and password mentioned above.
 
 ````
-Username: techdays2019
+Username: <your unique name>
 Password:
 Login Succeeded
 ````
 
-The command returns a *Login Succeeded* message once completed (and some warnings you can ignore for now)
+The command returns a *Login Succeeded* message once completed.
 
 ### Tag a container image
 
@@ -246,23 +246,21 @@ redis                        latest                5958914cc558        11 days a
 tiangolo/uwsgi-nginx-flask   python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
 
-To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `techdays2019.azurecr.io`
-
-You should also tag your image with a unique name to distinguish it from other container images in the registry (since this is a shared resource for everyone in the workshop). The unique name could for instance be your corporate ID.
+To use the *azure-vote-front* container image with ACR, the image needs to be tagged with the login server address of your registry. This tag is used for routing when pushing container images to an image registry. The login server will be: `<your unique name>.azurecr.io`
 
 Finally, to indicate the image version, add *:v1* to the end of the image name.
 
 The resulting command:
 
 ```console
-sudo docker tag azure-vote-front techdays.azurecr.io/<unique name>/azure-vote-front:v1
+sudo docker tag azure-vote-front <your unique name>.azurecr.io/azure-vote-front:v1
 ```
 
 To verify the tags are applied, run ```docker images``` again. A new image will have appeared, that is tagged with the ACR address, a unique name and a version number.
 
 ```
 azure-vote-front                                   latest                00c4df2b3d4b        11 minutes ago      192MB
-techdays2019.azurecr.io/pelithne/azure-vote-front   latest                00c4df2b3d48        11 minutes ago      192MB
+pelithneacr.azurecr.io/azure-vote-front            latest                00c4df2b3d48        11 minutes ago      192MB
 redis                                              latest                5958914cc558        11 days ago         94.9MB
 tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62f4b60        2 weeks ago         192MB
 ```
@@ -272,7 +270,7 @@ tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
 ```console
-sudo docker push techdays2019.azurecr.io/<unique name>/azure-vote-front:v1
+sudo docker push <your unique name>.azurecr.io/azure-vote-front:v1
 ```
 
 It may take a few minutes to complete the image push to ACR.
@@ -282,17 +280,7 @@ It may take a few minutes to complete the image push to ACR.
 To return a list of images that have been pushed to your ACR instance, use the ```az acr repository list``` command:
 
 ```azurecli
-az acr repository list --name techdays2019 --output table
-```
-
-The following example output lists the *azure-vote-front* images as available in the registry (if you are the only user in the registry, you probably only pushed one image, and the result will only show that image). 
-
-```
-Result
-----------------
-unique-name/azure-vote-front
-another-unique-name/azure-vote-front
-yet-another-unique-name/azure-vote-front
+az acr repository list --name <your unique name> --output table
 ```
 
 You now have a container image that is stored in an Azure Container Registry. This image will be deployed from ACR to a Kubernetes cluster in the next step.
@@ -306,32 +294,11 @@ Kubernetes provides a distributed platform for containerized applications. You b
  * Test the application
  
 
-<!--
-### Create your Kubernetes Cluster
-#### Note: The following steps are not needed if a cluster has already been created for you. If so, you can move on to **Kubernetes Namespaces** below
-
-Creating a Kubernetes cluster requires a few steps to be completed, as detailed below.
-
-
-
-#### Create Kubernetes Cluster
-Create an AKS cluster using ````az aks create````. Provide your own <appId> and <password> from the previous step where the service principal was created.
- 
-```` 
-az aks create --resource-group <Your RG name> --name <Your AKS name> --service-principal <appId> --client-secret <password> --generate-ssh-keys --disable-rbac --node-vm-size Standard_DS1_v2
-````
-
-#### note: the command above disables role based access control (RBAC) for the sake of simplicity
-
-#### note: This command can take 15 minutes to finish, so this might be a good time for a leg stretcher.
-
--->
-
 #### Validate towards Kubernetes Cluster
 
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command:
 ```console
-az aks get-credentials --resource-group <Your RG name> --name <AKS cluster name>
+az aks get-credentials --resource-group techdays --name <your AKS name>
 ```
 
 #### Update the manifest file
@@ -344,7 +311,7 @@ The sample manifest file from the git repo cloned in the first tutorial uses the
 vi azure-vote-all-in-one-redis.yaml
 ```
 
-Replace *microsoft* with your ACR login server name **and** your `<unique name>`. The following example shows the original content where you need to replace the **image**:
+Replace *microsoft* with your ACR login server name. The following example shows the original content where you need to replace the **image**:
 
 ```yaml
 containers:
@@ -357,7 +324,7 @@ Provide the ACR login server and `<unique name>` name so that your manifest file
 ```yaml
 containers:
 - name: azure-vote-front
-  image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1
+  image: <Your ACR Name>.azurecr.io/azure-vote-front:v1
 ```
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
