@@ -185,10 +185,10 @@ Now you have tried running your dockerized application on your dev machine. In t
 
 
 ### Create Kubernetes Cluster
-Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays2019````):
+Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
  
 ```` 
-az aks create --resource-group techdays2019 --name <Your AKS name> --disable-rbac --generate-ssh-keys --node-vm-size Standard_DS1_v2
+az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --node-vm-size Standard_DS1_v2
 ````
 
 The creation time for the cluster can be up to 10 minutes, so lets move on...
@@ -292,9 +292,6 @@ You now have a container image that is stored in an Azure Container Registry. Th
 
 Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into a Kubernetes cluster. You will learn how to:
 
-<!--
- * Create a Kubernetes Cluster
--->
  * Update Kubernetes manifest files
  * Run an application in Kubernetes
  * Test the application
