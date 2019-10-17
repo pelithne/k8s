@@ -192,16 +192,6 @@ To be able to use the Azure CLI, you need to be logged in to Azure. Do that by r
 az login
 ````
 
-
-### Create Kubernetes Cluster
-Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
- 
-```` 
-az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --attach-acr techdays2019
-````
-
-The creation time for the cluster can be up to 10 minutes, so lets move on...
-
 ### Azure Container Registry
 
 You will create a private Azure Container Registry to store the images that you will deploy to Kubernetes. The name of the the ACR needs to be globally unique. You could for instance use your corporate signum.
@@ -222,6 +212,16 @@ sudo az acr login --name <your unique name>
 ```
 
 The command returns a *Login Succeeded* message once completed.
+
+### Create Kubernetes Cluster
+Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
+ 
+```` 
+az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --attach-acr techdays2019
+````
+
+The creation time for the cluster can be up to 10 minutes, so lets move on...
+
 
 ### Tag a container image
 
