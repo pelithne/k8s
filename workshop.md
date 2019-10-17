@@ -461,12 +461,15 @@ Go to Pipelines and create a new pipeline:
 
 Choose "Azure Repos Git" and then select your repository that you have pushed to Azure DevOps Repo.
 
-It will automatically select the **azure-pipelines.yml** file that is part of the repository. It contains a Yaml file with the configuration of a build. We will change this definition so don't bother about the syntax in the file for now.
-
-
 
 <p align="left">
   <img width="50%" height="50%" hspace="0" src="./media/pipeline_1.JPG">
+</p>
+
+Choose ```Existing Azure Pipelines YAML file```` and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
+
+<p align="left">
+  <img width="50%" height="50%" hspace="0" src="./media/azure-pipelines.png">
 </p>
 
 Run the pipeline and see the steps in the build, it will fail since we are not done with the configuration.
