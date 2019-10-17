@@ -1088,7 +1088,7 @@ image: <Your ACR Name>.azurecr.io/azure-vote-front:v1
 
 Deploying the azure-vote app using helm can be done with this command
 ````
-helm install ./azvote-helmchart
+helm install .
 ````
 
 After some time, you should be able to access the vote app in your browser. To find out when it is available, use ````kubectl get services````
@@ -1110,7 +1110,7 @@ warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        
 
 Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
 ````
-helm upgrade <NAME> ./azvote-chart --set title="Cricket" --set value1="Industry Lager" --set value2="Craft Beer"
+helm upgrade warped-elk . --set title="Cricket" --set value1="Industry Lager" --set value2="Craft Beer"
 ````
 
 Much better!
