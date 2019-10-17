@@ -455,12 +455,12 @@ Click on "Repos".
 
 Select "import a repository"
 <p align="left">
-  <img width="50%" height="75%" hspace="0" src="./media/import-repo-1.png.">
+  <img width="50%" height="75%" hspace="0" src="./media/import-repo-1.png">
 </p>
 
 Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/techdays2019
 <p align="left">
-  <img width="50%" height="75%" hspace="0" src="./media/import-repo-2.png.">
+  <img width="50%" height="75%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
 
