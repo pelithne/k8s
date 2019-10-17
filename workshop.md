@@ -431,7 +431,7 @@ In Azure DevOps, you need to create two service connections from Azure DevOps to
 1. Azure Resource Manager - to deploy anything in Azure in any resource group
 2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
 
-To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. Select "New service connection" and select ````Azure Resource Manager```from the drop-down list. 
+To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. Select "New service connection" and select ````Azure Resource Manager```` from the drop-down list. 
 
 Give the connection a name, and fill out the other fields in the form, similar to this:
 
