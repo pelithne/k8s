@@ -349,7 +349,7 @@ containers:
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
-Save and close the file.
+Save and close the file (in ````vi```` you would first press the ````Escape```` key, then ´´´´:```` then ````wq```` for "Write and quit").
 
 ### Deploy the application
 
