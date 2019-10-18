@@ -44,17 +44,46 @@ The command below creates a Resource Group named "techdays" and places it in the
 az group create -n techdays -l westeurope
 ````
 
+After this, you should generate ssh keys, that will be used when connecting to the VM. You will be asked a few questions, and you can leave the default values.
+````
+ssh-keygen -t rsa -b 2048
+````
+
+This will create a private and a public key in you ````~/.ssh```` folder. You can do ````ls -l```` to see the contents, which should look similar to this:
+````
+ls -l ~/.ssh
+total 12
+-rw------- 1 peter peter 1679 Oct 18 07:53 id_rsa
+-rw-r--r-- 1 peter peter  419 Oct 18 07:53 id_rsa.pub
+-rw-r--r-- 1 peter peter  222 Sep  4 13:54 known_hosts
+````
+
+You need to copy the contents of the **public** key. It will be used later as input to the command that creates development VM. 
+````
+cat ~/.ssh/id_rsa.pub
+````
+
+#### Note: the file to display is the PUBLIC key, named id_rsa.pub
+
+Output should look similar to this:
+````
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDwHV5BvbnujI7fXIsyP3JiRxNamN5Eb/JQcint02ZaQlRZhKtVrzxaEI0ufkLl4vNGFsSF+tgiphhg2wbvo+GpIdw8Hg7unHFYbTHEOBNUlwwlvItyte/vfi9ChLNdtUC8R/XFK6yCFXxqNCek0SN0pJZ8UQgD94qdhi9LgNazb0KTnrUkUuCpaBf25p7uEYogkLZ2AD9pJgCOzvFB3z/HeZ26g2AyFVNblMUQ9hn0GhDXIPs7DlZDch8/M9O9W/zFv27U7tWYGXuM8GCV+/YJ9/z3amBF8Kf2ylnJiLkQx7Hhghf+d3p8bykNiHOPVeB9Y71aJoFwc6PKr/GEpCVr peter@cc-3b5d0d20-5bff444b88-8nfkq
+````
+
 Now you can create the Development VM. The command below creates a VM deployment named "dev" in the Resource Group "techdays" you created in the previous step. It also uses an ````ARM Template```` to configure the VM with the right operating system and tools (ubuntu.json).
 
 ````
 az group deployment create -n dev -g techdays --template-file ubuntu.json
 ````
 
-When applying this command, you will get a few questions:
+When applying this command you will be asked to provide an admin username, a public key and a name for the VM. 
 
-* Please provide string value for 'adminUsername' (? for help): 
-* Please provide securestring value for 'adminPassword' (? for help): (min 8 characters, at least one upper case and one special character)
-* Please provide string value for 'vmName' (? for help):
+The user name and VM name can be anything you like. For the ssh key, you need to copy the output from the ````cat```` command above, and paste it without change.
+````
+Please provide string value for 'adminUsername' (? for help): peter
+Please provide string value for 'sshRSAPublicKey' (? for help): ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDwHV5BvbnujI7fXIsyP3JiRxNamN5Eb/JQcint02ZaQlRZhKtVrzxaEI0ufkLl4vNGFsSF+tgiphhg2wbvo+GpIdw8Hg7unHFYbTHEOBNUlwwlvItyte/vfi9ChLNdtUC8R/XFK6yCFXxqNCek0SN0pJZ8UQgD94qdhi9LgNazb0KTnrUkUuCpaBf25p7uEYogkLZ2AD9pJgCOzvFB3z/HeZ26g2AyFVNblMUQ9hn0GhDXIPs7DlZDch8/M9O9W/zFv27U7tWYGXuM8GCV+/YJ9/z3amBF8Kf2ylnJiLkQx7Hhghf+d3p8bykNiHOPVeB9Y71aJoFwc6PKr/GEpCVr peter@cc-3b5d0d20-5bff444b88-8nfkq
+Please provide string value for 'vmName' (? for help): petervm
+````
 
 
 After questions are answered, the VM will be created, and the script located in config.sh will be automatically downloaded from ``github`` and executed. Because of this, the VM creation will take a bit longer than usual. **Coffee time?**
