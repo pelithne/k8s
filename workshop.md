@@ -331,7 +331,7 @@ The sample manifest file from the git repo cloned in the first tutorial uses the
 vi azure-vote-all-in-one-redis.yaml
 ```
 
-Replace *microsoft* with your ACR login server name. The following example shows the original content where you need to replace the **image**:
+Replace *microsoft* with your ACR login server name. The following example shows the original content where you need to replace the **image**. (in ````vi```` you would press the ````i```` key, to get into edit mode)
 
 ```yaml
 containers:
