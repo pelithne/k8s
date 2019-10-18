@@ -206,11 +206,11 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/MS-Alexander/UbuntusshARM/master/ConfigWS.sh"
+            "https://raw.githubusercontent.com/pelithne/techdays2019/master/vmsetup/config.sh"
           ]
         },
          "protectedSettings": {
-              "commandToExecute": "sudo sh ConfigWS.sh"
+              "commandToExecute": "sudo sh config.sh"
             }
       }
     }
