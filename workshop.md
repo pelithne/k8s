@@ -230,18 +230,6 @@ az acr create --name <your unique ACR name> --resource-group techdays --sku basi
 ````
 
 
-### Login to Container Registry
-
-In order to use the registry, you must first login. 
-
-Use the ```az acr login``` command and provide the name given to the container registry. 
-
-```azurecli
-sudo az acr login --name <your unique ACR name>
-```
-
-The command returns a *Login Succeeded* message once completed.
-
 ### Create Kubernetes Cluster
 Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
  
@@ -285,6 +273,15 @@ tiangolo/uwsgi-nginx-flask                         python3.6-alpine3.8   6266b62
 ```
 
 ### Push images to registry
+
+Before you can push your image, you need to login to the Azure Container Registry, using the ````az acr login```` command:
+
+```azurecli
+sudo az acr login --name <your unique ACR name>
+```
+
+The command returns a *Login Succeeded* message once completed.
+
 
 You can now push the *azure-vote-front* image to your ACR instance. Use ```docker push``` as follows:
 
