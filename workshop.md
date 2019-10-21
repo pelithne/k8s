@@ -406,8 +406,6 @@ To see the application in action, open a web browser to the external IP address.
 
 In the next step you will learn how to use Kubernetes DevOps features.
 
-
-## Azure DevOps with AKS
 ## Azure DevOps with AKS
 
 <p align="left">
@@ -762,7 +760,9 @@ az aks browse --resource-group <resource group of AKS> --name <name of AKS clust
 
 Click on the IP-address and port that is exposed from the cluster:
 
-![Image Git Subscription](./media/aks_dashboard.JPG)
+<p align="left">
+  <img width="75%" hspace="0" src="./media/aks_dashboard.JPG">
+</p>
 
 To see the change in the application we need the public endpoint of the application. Run the kubectl command to get the service endpoint:
 
@@ -812,7 +812,10 @@ spec:
 
 Once you have committed the file, open Azure DevOps and watch the automatic build been triggered.
 
-![Image Git Subscription](./media/devops_cd.jpg)
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_cd.jpg">
+</p>
+
 
 Once the build is finished you can now run kubectle and watch the number of pods, you should now have 4 "azure-vote-front-*" pods.
 
