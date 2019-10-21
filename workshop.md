@@ -462,10 +462,11 @@ When the import is finished, you will have your own version of the repository in
 
 Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
 
-In Azure DevOps, you need to create two service connections from Azure DevOps to Azure:
+In Azure DevOps, you need to create three service connections from Azure DevOps to Azure:
 
 1. Azure Resource Manager - to deploy anything in Azure in any resource group
 2. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
+3. Azure Kubernetes Service
 
 To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. Select "New service connection" and select ````Azure Resource Manager```` from the drop-down list. 
 
@@ -482,6 +483,14 @@ Create another service connection with the Azure Container Registry in the same 
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/serviceconnection_acr.JPG">
 </p>
+
+Create a third servcie connection for the AKS cluster:
+ 
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_aks_srv.JPG">
+</p>
+
+
 
 
 ### Create Build and Release Pipelines
@@ -705,7 +714,7 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'AKS'
         namespace: 'default'
-        manifests: 'azure-vote-all-in-one-redis.yaml'
+        manifests: 'application/azure-vote-all-in-one-redis.yaml'
         containers: 'arraacrcicd.azurecr.io/azure-vote-front:$(Build.BuildId)'
 ```
 
