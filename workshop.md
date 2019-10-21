@@ -3,7 +3,7 @@
 This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, and creating pipelines in Azure DevOps. 
 
 You will go through the following steps to complete the workshop:
-* Create a VM (Virtual machine) to use as your development envirfonment
+* Create a VM (Virtual machine) to use as your development environment
 * Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Build and test docker images "locally" on your development VM
 * Push images to ACR (Azure Container Registry)
@@ -408,6 +408,7 @@ In the next step you will learn how to use Kubernetes DevOps features.
 
 
 ## Azure DevOps with AKS
+## Azure DevOps with AKS
 
 <p align="left">
   <img width="85%" height="85%" hspace="0" src="./media/index-hero.jpg">
@@ -492,6 +493,25 @@ We are going to:
 * Create a build pipeline
 * Create a release pipeline that is chained to the build pipeline
 
+There are two ways to build pipelines, the "old way" and the "new way". We are going to do the "new way" since its an improvement and that is the direction Azure DevOps will evovle around.
+
+The future improvement is to have build and release configurations in the same place. The feature is currently in preview and in order to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
+
+To enable this preview feuture click on your account icon in the top right corner:
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_preview.jpg">
+</p>
+
+Enable "Multi-stage pipelines":
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_multi.jpg">
+</p>
+
+
+Creating a new Pipeline:
+
 Go to Pipelines and create a new pipeline:
 
 <p align="left">
@@ -518,39 +538,73 @@ Run the pipeline and see the steps in the build, it will fail since we are not d
 To make a build we need to follow the same steps you have done manually:
 
 1. Go to your new Pipeline
-2. Edit the pipeline, and put the cursor at the end of the file
-3. type "docker" in the search bar to the right. Fill in the details like below, and press ok.
+2. Clean the file so there is no text inside
+3. Look at the exmple yaml below (explaination of multistage: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). We want to have a Build and Release pipeline chained together. The example YAML below explains the relationships between the different actions.
 
-<p align="left">
-  <img width="90%" height="90%" hspace="0" src="./media/docker_pipeline.JPG">
-</p>
-
-<p align="left">
-  <img width="40%" height="40%" hspace="0" src="./media/docker_pipeline2.JPG">
-</p>
-
-The final yaml file should looke similar to this:
+Copy the yaml-sceleton below into the pipeline and notice the structure:
 
 ```yaml
+
 trigger:
 - master
 
 pool:
   vmImage: 'Ubuntu-16.04'
 
-steps:
-- task: Docker@2
-  inputs:
-    containerRegistry: 'Azure Container Registry'
-    repository: <your unique ACR name>/azure-vote-front
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    tags: $(Build.BuildId)
+stages:
+
+- stage: A_stage
+  jobs:
+   - job: A_job
+     steps:
+      - bash: echo "A"
+
+- stage: B_stage
+  jobs:
+   - job: B_job
+     steps:
+      - bash: echo "B"
+
 ```
+
+With this notation we can create both build and release in the same file. Stages could be for example: "build this app", "run these tests", and "deploy to pre-production" are good examples of stages.
 
 * trigger: will automatically trigger on checkin in master branch
 
 * pool: the vm type the build will be conducted on
+
+* stage : this would normally be for example "Build"
+
+* jobs: group of several "job"
+
+* job: group of "steps" to achive the job
+
+* steps: atomic actions
+
+Save the pipeline and watch the "A_stage" and "B_stage" run in sequence below when you save and run the pipeline, click on the stages to see live informaiton:
+
+Notice that you only have to save the pipeline for it to run, this is due to the fact of the "trigger" element, that says you are triggering on changes on master branch:
+
+```yaml
+trigger:
+- master
+```
+
+Running the pipeline:
+
+<p align="left">
+  <img width="90%" height="90%" hspace="0" src="./media/devops_stages.jpg">
+</p>
+
+Open the pipeline again and edit it. Lets start implementing the "Development stage". Rename the stage to "Build_Development"
+
+On the right hand search for "Docker" and fill in the details. Make sure your cursor is positioned after "steps" then press "Add".
+
+<p align="left">
+  <img width="90%" height="90%" hspace="0" src="./media/devops_docker.jpg">
+</p>
+
+In the yaml file you fill find the following:
 
 * task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
 
@@ -564,17 +618,10 @@ steps:
 
 * tags: the Docker build tag to be appended. $(Build.BuildId) is an predefined environment variable in Azure DevOps that is incremeted at every build, more information about Azure DeOps built in environment variables can be found here: <https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml>
 
-The Release stage requires that the release pipeline has access to the manifestfile which is doen't have because the build stage has not delivered any result. In order to acheive that let's add another step to our build pipeline called "Copy and Publish Build Artifacts".
 
-Open and edit the build definition again and add "Copy and Publish Build Artifacts".
+Make sure you add the "tags: $(Build.BuildId)" otherwise the build will not update the tag of the image. Also, the tags: $(Build.BuildId) is unique for this build and in the releas stage, we need to refer to this tag in order for the right image to be deployed.
 
-<p align="left">
-  <img width="50%" height="50%" hspace="0" src="./media/devops_publish.jpg">
-</p>
-
-The manifest file will get edited in the release pipeline to point to a specific image with a specific BuildId.
-
-Add the "azure-vote-all-in-one-redis.yaml" to the contents, the final Build definition should look similar to wthe the new task: CopyPublishBuildArtifacts@1.
+The final yaml file should looke similar to this:
 
 ```yaml
 trigger:
@@ -583,71 +630,88 @@ trigger:
 pool:
   vmImage: 'Ubuntu-16.04'
 
-steps:
-- task: Docker@2
-  inputs:
-    containerRegistry: 'Azure Container Registry'
-    repository: <your unique ACR name>/azure-vote-front
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    tags: $(Build.BuildId)
 
-- task: CopyPublishBuildArtifacts@1
-  inputs:
-    Contents: 'azure-vote-all-in-one-redis.yaml'
-    ArtifactName: 'AKS Build'
-    ArtifactType: 'Container'
+stages:
+- stage: 'Build_Development'
+  jobs:
+  - job:
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Azure Container Registry'
+        repository: 'azure-vote-front'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildId)
 
+- stage: B_stage
+  jobs:
+   - job: B_job
+     steps:
+      - bash: echo "B"
 ```
 
-This will give you ability to grab the "azure-vote-all-in-one-redis.yaml" file in the build repository as you will see in the release section to finalize the release.
-
-Save the build pipeline and let it run. Then rename the build pipeline to "Docker build and push" by click on the "..." in the right corner.
-
-![Image Git Subscription](./media/devops_rename.jpg)
-
-Start the build and watch the repository in the Azure Container Registry in Azure to see the new build image has been added.
-
-![Image Git Subscription](./media/docker_pipeline4.JPG)
-
-Open Azure portal and the Azure Container Registry and you will find the image of the build with it's build id coming from the build pipeline. The "azure-vote-front" is the service you just built.
-
-![Image Git Subscription](./media/acr.JPG)
-
-#### Release Pipeline
-
-You just built and pushed the service azure-vote-front to Azure Container Registry. The next step is to deploy the container into AKS.
-
-Let's start with creating a Release pipeline. Got to "Pipelines->Releases" and click on "New Release".
-
-![Image Git Subscription](./media/devops_release.jpg)
-
-Select "Deploy to Kubernetes to a Kubernetes cluster".
-
-![Image Git Subscription](./media/devops_release2.jpg)
-
-Give the stage name "Development" and save it.
-
+Save and run the pipeline. Make sure it build successfully.
 
 <p align="left">
-  <img width="60%" height="60%" hspace="0" src="./media/devops_release3.jpg">
+  <img width="90%" height="90%" hspace="0" src="./media/devops_build.jpg">
 </p>
 
-Click on the "Add" artifacts and choose the build pipeline "Test" we created earlier. We now have the build pipeline chained with the release pipeline. To make the build and deployment be triggered in a chain of events, click on the lightning and enable "Continuous deployment trigger". To enter the Release pipeline, click on the "1 job, 1 task".
+Notice the change of the first stage and also make sure the build was ok by looking into the details of the stage.
 
-![Image Git Subscription](./media/devops_release4.jpg)
+After doing the build, we have our image and build tag set. The only thing we need now is to deploy the AKS yaml definition of our applicaiton but with the specific image name and especially the tag just like we did manually earlier.
 
-Add another step in the build definition by selecting "Deploy to Kubernetes" in the right pane, make sure to choose the one containing "manifest file", see picture below:
+Open the pipeline and edit the stage B to including the release. The release is done by manipulating the applicaiton yaml and deployed to AKS. To achive this search for "Manifest" and add the task:
 
-![Image Git Subscription](./media/devops_release5.jpg)
+<p align="left">
+  <img width="90%" height="90%" hspace="0" src="./media/devops_manifest2.jpg">
+</p>
 
-Fill in the details and make sure the $(Build.BuildId) is filled in the "Containers" section. This will override the image in the the manifest and update to the latest build that triggered the release, hence carrying the BuildId with itself in the pipeline. Everytime a build is triggered due to any change in the master branch, the change will Docker build a new image with a tag specified by BuildId. The image will be pushed to Azure Container Registry and eventually, the "deploy" stage will update the "azure-vote-all-in-one.yaml" with the new image that contains the tag BuildId and deploy it into AKS. Hence, full automatic pipeline for build and deploy.
+Make sure the alignment of the task comes under "steps". Also we are adding condition: succeeded('Build_Development') which indicates that the stage is **only** run if and only if the "Build_Development" stage was successfull. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
 
-Fill in the details like the example below:
+**Also note the "containers" part** which will update the actual image and tag and append the **$(Build.BuildId)** to the end of the image tag to be deployed.
 
-![Image Git Subscription](./media/devops_release6.jpg)
+The Kubernetes manifest task can be read here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/kubernetes-manifest?view=azure-devops
 
-Now go back to the Build pipeline and build it and watch the build pipeline start first and when it's sucessessfully finished, starting the release pipeline. 
+The final pipeline should look similar to this:
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+
+stages:
+- stage: 'Build_Development'
+  jobs:
+  - job:
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Azure Container Registry'
+        repository: techdays2019/azure-vote-front
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildId)
+
+# stage 'Release to Development' runs if 'Build Development' succeeds
+- stage: 'Release_to_Development'
+  condition: succeeded('Build_Development')
+  jobs:
+  - job:
+    steps:
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'AKS'
+        namespace: 'default'
+        manifests: 'azure-vote-all-in-one-redis.yaml'
+        containers: 'arraacrcicd.azurecr.io/azure-vote-front:$(Build.BuildId)'
+```
+
+Make sure the pipeline is building and releasing successfully and make sure the Azure Container Registry is updated with a new tag. Also check the status of the AKS cluster.
 
 ### All-In-One
 
@@ -665,11 +729,8 @@ SHOWHOST = 'false'
 
 Watch the Build and Release pipeline finalize.
 
-![Image Git Subscription](./media/devops_release7.jpg)
-
-
 <p align="left">
-  <img width="55%" height="55%" hspace="0" src="./media/devops_release8.jpg">
+  <img width="90%" height="90%" hspace="0" src="./media/devops_build2.jpg">
 </p>
 
 Watch the build automatically triggered in Azure DevOps. 
@@ -720,49 +781,6 @@ Open the public IP-addess, in this case 52.233.236.177 and watch the Yellow and 
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/devops_final.jpg">
 </p>
-
-#### Alternative solution - Release Pipeline & Future improvement
-
-Azure DevOps is constantly developing. One future improvement is to have build and release configurations in the same place. The feature is currently in preview and in order to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
-
-Here is an example of multistage pipeline:
-
-```yaml
-trigger:
-- master
-
-pool:
-  vmImage: 'Ubuntu-16.04'
-
-
-stages:
-- stage: 'Build_Development'
-  jobs:
-  - job:
-    steps:
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Azure Container Registry'
-        repository: <your unique ACR name>/azure-vote-front
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: $(Build.BuildId)
-
-
-# stage 'Release to Development' runs if 'Build Development' succeeds
-- stage: 'Release_to_Development'
-  condition: succeeded('Build_Development')
-  jobs:
-  - job:
-    steps:
-    - task: KubernetesManifest@0
-      inputs:
-        action: 'deploy'
-        kubernetesServiceConnection: 'AKS'
-        namespace: 'default'
-        manifests: 'azure-vote-all-in-one-redis.yaml'
-        containers: 'techdays2019/azure-vote-front:$(Build.BuildId)'
-```
 
 
 ## Scale applications in Azure Kubernetes Service (AKS)
