@@ -498,7 +498,7 @@ The future improvement is to have build and release configurations in the same p
 To enable this preview feuture click on your account icon in the top right corner:
 
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/devops_preview.jpg">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_preview.JPG">
 </p>
 
 Enable "Multi-stage pipelines":
