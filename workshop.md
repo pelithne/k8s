@@ -498,7 +498,7 @@ The future improvement is to have build and release configurations in the same p
 To enable this preview feuture click on your account icon in the top right corner:
 
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/devops_preview.JPG">
+  <img width="65%" height="65%" hspace="0" src="./media/devops_preview.JPG">
 </p>
 
 Enable "Multi-stage pipelines":
@@ -599,7 +599,7 @@ Open the pipeline again and edit it. Lets start implementing the "Development st
 On the right hand search for "Docker" and fill in the details. Make sure your cursor is positioned after "steps" then press "Add".
 
 <p align="left">
-  <img width="90%" height="90%" hspace="0" src="./media/devops_docker.jpg">
+  <img width="60%" hspace="0" src="./media/devops_docker.jpg">
 </p>
 
 In the yaml file you fill find the following:
@@ -652,7 +652,7 @@ stages:
 Save and run the pipeline. Make sure it build successfully.
 
 <p align="left">
-  <img width="90%" height="90%" hspace="0" src="./media/devops_build.jpg">
+  <img width="65%" hspace="0" src="./media/devops_build.jpg">
 </p>
 
 Notice the change of the first stage and also make sure the build was ok by looking into the details of the stage.
@@ -662,7 +662,7 @@ After doing the build, we have our image and build tag set. The only thing we ne
 Open the pipeline and edit the stage B to including the release. The release is done by manipulating the applicaiton yaml and deployed to AKS. To achive this search for "Manifest" and add the task:
 
 <p align="left">
-  <img width="90%" height="90%" hspace="0" src="./media/devops_manifest2.jpg">
+  <img width="60%" hspace="0" src="./media/devops_manifest2.jpg">
 </p>
 
 Make sure the alignment of the task comes under "steps". Also we are adding condition: succeeded('Build_Development') which indicates that the stage is **only** run if and only if the "Build_Development" stage was successfull. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
@@ -761,7 +761,7 @@ az aks browse --resource-group <resource group of AKS> --name <name of AKS clust
 Click on the IP-address and port that is exposed from the cluster:
 
 <p align="left">
-  <img width="75%" hspace="0" src="./media/aks_dashboard.JPG">
+  <img width="85%" hspace="0" src="./media/aks_dashboard.JPG">
 </p>
 
 To see the change in the application we need the public endpoint of the application. Run the kubectl command to get the service endpoint:
@@ -813,7 +813,7 @@ spec:
 Once you have committed the file, open Azure DevOps and watch the automatic build been triggered.
 
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/devops_cd.jpg">
+  <img width="85%" hspace="0" src="./media/devops_cd.jpg">
 </p>
 
 
