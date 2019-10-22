@@ -465,6 +465,19 @@ Then type in the URL to the repository (this is becoming familiar by now... :-) 
 
 When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application```` folder.
 
+In order for for Azure Devops to use the container that you created in previous steps, you (once again!) need to update the Kubernetes Manifest. Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
+
+You can edit the file in your browser by selecting **edit** in the top toolbar. Scroll down in the file, and change 
+
+````
+image: microsoft/azure-vote-front:v1
+````
+to
+
+````
+image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+````
+
 ### Connect Azure and Azure DevOps
 
 Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
