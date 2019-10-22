@@ -160,7 +160,14 @@ Build azure-vote-front, using the Dockerfile located in ./azure-vote. This will 
 ```console
 sudo docker build -t azure-vote-front .
 ```
-Please review ./azure-vote/Dockerfile to get an understanding of how the container images are created based on this file (take the time; it's a small file!).
+Please review ./azure-vote-app/Dockerfile to get an understanding of how the container images are created based on this file (take the time; it's a small file!).
+
+
+You can for instance use ````cat```` to view the file
+````
+cat Dockerfile
+````
+
 
 ### Run the application on your development machine
 First start the redis cache container (the back-end container). The command below will start a container with name "azure-vote-back" using the official redis docker image. The app will use the network ´´´mynet´´´ created in the previous step. If this is the first time the command is executed, the image will be downloaded to your computer (this can take a while). 
