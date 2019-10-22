@@ -891,7 +891,20 @@ NAME               REFERENCE                     TARGETS    MINPODS   MAXPODS   
 azure-vote-front   Deployment/azure-vote-front   0% / 50%   3         10        3          2m
 ```
 
+
 After a few minutes, with minimal load on the Azure Vote app, the number of pod replicas will decrease automatically. You can use `kubectl get pods` again to see the unneeded pods being removed.
+
+
+### Cleaning up
+Before moving on to the next step, it is a good idea to delete the resources you created. One way of doing that is to manualy delete the deployments. First find out what deployments you have:
+````
+kubectl get deployments
+````
+Find the deployment names, and then do ````kubectl delete deployment```` like this:
+````
+kubectl delete deployment <azure vote front deployment>
+kubectl delete deployment <azure vote back deployment>
+````
 
 
 
