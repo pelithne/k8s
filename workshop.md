@@ -246,7 +246,7 @@ az acr create --name <your unique ACR name> --resource-group techdays --sku basi
 Create an AKS cluster using ````az aks create````. Give the cluster a nice name, and run the following command (assuming that you named your resource group as suggested in a previous step, ````techdays````):
  
 ```` 
-az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku
+az aks create --resource-group techdays --name <Your AKS name> --disable-rbac --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic
 ````
 
 The creation time for the cluster can be up to 10 minutes, so lets move on...
