@@ -494,7 +494,7 @@ Create another service connection with the Azure Container Registry in the same 
 Create a third servcie connection for the AKS cluster:
  
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/devops_aks_srv.JPG">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_aks_srv.jpg">
 </p>
 
 
