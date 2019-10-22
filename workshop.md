@@ -902,10 +902,20 @@ kubectl get deployments
 ````
 Find the deployment names, and then do ````kubectl delete deployment```` like this:
 ````
-kubectl delete deployment <azure vote front deployment>
-kubectl delete deployment <azure vote back deployment>
+kubectl delete deployment azure-vote-front azure-vote-back
+
+````
+Then find the services:
+
+```` 
+kubectl get services
+
 ````
 
+And delete those as well:
+````
+kubectl delete services azure-vote-front azure-vote-back
+````
 
 
 
