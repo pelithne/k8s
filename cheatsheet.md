@@ -4,6 +4,8 @@ This file lists some commands that are used in the workshop, that you can use a 
 
 ### Kubernetes (kubectl) commands
 
+#### For a more complete sheet, have a look here: https://linuxacademy.com/site-content/uploads/2019/04/Kubernetes-Cheat-Sheet_07182019.pdf
+
 Show all running pods in the default namespace
 ````
 kubectl get pods
