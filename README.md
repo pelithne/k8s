@@ -1,3 +1,3 @@
-This repository contains instructions for a Kubernetes and DevOps workshop using Azure Kubernetes Service (AKS) and Azure Devops. 
+This repository contains instructions for a workshop about Containers and Kubernetes. 
 
-## To get started, click  <a href="https://github.com/pelithne/techdays2019/blob/master/workshop.md">here!</a>
+## To get started, click  <a href="https://github.com/pelithne/k8s/blob/master/workshop.md">here!</a>
