@@ -3,10 +3,9 @@
 This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes and locally. 
 
 You will go through the following steps to complete the workshop:
-* Create a VM (Virtual machine) to use as your development environment
-* Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
+* Use Azure Portal and Azure Cloud Shell
 * Setup Azure Container Registry to build and store docker images
-* Test docker images "locally" on your development VM
+* Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Deploy application to Kubernetes
 * Use Helm to create templated Kubernetes applications
 * and more...
