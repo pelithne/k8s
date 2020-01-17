@@ -1,4 +1,4 @@
-# TechDays pre-day Kubernetes and DevOps
+# Kubernetes Workshop
 
 This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes and locally. 
 
