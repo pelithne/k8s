@@ -1,6 +1,6 @@
 # Kubernetes Workshop
 
-This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes. 
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, including how to design CI/CD pipelines. 
 
 You will go through the following steps to complete the workshop:
 * Use Azure Portal and Azure Cloud Shell
