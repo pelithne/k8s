@@ -16,9 +16,9 @@ To make sure you are correctly setup with a working subscription, make sure you 
 It might be a good idea to keep a tab with the Azure Portal open during the workshop, to keep track of the Azure resources you create. We will almost exlusively use CLI based tools during the workshop, but everything we do will be visible in the portal, and all the resources we create could also be created using the portal.
 
 ## Azure Cloud Shell
-For simplicity we will use the Azure Cloud Shell throughout for all command line needs during the workshop. This is a web based shell that has all the necessary tools (like kubectl, az cli, etc) installed.
+For simplicity we will use the Azure Cloud Shell throughout the workshop for all our command line needs. This is a web based shell that has all the necessary tools (like kubectl, az cli, helm, etc) pre-installed.
 
-Start cloud shell by typing the address ````shell.azure.com```` into your browser. If you have not used cloud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run bash as your shell (not powershell).
+Start cloud shell by typing the address ````shell.azure.com```` into a web browser. If you have not used cloud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run bash as your shell (not powershell).
 
 ## Get the code
 The code for this workshop is located in the same respository that you are looking at now. To *clone* the repository to your cloud shell, do this:
@@ -26,7 +26,7 @@ The code for this workshop is located in the same respository that you are looki
 git clone git@github.com:pelithne/k8s.git
 ````
 
-Then cd into the right directory:
+Then cd into the repository directory:
 ````
 cd k8s
 ````
@@ -63,14 +63,14 @@ az acr create --name <your unique ACR name> --resource-group k8s-rg --sku basic
 ### Build images using ACR
 Docker images can be built in a number of different ways, for instance by using the docker CLI. Another (and easier!) way is to use *Azure Container Registry Tasks*, which is the approach we will use in this workshop.
 
-The docker image is built using a so called *Dockerfile*. The Dockerfile contains instuctions for how to build the image. Feel free to have a look in the repository:
+The docker image is built using a so called *Dockerfile*. The Dockerfile contains instuctions for how to build the image. Feel free to have a look at the Dockerfile in the repository (once again using *code*):
 ````
 code application/azure-vote-app/Dockerfile
 ````
 
 As you can see, this very basic Dockerfile will use a *base image* from ````tiangolo/uwsgi-nginx-flask:python3.6-alpine3.8````. 
 
-Ontop of that base image, it will install ````redis```` and then take the contents of the directory ````./azure-vote```` and copy it into the container in the path ````/app````.
+On top of that base image, it will install ````redis```` and then take the contents of the directory ````./azure-vote```` and copy it into the container in the path ````/app````.
 
 To build the docker container image, cd into the right directory, and use the ````az acr build```` command:
 ````
