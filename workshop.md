@@ -1,6 +1,6 @@
 # Kubernetes Workshop
 
-This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes and locally. 
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes. 
 
 You will go through the following steps to complete the workshop:
 * Use Azure Portal and Azure Cloud Shell
