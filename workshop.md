@@ -95,14 +95,15 @@ Create an AKS cluster using ````az aks create````. Lets give the cluster the nam
 az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
 ```
 
-The creation time for the cluster can be up to 10 minutes, so lets move on...
+The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg strecher and/or cup of coffee!
 
 
 
 ## Run applications in Azure Kubernetes Service (AKS)
 
-Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into a Kubernetes cluster. You will learn how to:
+Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into the Kubernetes cluster you created in a previsous step. You will learn how to:
 
+ * Connect/validate towards the AKS Cluster
  * Update Kubernetes manifest files
  * Run an application in Kubernetes
  * Test the application
@@ -117,7 +118,9 @@ az aks get-credentials --resource-group k8s-rg --name k8s
 
 #### Update the manifest file
 
-You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./k8s/application directory
+You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
+
+The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./k8s/application directory
 
 ````
 cd application
@@ -129,7 +132,9 @@ The sample manifest file from the git repo cloned in the first tutorial uses the
 code azure-vote-all-in-one-redis.yaml
 ```
 
-Replace *microsoft* with your ACR login server name. The following example shows the original content where you need to replace the **image**.
+Replace *microsoft* with your ACR login server name. The following example shows the original content and where you need to replace the **image**.
+
+Original:
 
 ```yaml
 containers:
@@ -151,7 +156,7 @@ Save and Quit.
 
 ### Deploy the application
 
-To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the defined Kubernetes objects. Specify the sample manifest file, as shown in the following example:
+To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the needed Kubernetes objects. Specify the sample manifest file, as shown in the following example:
 
 ```console
 kubectl apply -f azure-vote-all-in-one-redis.yaml
