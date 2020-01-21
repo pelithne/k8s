@@ -8,6 +8,7 @@ You will go through the following steps to complete the workshop:
 * Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Deploy application to Kubernetes
 * Use Helm to create templated Kubernetes applications
+* Use Azure DevOps to setup up build and release pipelines
 * and more...
  
 ## Azure Portal
@@ -203,9 +204,6 @@ To see the application in action, open a web browser to the external IP address.
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
 
 
-
-
-
 ## Update an application in Azure Kubernetes Service (AKS)
 
 After an application has been deployed in Kubernetes, it can be updated by specifying a new container image or image version. When doing so, the update is staged so that only a portion of the deployment is concurrently updated. This staged update enables the application to keep running during the update. It also provides a rollback mechanism if a deployment failure occurs.
@@ -246,9 +244,6 @@ az acr build --image azure-vote-front:v2 --registry <your unique ACR name> --fil
 ```
 
 This will build a new container image, with the code changes you did in the previous step. The image will be stored in ACR with the same name as before, but with a new version (v2).
-
-
-
 
 
 
@@ -397,7 +392,7 @@ warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        
 
 Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
 ````
-helm upgrade warped-elk . --set title="Cricket" --set value1="Industry Lager" --set value2="Craft Beer"
+helm upgrade warped-elk . --set title="Beer" --set value1="Industry Lager" --set value2="Cask Ale"
 ````
 
 Much better!
