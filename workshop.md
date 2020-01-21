@@ -450,8 +450,6 @@ helm delete warped-elk
 This will remove all the pods and services, and other resources related to the applications.
 
 
-## Azure Devops
-
 ## Azure DevOps with AKS
 
 <p align="left">
