@@ -326,88 +326,6 @@ Now open a local web browser to the IP address.
 
 
 
-
-
-
-
-
-
-
-
-## Scale applications in Azure Kubernetes Service (AKS)
-
-In this step you will scale out the pods in the app and try pod autoscaling.
-
-* Manually scale Kubernetes pods that run your application
-* Configure autoscaling pods that run the app front-end
-
-### Manually scale podss
-
-
-
-f
-f
-f
-f
-
-
-### Autoscale pods
-
-Kubernetes supports horizontal pod autoscaling to adjust the number of pods in a deployment depending on CPU utilization or other select metrics. The metrics-server is used to provide resource utilization to Kubernetes, and is automatically deployed in AKS clusters versions 1.10 and higher. 
-
-To use the autoscaler, your pods must have CPU requests and limits defined. In the `azure-vote-front` deployment, the front-end container requests 0.25 CPU, with a limit of 0.5 CPU. The settings look like:
-
-```yaml
-resources:
-  requests:
-     cpu: 250m
-  limits:
-     cpu: 500m
-```
-
-The following example uses the ```kubectl autoscale``` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances. In this case however, with almost no load on your application, it will instead scale down to the minimum number of pods (1).
-
-```console
-kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=1 --max=10
-```
-
-To see the status of the autoscaler, use the ```kubectl get hpa``` command as follows:
-
-```
-$ kubectl get hpa
-
-NAME               REFERENCE                     TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-azure-vote-front   Deployment/azure-vote-front   0% / 50%   3         10        3          2m
-```
-
-
-After a few minutes, with minimal load on the Azure Vote app, the number of pod replicas will decrease automatically. You can use `kubectl get pods` again to see the unneeded pods being removed.
-
-
-### Cleaning up
-Before moving on to the next step, it is a good idea to delete the resources you created. One way of doing that is to manualy delete the deployments. First find out what deployments you have:
-````
-kubectl get deployments
-````
-Find the deployment names, and then do ````kubectl delete deployment```` like this:
-````
-kubectl delete deployment azure-vote-front azure-vote-back
-
-````
-Then find the services:
-
-```` 
-kubectl get services
-
-````
-
-And delete those as well:
-````
-kubectl delete services azure-vote-front azure-vote-back
-````
-
-
-
 ## HELM!
 Helm is an open-source packaging tool that helps you install and manage the lifecycle of Kubernetes applications. Similar to Linux package managers such as APT and Yum, Helm is used to manage Kubernetes charts, which are packages of preconfigured Kubernetes resources.
 
@@ -530,3 +448,476 @@ helm delete warped-elk
 ````
 
 This will remove all the pods and services, and other resources related to the applications.
+
+
+## Azure Devops
+
+## Azure DevOps with AKS
+
+<p align="left">
+  <img width="65%" height="65%" hspace="0" src="./media/index-hero.jpg">
+</p>
+
+
+In this step you will make a CI/CD pipeline for the AKS cluster. You will learn how to:  
+
+* Automatically build an application on check-in 
+* Automatically build the docker container for the application
+* Autamtically deploy the docker container to AKS
+
+
+### Register an account at Azure DevOps
+
+You can create a free Azure DevOps account at: <https://azure.microsoft.com/en-us/services/devops/>. Azure DevOps is SaaS service from Microsoft. You need a Microsoft account to get started. If you do not have one you can create a free account here: <https://account.microsoft.com/account?lang=en-us>
+
+Once you have logged in to your Azure Devops account, you will create a **project**. Give the project a name, like "k8s"
+
+You should now have project like this:
+
+<p align="left">
+  <img width="65%" hspace="0" src="./media/devopsproject.JPG">
+</p>
+
+
+The left hand side shows you:
+
+* **Overview** - overview of the Azure DeOps project like wiki, dashboards and more
+* **Boards** - supporting a Agile workmethology with sprints and backlog
+* **Repos** - your source code
+* **Pipelines** - build and release - the essance of CI/CD
+* **TestPlans** - testing overview
+* **Artifacts** - your build artifacts that you might share in other projects, like nuget packages and such.
+
+### Create your Repository
+During this step we will import the same repository we have been working with in previous steps, but this time we will import it into Azure Devops instead.
+
+To do this, start by clicking on *Repos*.
+
+Select "import a repository"
+<p align="left">
+  <img width="40%" height="40%" hspace="0" src="./media/import-repo-1.png">
+</p>
+
+Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/k8s
+<p align="left">
+  <img width="40%" height="40%" hspace="0" src="./media/import-repo-2.png">
+</p>
+
+When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application```` folder.
+
+In order for for Azure Devops to use the container that you created in previous steps, you (once again!) need to update the Kubernetes Manifest. Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
+
+### Note: The repo you imported is the "original" repo, which does not have any of the changes you made, so you start from "scratch".
+
+You can edit the file in your browser by selecting **edit** in the top toolbar. Scroll down in the file, and change 
+
+````
+image: microsoft/azure-vote-front:v1
+````
+to
+
+````
+image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+````
+
+### Connect Azure and Azure DevOps
+
+Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
+
+In Azure DevOps, you need to create two service connections from Azure DevOps to Azure:
+
+1. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
+2. Azure Kubernetes Service
+
+To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. 
+
+Select "New service connection" and write "Docker Registry" in the search field. Make sure ````Docker Registry```` is selected and press ````next````.  Now, choose Azure Container Registry as ````registry type```` and select the ACR that you created earlier in the workshop. Finally give the connection a nice name.  This will bind a conneciton from Azure DevOps to your container registry to build and save your images:
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/serviceconnection_acr.JPG">
+</p>
+
+Create a second servcie connection for the AKS cluster using the same method. Hint: write "Kubernetes" in the search field to find the ````kubernetes```` connection type.
+ 
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_aks_srv.jpg">
+</p>
+
+
+
+
+### Create Build and Release Pipelines
+
+We are going to:
+
+* Create a build pipeline
+* Create a release pipeline that is chained to the build pipeline
+
+There are two ways to create pipelines, the "old way" and the "new way". We are going to do it the "new way" since its an improvement and that is the direction Azure DevOps is going in.
+
+The improvement is to have the entire pipeline defined as code, in your repository. The feature is currently in preview and in order to use it you need to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
+
+To enable this preview feature click on your account icon in the top right corner, and select "Preview features":
+
+<p align="left">
+  <img width="45%" height="45%" hspace="0" src="./media/devops_preview.JPG">
+</p>
+
+Enable "Multi-stage pipelines":
+
+<p align="left">
+  <img width="55%" height="55%" hspace="0" src="./media/devops_multi.jpg">
+</p>
+
+
+Creating a new Pipeline:
+
+Go to Pipelines and create a new pipeline:
+
+<p align="left">
+  <img width="85%" hspace="0" src="./media/new_pipeline.JPG">
+</p>
+
+Choose "Azure Repos Git" and then select the repository that you previously imported to Azure DevOps.
+
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/pipeline_1.JPG">
+</p>
+
+Choose "Existing Azure Pipelines YAML file" and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
+
+<p align="left">
+  <img width="50%" height="50%" hspace="0" src="./media/azure-pipelines.png">
+</p>
+
+Run the pipeline and see the steps in the build. It will fail since because it is currently not complete.
+
+#### Build Pipeline
+
+To make a build we need to follow the same steps you have done manually:
+
+1. Go to your new Pipeline
+2. Clean the file so there is no text inside
+3. Look at the exmple yaml below (explaination of multistage: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
+
+We want to have a Build and Release pipeline chained together. The example YAML below explains the relationships between the different actions.
+
+Copy the yaml-sceleton below into the pipeline and notice the structure:
+
+```yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+stages:
+
+- stage: A_stage
+  jobs:
+   - job: A_job
+     steps:
+      - bash: echo "A"
+
+- stage: B_stage
+  jobs:
+   - job: B_job
+     steps:
+      - bash: echo "B"
+
+```
+
+With this notation we can create both build and release in the same file. Stages could be for example: "build this app", "run these tests", and "deploy to pre-production" are good examples of stages.
+
+* trigger: will automatically trigger on checkin in master branch
+
+* pool: the vm type the build will be conducted on
+
+* stage : this would normally be for example "Build"
+
+* jobs: group of several "job"
+
+* job: group of "steps" to achive the job
+
+* steps: atomic actions
+
+Save the pipeline and watch the "A_stage" and "B_stage" run in sequence below when you save and run the pipeline, click on the stages to see live informaiton:
+
+Notice that you only have to save the pipeline for it to run, this is due to the fact of the "trigger" element, that says you are triggering on changes on master branch:
+
+```yaml
+trigger:
+- master
+```
+
+Running the pipeline:
+
+<p align="left">
+  <img width="80%" height="80%" hspace="0" src="./media/devops_stages.jpg">
+</p>
+
+Open the pipeline again and edit it. Lets start implementing the "Development stage". Rename the stage to "Build_Development"
+
+On the right hand search for "Docker" and fill in the details. Make sure your cursor is positioned after "steps" then press "Add".
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/devops_docker.jpg">
+</p>
+
+In the yaml file you fill find the following:
+
+* task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
+
+* containerRegistry: your Azure Container Registy Service Connection
+
+* repository: the repository inside Azure Container Registy to store your Docker image
+
+* command: both build and push the image
+
+* Dockerfile: the path and name to the Dockerfile. '**' will start searching in the directory specified
+
+* tags: the Docker build tag to be appended. $(Build.BuildId) is a predefined environment variable in Azure DevOps that is incremented at every build, more information about Azure DeOps built in environment variables can be found here: <https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml>
+
+
+Make sure you add the "tags: $(Build.BuildId)" otherwise the build will not update the tag of the image. Also, the tags: $(Build.BuildId) is unique for this build and in the releas stage, we need to refer to this tag in order for the right image to be deployed.
+
+The final yaml file should looke similar to this:
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+
+stages:
+- stage: 'Build_Development'
+  jobs:
+  - job:
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Azure Container Registry'
+        repository: 'azure-vote-front'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildId)
+
+- stage: B_stage
+  jobs:
+   - job: B_job
+     steps:
+      - bash: echo "B"
+```
+
+Save and run the pipeline. Make sure it build successfully.
+
+<p align="left">
+  <img width="65%" hspace="0" src="./media/devops_build.jpg">
+</p>
+
+Notice the change of the first stage and also make sure the build was ok by looking into the details of the stage.
+
+After doing the build, we have our image and build tag set. The only thing we need now is to deploy the aaplication to AKS. Do this by adding a release stage to the pipeline yaml. Make sure to use the specific image name and especially the tag just like we did manually earlier.
+
+Open the pipeline and edit the stage B to including the release. The release is done by manipulating the applicaiton yaml and deployed to AKS. To achive this search for "Manifest" and add the task:
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/devops_manifest2.jpg">
+</p>
+
+Make sure the alignment of the task comes under "steps". Also we are adding condition: succeeded('Build_Development') which indicates that the stage is **only** run if and only if the "Build_Development" stage was successfull. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
+
+**Also note the "containers" part** which will update the actual image and tag and append the **$(Build.BuildId)** to the end of the image tag to be deployed.
+
+The Kubernetes manifest task can be read here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/kubernetes-manifest?view=azure-devops
+
+The final pipeline should look similar to this:
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+
+stages:
+- stage: 'Build_Development'
+  jobs:
+  - job:
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Azure Container Registry'
+        repository: k8s/azure-vote-front
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildId)
+
+# stage 'Release to Development' runs if 'Build Development' succeeds
+- stage: 'Release_to_Development'
+  condition: succeeded('Build_Development')
+  jobs:
+  - job:
+    steps:
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'AKS'
+        namespace: 'default'
+        manifests: 'application/azure-vote-all-in-one-redis.yaml'
+        containers: 'arraacrcicd.azurecr.io/azure-vote-front:$(Build.BuildId)'
+```
+
+Make sure the pipeline is building and releasing successfully and make sure the Azure Container Registry is updated with a new tag. Also check the status of the AKS cluster.
+
+### All-In-One
+
+Let's change some code and watch the whole chain roll from Code commit ->Build->Release. 
+
+Open the file: azure-vote-app/azure-vote/config_file.cfg and change the code:
+
+```py
+# UI Configurations
+TITLE = 'Azure Voting App'
+VOTE1VALUE = 'Yellow'  <-- changed
+VOTE2VALUE = 'Pink'    <-- changed
+SHOWHOST = 'false'
+```
+
+Watch the Build and Release pipeline finalize.
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_build2.jpg">
+</p>
+
+Watch the build automatically triggered in Azure DevOps. 
+
+
+To see the change in the application we need the public endpoint of the application. Run the kubectl command to get the service endpoint:
+
+```console
+>kubectl get services
+NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        AGE
+azure-vote-back    ClusterIP      10.0.208.112   <none>           6379/TCP      2d23h
+azure-vote-front   LoadBalancer   10.0.243.181   52.233.236.177   80:31448/TCP  2d23h
+kubernetes         ClusterIP      10.0.0.1       <none>           443/TCP       5d6h
+
+```
+
+Open the public IP-addess, in this case 52.233.236.177 and watch the Yellow and Pink buttons have changed.
+
+
+<p align="left">
+  <img width="75%" height="75%" hspace="0" src="./media/devops_final.jpg">
+</p>
+
+
+## Scale applications in Azure Kubernetes Service (AKS)
+
+In this step you will scale out the pods in the app and try pod autoscaling.
+
+* Use Azure DeOps to scale number of pods
+* Manually scale Kubernetes pods that run your application
+* Configure autoscaling pods that run the app front-end
+
+### Azure DevOps to scale pods
+
+You can use Azure DeOps to configure the number of pods in the cluster for one service. This is a very easy task since all of your infrastructure of Kubernetes resides within the "azure-vote-all-in-one-redis.yaml" file.
+
+Open the "azure-vote-all-in-one-redis.yaml" file.
+
+Change "replicas" from 1 to 4 and the commit the file. The commit will trigger an automatic build and deploy by running the DevOps pipeline you just defined earlier.
+
+```yaml
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 4
+
+```
+
+Once you have committed the file, open Azure DevOps and watch the automatic build been triggered.
+
+<p align="left">
+  <img width="85%" hspace="0" src="./media/devops_cd.jpg">
+</p>
+
+
+Once the build is finished you can now run kubectle and watch the number of pods, you should now have 4 "azure-vote-front-*" pods.
+
+```console
+
+>kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+azure-vote-back-5b84769c69-z4r7j    1/1     Running   0          2d16h
+azure-vote-front-55fb564887-fgl5t   1/1     Running   0          2m15s
+azure-vote-front-55fb564887-s7vgv   1/1     Running   0          2m15s
+azure-vote-front-55fb564887-tvjxd   1/1     Running   0          2m15s
+azure-vote-front-55fb564887-xwd9t   1/1     Running   0          2d16h
+>
+
+```
+
+
+### Autoscale pods
+
+Kubernetes supports horizontal pod autoscaling to adjust the number of pods in a deployment depending on CPU utilization or other select metrics. The metrics-server is used to provide resource utilization to Kubernetes, and is automatically deployed in AKS clusters versions 1.10 and higher. 
+
+To use the autoscaler, your pods must have CPU requests and limits defined. In the `azure-vote-front` deployment, the front-end container requests 0.25 CPU, with a limit of 0.5 CPU. The settings look like:
+
+```yaml
+resources:
+  requests:
+     cpu: 250m
+  limits:
+     cpu: 500m
+```
+
+The following example uses the ```kubectl autoscale``` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances. In this case however, with almost no load on your application, it will instead scale down to the minimum number of pods (1).
+
+```console
+kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=1 --max=10
+```
+
+To see the status of the autoscaler, use the ```kubectl get hpa``` command as follows:
+
+```
+$ kubectl get hpa
+
+NAME               REFERENCE                     TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+azure-vote-front   Deployment/azure-vote-front   0% / 50%   3         10        3          2m
+```
+
+
+After a few minutes, with minimal load on the Azure Vote app, the number of pod replicas will decrease automatically. You can use `kubectl get pods` again to see the unneeded pods being removed.
+
+
+### Cleaning up
+Before moving on to the next step, it is a good idea to delete the resources you created. One way of doing that is to manualy delete the deployments. First find out what deployments you have:
+````
+kubectl get deployments
+````
+Find the deployment names, and then do ````kubectl delete deployment```` like this:
+````
+kubectl delete deployment azure-vote-front azure-vote-back
+
+````
+Then find the services:
+
+```` 
+kubectl get services
+
+````
+
+And delete those as well:
+````
+kubectl delete services azure-vote-front azure-vote-back
+````
