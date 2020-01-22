@@ -11,13 +11,16 @@ You will go through the following steps to complete the workshop:
 * Use Azure DevOps to setup up build and release pipelines
 * and more...
  
+## Prerequisites
+You need a valid Azure subscription. If you do not have one, you can sign up for a free trial account here: https://azure.microsoft.com/en-us/free/
+
 ## Azure Portal
 To make sure you are correctly setup with a working subscription, make sure you can log in to the Azure portal. Go to https://portal.azure.com. Once logged in, feel free to browse around a little bit to get to know the surroundings! 
 
 It might be a good idea to keep a tab with the Azure Portal open during the workshop, to keep track of the Azure resources you create. We will almost exlusively use CLI based tools during the workshop, but everything we do will be visible in the portal, and all the resources we create could also be created using the portal.
 
 ## Azure Cloud Shell
-For simplicity we will use the Azure Cloud Shell throughout the workshop for all our command line needs. This is a web based shell that has all the necessary tools (like kubectl, az cli, helm, etc) pre-installed.
+We will use the Azure Cloud Shell (ACR) throughout the workshop for all our command line needs. This is a web based shell that has all the necessary tools (like kubectl, az cli, helm, etc) pre-installed.
 
 Start cloud shell by typing the address ````shell.azure.com```` into a web browser. If you have not used cloud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run bash as your shell (not powershell).
 
@@ -45,14 +48,17 @@ For instance, you may want to have a look in the ````application/azure-vote-app`
 
 
 ## Resource Group
+All resrouces in Azure exists in a *Resource Group*. The resource group is a "container" for all the resources you create. 
+
 All the resources you create in this workshop will use the same Resource Group. The command below will create a resource group named ````k8s-rg```` in West Europe. 
 ````
 az group create -n k8s-rg -l westeurope
 ````
 
-
 ## Azure Container Registry
 You will use a private Azure Container Registry to *build* and *store* the docker images that you will deploy to Kubernetes. The name of the the ACR needs to be globally unique, and should consist of only lower case letters. You could for instance use your corporate signum.
+
+The reason it needs to be unique, is that your ACR will get a Fully Qualified Domain Name (FQDN), on the form ````<Your unique ACR name>.azurecr.io````
 
 The command below will create the container registry and place it in the Resource Group you created previously (k8s-rg).
 
@@ -65,6 +71,7 @@ az acr create --name <your unique ACR name> --resource-group k8s-rg --sku basic
 Docker images can be built in a number of different ways, for instance by using the docker CLI. Another (and easier!) way is to use *Azure Container Registry Tasks*, which is the approach we will use in this workshop.
 
 The docker image is built using a so called *Dockerfile*. The Dockerfile contains instuctions for how to build the image. Feel free to have a look at the Dockerfile in the repository (once again using *code*):
+
 ````
 code application/azure-vote-app/Dockerfile
 ````
@@ -121,10 +128,10 @@ az aks get-credentials --resource-group k8s-rg --name k8s
 
 You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
-The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./k8s/application directory
+The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./k8s/application/azure-vote-app directory
 
 ````
-cd application
+cd application/azure-vote-app
 ````
 
 The sample manifest file from the git repo cloned in the first tutorial uses the login server name of *microsoft*. Open this manifest file with a text editor, such as `code`:
@@ -496,11 +503,11 @@ Then type in the URL to the repository (this is becoming familiar by now... :-) 
   <img width="40%" height="40%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
-When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application```` folder.
+When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application/azure-vote-app```` folder.
 
 In order for for Azure Devops to use the container that you created in previous steps, you (once again!) need to update the Kubernetes Manifest. Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
 
-### Note: The repo you imported is the "original" repo, which does not have any of the changes you made, so you start from "scratch".
+### Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
 
 You can edit the file in your browser by selecting **edit** in the top toolbar. Scroll down in the file, and change 
 
@@ -762,7 +769,7 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'AKS'
         namespace: 'default'
-        manifests: 'application/azure-vote-all-in-one-redis.yaml'
+        manifests: 'application/azure-vote-app/azure-vote-all-in-one-redis.yaml'
         containers: 'arraacrcicd.azurecr.io/azure-vote-front:$(Build.BuildId)'
 ```
 
