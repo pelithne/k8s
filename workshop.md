@@ -425,19 +425,7 @@ After some time, you should be able to access the vote app in your browser. To f
 ### Helm Upgrade
 One of the advantages with Helm is that configuration values can be separated from values that are more static. Have a look at the file ````values.yaml```` which contains configurations that we can change dynamically. For example, you can upgrade your current deployment and give it new configuration values from the command line.
 
-To modify the application, you need to know the *release name*. Use **helm list** to find out:
-````
-helm list
-````
-
-
-This will, once again, give output similar to this (but with a different **NAME**):
-````
-NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-azvote  default         1               2020-01-24 12:56:40.34198405 +0000 UTC  deployed        azure-vote-0.1.0
-````
-
-Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
+To modify the application, use the command ````helm upgrade````, and send some new configration values to it:
 ````
 helm upgrade azvote . --set title="Beer" --set value1="Industry Lager" --set value2="Cask Ale"
 ````
@@ -449,47 +437,15 @@ Much better!
   <img width="75%" height="75%" hspace="0" src="./media/beer4.png">
 </p>
 
-### Install Wordpress
-One way to look at helm, is as a packet manager. You can use it to easily search for and install applications. To look for exising applications, use ```` helm search````
-
-````
-helm search 
-````
-
-This will give you a (long) list of applications available in the default helm repository. 
-
-Now, you could for instance install wordpress in your AKS cluster by running a single command:
-````
-helm install stable/wordpress
-````
-It takes a minute or two for the EXTERNAL-IP address of the Wordpress service to be populated and allow you to access it with a web browser. To find the ip address, you can use ````kubectl```` just like before:
-````
-kubectl get services
-````
-Now you should be able to browse to your newly created Wordpress instance, by entering the public IP address into your browser.
-
 ### Cleaning up
-To keep things tidy in the cluster, delete the applications you just deployed with helm
-
-First you need to know the release names that you deployed. To easily find that you can use the ````helm list```` command. You can also find the name at the top of the output from the ````helm install```` command.
+To keep things tidy in the cluster, delete the application you just deployed with helm
 
 ````
-helm list
-````
- The output will look something like:
-````
-NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
-dull-seastar    1               Thu Mar 21 14:34:47 2019        DEPLOYED        wordpress-5.1.2         5.0.3           default
-warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        azure-vote-0.1.0                        default
+helm delete azvote
+
 ````
 
-Now you can delete the deployments with ````helm delete```` for the *NAME* listed:
-````
-helm delete dull-seastar
-helm delete warped-elk
-````
-
-This will remove all the pods and services, and other resources related to the applications.
+This will remove all the pods and services, and other resources related to the application.
 
 
 ## Azure DevOps with AKS
