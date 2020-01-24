@@ -355,7 +355,7 @@ azure-vote-front-1297194256-zktw9  1/1       Terminating   0          1m
 
 ### Test the updated application
 
-To view the updated application, first get the external IP address of the `azure-vote-front` service:
+To view the updated application, first get the external IP address of the `azure-vote-front` service (will be the same as before, since the service was not updated, only the pod):
 
 ```console
 kubectl get service azure-vote-front
@@ -365,8 +365,12 @@ Now open a local web browser to the IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
 
+### Clean-up
+Make sure the application is deleted from the cluster (otherwise the next part, using Helm, will have issues...)
 
-
+````
+kubectl delete -f azure-vote-all-in-one-redis.yaml
+````
 
 ## HELM!
 Helm is an open-source packaging tool that helps you install and manage the lifecycle of Kubernetes applications. Similar to Linux package managers such as APT and Yum, Helm is used to manage Kubernetes charts, which are packages of preconfigured Kubernetes resources.
@@ -374,23 +378,16 @@ Helm is an open-source packaging tool that helps you install and manage the life
 In this exercise you will use Helm to deploy the same application you just deployed using ````kubectl````.
 
 ### Using Helm
-Your development VM already has helm installed, but you need to initialize helm, so that you can use it towards your Kubernetes cluster. 
+Cloud shell already has helm installed, with the latest version of Helm 3. 
 
-To deploy a the server side component of **Helm** named **Tiller** into an AKS cluster, use the ````helm init```` command. 
-````
-helm init
-````
-
-If no error are reported, you are good to go. If you want to, you can check if helm works by running the ````helm version````command:
+If you want to, you can check if helm works by running the ````helm version````command:
 ````
 helm version
 ````
 
-Client and server versions should match, and you should get output similar to:
-
+Which should give something like:
 ````
-Client: &version.Version{SemVer:"v2.11.0", GitCommit:"2e55dbe1fdb5fdb96b75ff144a339489417b146b", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.11.0", GitCommit:"2e55dbe1fdb5fdb96b75ff144a339489417b146b", GitTreeState:"clean"}
+version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
 ````
 
 ### Helm and Azure Vote!
@@ -398,8 +395,9 @@ The repository that you cloned in the beginning of the tutorial (or during prepa
 
 Start by changing the directory to where the **helm chart** is located.
 ````
+cd ..
 cd application/azvote-helmchart
- ````
+````
 
 Then you need to update your helm chart to point to the container image you created earlier in the **Azure Container Registry**. This is done in the file ````deployments.yaml```` located in ````azvote-helmchart/templates/````. This is essentially the same thing you did earlier in you kubernetes manifest .yaml file.
 
