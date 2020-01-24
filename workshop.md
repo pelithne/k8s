@@ -278,7 +278,7 @@ spec:
   replicas: 1
 ```
 
-Change 
+to
 ```yaml
 kind: Deployment
 metadata:
