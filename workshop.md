@@ -231,7 +231,7 @@ In this step the sample Azure Vote app is updated. You learn how to:
 Let's make a change to the sample application, then update the version already deployed to your AKS cluster. The sample application source code can be found inside of the *azure-vote* directory. Open the *config_file.cfg* file with an editor, such as `code`:
 
 ```console
-code azure-vote/azure-vote/config_file.cfg
+code azure-vote/config_file.cfg
 ```
 
 Change the values for *VOTE1VALUE* and *VOTE2VALUE* to different colors. The following example shows the updated color values:
