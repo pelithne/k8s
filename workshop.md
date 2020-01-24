@@ -390,6 +390,8 @@ Which should give something like:
 version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
 ````
 
+#### Note: In the previous version of Helm, there was a server side component as well, named "Tiller". This is no longer the case.
+
 ### Helm and Azure Vote!
 The repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**. 
 
@@ -407,15 +409,15 @@ image: microsoft/azure-vote-front:v1
 ````
 to
 ````
-image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+image: <your unique ACR name>.azurecr.io/azure-vote-front:v2
 ````
 
 ### Deploy Azure-vote app using Helm
 
 
-Deploying the azure-vote app using helm can be done with this command
+Deploying the azure-vote app using helm can be done with this command, which will give the Helm deployment a name ````azvote```` and use the helm chart in the ````azvote-helmchart```` (indicated by the dot):
 ````
-helm install .
+helm install azvote .
 ````
 
 After some time, you should be able to access the vote app in your browser. To find out when it is available, use ````kubectl get services````
@@ -431,13 +433,13 @@ helm list
 
 This will, once again, give output similar to this (but with a different **NAME**):
 ````
-NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
-warped-elk      1               Thu Mar 21 15:14:45 2019        DEPLOYED        azure-vote-0.1.0                        default
+NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+azvote  default         1               2020-01-24 12:56:40.34198405 +0000 UTC  deployed        azure-vote-0.1.0
 ````
 
 Now, you can modify the application with the ````helm upgrade````command, and send some new configration values to it:
 ````
-helm upgrade warped-elk . --set title="Beer" --set value1="Industry Lager" --set value2="Cask Ale"
+helm upgrade azvote . --set title="Beer" --set value1="Industry Lager" --set value2="Cask Ale"
 ````
 
 Much better!
