@@ -292,12 +292,11 @@ Now you can verify the number of running front-end instances with the ```kubectl
 
 ```
 $ kubectl get pods
-
-NAME                               READY     STATUS    RESTARTS   AGE
-azure-vote-back-217588096-5w632    1/1       Running   0          10m
-azure-vote-front-233282510-b5pkz   1/1       Running   0          10m
-azure-vote-front-233282510-dhrtr   1/1       Running   0          10m
-azure-vote-front-233282510-pqbfk   1/1       Running   0          10m
+NAME                                READY   STATUS    RESTARTS   AGE
+azure-vote-back-769d45cfcb-gk496    1/1     Running   0          51m
+azure-vote-front-74b865bcd9-52xkm   1/1     Running   0          49s
+azure-vote-front-74b865bcd9-94lrz   1/1     Running   0          49s
+azure-vote-front-74b865bcd9-xfsq8   1/1     Running   0          18m
 ```
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version:
