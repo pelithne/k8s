@@ -260,7 +260,35 @@ This will build a new container image, with the code changes you did in the prev
 
 ### Deploy the updated application
 
-To ensure maximum uptime, multiple instances of the application pod must be running. Verify the number of running front-end instances with the ```kubectl get pods``` command:
+To ensure maximum uptime, multiple instances of the application pod must be running. 
+
+
+To achieve that, open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change the number of replicas of the ````azure-vote-front```` pod from 1 to 3, on line 34 (or similar).
+
+````
+code azure-vote-all-in-one-redis.yaml
+````
+
+Change 
+```yaml
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 1
+```
+
+Change 
+```yaml
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 3
+```
+
+
+Now you can verify the number of running front-end instances with the ```kubectl get pods``` command:
 
 ```
 $ kubectl get pods
@@ -272,15 +300,9 @@ azure-vote-front-233282510-dhrtr   1/1       Running   0          10m
 azure-vote-front-233282510-pqbfk   1/1       Running   0          10m
 ```
 
-To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version.
+To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version:
 
-Open the sample manifest file `azure-vote-all-in-one-redis.yaml` 
-
-````
-code azure-vote-all-in-one-redis.yaml
-````
-
-and change `image:` from `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47 (or close to 47...).
+Open the file `azure-vote-all-in-one-redis.yaml` again and change `image:` from `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47 (or close to 47...).
 
 
 Change
@@ -305,7 +327,7 @@ And the run:
 kubectl apply -f azure-vote-all-in-one-redis.yaml
 ```` 
 
-Note how only the azure-vote-front deployment is *configured* while the others are *unchanged*. This is because the changes made to the manifest only impacts the azure-vote-front deployment. In other words, only the necessary things are changed, while the rest are untouched. 
+Note how only the azure-vote-front deployment is *configured* while the others are *unchanged*. This is because the changes made to the manifest only impacts the azure-vote-front deployment. In other words, only the necessary things are changed, while the rest are left untouched. 
 ````
 deployment.apps/azure-vote-back unchanged
 service/azure-vote-back unchanged
