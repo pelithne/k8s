@@ -332,7 +332,7 @@ To
         image: <Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2
   ```
 
-And the run:
+And then run:
 
 ````
 kubectl apply -f azure-vote-all-in-one-redis.yaml
