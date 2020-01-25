@@ -738,7 +738,9 @@ Notice the change of the first stage and also make sure the build was ok by look
 
 After doing the build, we have our image and build tag set. The only thing we need to do now is to deploy the application to AKS. Do this by adding a release stage to the pipeline yaml. Make sure to use the specific image name and especially the tag just like we did manually earlier.
 
-Open the pipeline and edit the stage B to include the release. This stage will update our Kubernetes manifest, and deploy the application to AKS. To achive this search for "Manifest" (like you did previously with the docker task) and add it:
+Open the pipeline and edit the stage B to include the release. This stage will update our Kubernetes manifest, and deploy the application to AKS. To achive this search for "Manifest" (like you did previously with the docker task) and add it.
+
+####: Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/devops_manifest2.jpg">
