@@ -848,7 +848,7 @@ The public endpoint of the application should not change, but feel free to verif
 >kubectl get services
 NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        AGE
 azure-vote-back    ClusterIP      10.0.208.112   <none>           6379/TCP      2d23h
-azure-vote-front   LoadBalancer   10.0.243.181   52.233.236.177   80:31448/TCP  2d23h
+azure-vote-front   LoadBalancer   10.0.243.181   13.73.137.254    80:31448/TCP  2d23h
 kubernetes         ClusterIP      10.0.0.1       <none>           443/TCP       5d6h
 
 ```
