@@ -489,7 +489,7 @@ You should now have project like this:
 
 The left hand side shows you:
 
-* **Overview** - overview of the Azure DeOps project like wiki, dashboards and more
+* **Overview** - overview of the Azure DevOps project like wiki, dashboards and more
 * **Boards** - supporting a Agile workmethology with sprints and backlog
 * **Repos** - your source code
 * **Pipelines** - build and release - the essance of CI/CD
@@ -693,7 +693,7 @@ When choosing add, Azure Devops will add a **task** in the azure-pipelines.yaml.
 
 * Dockerfile: the path and name to the Dockerfile. '**' will start searching in the directory specified
 
-* tags: the Docker build tag to be appended. $(Build.BuildId) is a predefined environment variable in Azure DevOps that is incremented at every build, more information about Azure DeOps built in environment variables can be found here: <https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml>
+* tags: the Docker build tag to be appended. $(Build.BuildId) is a predefined environment variable in Azure DevOps that is incremented at every build, more information about Azure DevOps built in environment variables can be found here: <https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml>
 
 
 Make sure you add the "tags: $(Build.BuildId)" otherwise the build will not update the tag of the image. Also, the tags: $(Build.BuildId) is unique for this build and in the releas stage, we need to refer to this tag in order for the right image to be deployed.
@@ -792,7 +792,23 @@ stages:
         containers: 'arraacrcicd.azurecr.io/azure-vote-front:$(Build.BuildId)'
 ```
 
-Make sure the pipeline is building and releasing successfully and make sure the Azure Container Registry is updated with a new tag. Also check the status of the AKS cluster.
+Make sure the pipeline is building and releasing successfully. Please note that you may have to give permission to use the service connections:
+
+<p align="left">
+  <img width="75%" hspace="0" src="./media/pipeline-permission.jpg">
+</p>
+
+
+ Also make sure the Azure Container Registry is updated with a new tag and check the status of the AKS cluster in Azure Cloud Shell.
+
+To make sure the application is running, you need to find the public IP address of the loadbalancer. Use ````kubectl get svc```` in Azure Cloud shell:
+
+````
+kubectl get svc
+````
+
+Copy the **Public IP address** of the service into the address field of your browser to view the web interface of your application.
+
 
 ### All-In-One
 
@@ -842,13 +858,13 @@ Open the public IP-addess, in this case 52.233.236.177 and watch the Yellow and 
 
 In this step you will scale out the pods in the app and try pod autoscaling.
 
-* Use Azure DeOps to scale number of pods
+* Use Azure DevOps to scale number of pods
 * Manually scale Kubernetes pods that run your application
 * Configure autoscaling pods that run the app front-end
 
 ### Azure DevOps to scale pods
 
-You can use Azure DeOps to configure the number of pods in the cluster for one service. This is a very easy task since all of your infrastructure of Kubernetes resides within the "azure-vote-all-in-one-redis.yaml" file.
+You can use Azure DevOps to configure the number of pods in the cluster for one service. This is a very easy task since all of your infrastructure of Kubernetes resides within the "azure-vote-all-in-one-redis.yaml" file.
 
 Open the "azure-vote-all-in-one-redis.yaml" file.
 
