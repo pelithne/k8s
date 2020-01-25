@@ -615,15 +615,8 @@ Choose "Existing Azure Pipelines YAML file" and then select the path ````/applic
   <img width="50%" height="50%" hspace="0" src="./media/azure-pipelines.png">
 </p>
 
-Run the pipeline and see the steps in the build. It will fail since because it is currently not complete.
 
-#### Create Pipeline
-
-As mentioned before, we want to create a **Multistage pipeline**, defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
-
-
-
-In the pipeline, we want to have a Build and Release pipeline chained together. The example YAML below explains the relationships between the different actions.
+The azure-pipelines.yaml should look like this:
 
 ```yaml
 
@@ -649,7 +642,14 @@ stages:
 
 ```
 
-With this notation we can create both build and release in the same file. 
+Run the pipeline and see the steps in the build. 
+
+#### Create Pipeline
+
+As mentioned before, we want to create a **Multistage pipeline**, defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
+
+
+In the pipeline, we want to have a Build and Release pipeline chained together. The example YAML in the repository explains the relationships between the different actions.
 
 * trigger: Means that the pipeline will automatically trigger on checkin in master branch
 
@@ -664,16 +664,6 @@ With this notation we can create both build and release in the same file.
 * steps: atomic actions
 
 
-Copy the yaml definition above into your azure-pipelines.yaml, and replace all the content of the file. 
-
-Save the pipeline and watch the "A_stage" and "B_stage" run in sequence below when you save and run the pipeline, click on the stages to see live informaiton:
-
-Notice that you only have to save the pipeline for it to run, this is due to the fact of the "trigger" element, that says you are triggering on changes on master branch:
-
-```yaml
-trigger:
-- master
-```
 
 Running the pipeline:
 
@@ -691,7 +681,7 @@ On the right hand search for "Docker" and fill in the details. Make sure your cu
   <img width="40%" hspace="0" src="./media/devops_docker.jpg">
 </p>
 
-When coosing add, Azure Devops will add a **task** in the azure-pipelines.yaml. In the yaml file you fill find the following:
+When choosing add, Azure Devops will add a **task** in the azure-pipelines.yaml. In the yaml file you fill find the following:
 
 * task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
 
@@ -896,57 +886,13 @@ azure-vote-front-55fb564887-xwd9t   1/1     Running   0          2d16h
 ```
 
 
-### Autoscale pods
-
-Kubernetes supports horizontal pod autoscaling to adjust the number of pods in a deployment depending on CPU utilization or other select metrics. The metrics-server is used to provide resource utilization to Kubernetes, and is automatically deployed in AKS clusters versions 1.10 and higher. 
-
-To use the autoscaler, your pods must have CPU requests and limits defined. In the `azure-vote-front` deployment, the front-end container requests 0.25 CPU, with a limit of 0.5 CPU. The settings look like:
-
-```yaml
-resources:
-  requests:
-     cpu: 250m
-  limits:
-     cpu: 500m
-```
-
-The following example uses the ```kubectl autoscale``` command to autoscale the number of pods in the *azure-vote-front* deployment. If CPU utilization exceeds 50%, the autoscaler increases the pods up to a maximum of 10 instances. In this case however, with almost no load on your application, it will instead scale down to the minimum number of pods (1).
-
-```console
-kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=1 --max=10
-```
-
-To see the status of the autoscaler, use the ```kubectl get hpa``` command as follows:
-
-```
-$ kubectl get hpa
-
-NAME               REFERENCE                     TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-azure-vote-front   Deployment/azure-vote-front   0% / 50%   3         10        3          2m
-```
-
-
-After a few minutes, with minimal load on the Azure Vote app, the number of pod replicas will decrease automatically. You can use `kubectl get pods` again to see the unneeded pods being removed.
-
-
 ### Cleaning up
-Before moving on to the next step, it is a good idea to delete the resources you created. One way of doing that is to manualy delete the deployments. First find out what deployments you have:
-````
-kubectl get deployments
-````
-Find the deployment names, and then do ````kubectl delete deployment```` like this:
-````
-kubectl delete deployment azure-vote-front azure-vote-back
 
-````
-Then find the services:
+The easiset way to clean up your environment, and avoid unnecessary cost, is to remove the entire *Resource Group*.
 
-```` 
-kubectl get services
+To do this, go back to Azure Cloud Shell.
 
+Assuming that the Resource Group name is k8s-rg, type the following command:
 ````
-
-And delete those as well:
-````
-kubectl delete services azure-vote-front azure-vote-back
+az group delete -n k8s-rg
 ````

@@ -8,5 +8,17 @@ trigger:
 
 pool:
   vmImage: 'Ubuntu-16.04'
-  
-steps:
+
+stages:
+
+- stage: A_stage
+  jobs:
+    - job: A_job
+      steps:
+      - bash: echo "A"
+
+- stage: B_stage
+  jobs:
+    - job: B_job
+      steps:
+      - bash: echo "B"
