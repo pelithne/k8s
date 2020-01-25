@@ -644,6 +644,12 @@ stages:
 
 Run the pipeline and see the steps in the build. If you click on the steps, you can drill down into the step to get some more details about what is going on. 
 
+It should look similar to this:
+<p align="left">
+  <img width="80%" height="80%" hspace="0" src="./media/devops_stages.jpg">
+</p>
+
+
 #### Create Pipeline
 
 As mentioned before, we call this a **Multistage pipeline**, which is defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
@@ -664,12 +670,6 @@ In the pipeline, we have Build and Release stages that are chained together. The
 * steps: atomic actions
 
 
-
-Running the pipeline:
-
-<p align="left">
-  <img width="80%" height="80%" hspace="0" src="./media/devops_stages.jpg">
-</p>
 
 Open the pipeline again and edit it.
 
@@ -795,7 +795,7 @@ stages:
 Make sure the pipeline is building and releasing successfully. Please note that you may have to give permission to use the service connections:
 
 <p align="left">
-  <img width="75%" hspace="0" src="./media/pipeline-permission.jpg">
+  <img width="90%" hspace="0" src="./media/pipeline-permission.jpg">
 </p>
 
 
@@ -807,7 +807,15 @@ To make sure the application is running, you need to find the public IP address 
 kubectl get svc
 ````
 
-Copy the **Public IP address** of the service into the address field of your browser to view the web interface of your application.
+Which should give output similar to
+````console
+NAME               TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)        AGE
+azure-vote-back    ClusterIP      10.0.97.213   <none>          6379/TCP       6m1s
+azure-vote-front   LoadBalancer   10.0.98.192   13.73.137.254   80:30824/TCP   6m1s
+kubernetes         ClusterIP      10.0.0.1      <none>          443/TCP        4d6h
+````
+
+Copy the **Public IP address** of the azure-vote-front service into the address field of your browser to view the web interface of your application.
 
 
 ### All-In-One
@@ -826,16 +834,15 @@ SHOWHOST = 'false'
 
 Remember to commit the change when you are done.
 
-Watch the build automatically triggered in Azure DevOps and see how the Release pipeline starts when the build is done.
+Click **Pipelines** in the left hand navigation pane to watch the build automatically triggered in Azure DevOps and see how the Release stage starts when the build is done.
 
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/devops_build2.jpg">
 </p>
 
-. 
 
 
-To see the change in the application we need the public endpoint of the application. Run the kubectl command to get the service endpoint:
+The public endpoint of the application should not change, but feel free to verify the IP address by using ````kubectl```` again:
 
 ```console
 >kubectl get services
@@ -846,7 +853,7 @@ kubernetes         ClusterIP      10.0.0.1       <none>           443/TCP       
 
 ```
 
-Open the public IP-addess, in this case 52.233.236.177 and watch the Yellow and Pink buttons have changed.
+Open the public IP-addess, and watch the Yellow and Pink buttons have changed.
 
 
 <p align="left">
