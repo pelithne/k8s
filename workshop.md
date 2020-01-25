@@ -549,7 +549,7 @@ Select "New service connection" and write "Docker Registry" in the search field.
 
 
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/serviceconnection_acr.JPG">
+  <img width="55%" hspace="0" src="./media/serviceconnection_acr.JPG">
 </p>
 
 Create a second servcie connection for the AKS cluster using the same method. Hint: write "Kubernetes" in the search field to find the ````kubernetes```` connection type. 
@@ -557,7 +557,7 @@ Create a second servcie connection for the AKS cluster using the same method. Hi
 Make sure to select the right subscription, and the right Kubernetes Cluster.
  
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/devops_aks_srv.jpg">
+  <img width="65%" hspace="0" src="./media/devops_aks_srv.jpg">
 </p>
 
 
