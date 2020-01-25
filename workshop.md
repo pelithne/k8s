@@ -128,15 +128,19 @@ In order to use `kubectl` you need to connect to the Kubernetes cluster, using t
 az aks get-credentials --resource-group k8s-rg --name k8s
 ```
 
+To verify that your cluster is up and running you can try a kubectl command, like ````kubectl get nodes```` which  will show you the nodes (virtual machines) that are active in your cluster.
+
+`````
+kubectl get nodes
+````
+
+
 #### Update the manifest file
 
 You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
-The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./k8s/application/azure-vote-app directory
+The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ./k8s/application/azure-vote-app directory.
 
-````
-cd application/azure-vote-app
-````
 
 The sample manifest file from the git repo cloned in the first tutorial uses the login server name of *microsoft*. Open this manifest file with a text editor, such as `code`:
 
@@ -192,10 +196,10 @@ You can also use ``kubectl describe`` to trouble shoot any problems you might ha
 
 Once your container has been pulled and started, showing state **READY**, you can instead start monitoring the service to see when a public IP address has been created.
 
-To monitor progress, use the `kubectl get service` command with the `--watch` argument:
+To monitor progress, use the `kubectl get service`. You will probably have to repeast a few times, as it can take a while to get the public IP address.
 
 ```console
-kubectl get service azure-vote-front --watch
+kubectl get service azure-vote-front 
 ```
 
 The *EXTERNAL-IP* for the *azure-vote-front* service initially appears as *pending*, as shown in the following example:
@@ -499,11 +503,11 @@ Then type in the URL to the repository (this is becoming familiar by now... :-) 
   <img width="40%" height="40%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
-When the import is finished, you will have your own version of the repository in Azure Devops. The parts that you will work with in this part of the tutorial are located in the ````application/azure-vote-app```` folder.
+When the import is finished, you will have your own version of the repository in Azure Devops. The code that you will work with in this part of the tutorial are located in the ````application/azure-vote-app```` folder.
 
 In order for for Azure Devops to use the container that you created in previous steps, you (once again!) need to update the Kubernetes Manifest. Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
 
-### Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
+#### Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
 
 You can edit the file in your browser by selecting **edit** in the top toolbar. Scroll down in the file, and change 
 
@@ -522,18 +526,25 @@ Make sure you are using the same account in both Azure and Azure DevOps (same em
 
 In Azure DevOps, you need to create two service connections from Azure DevOps to Azure:
 
-1. Docker Service Registry Connection - enables deployment from the pipeline to a docker registry. In our case, the Docker Registry is the Azure Container Registry you created in a previous step.
+1. Docker Service Registry Connection 
 2. Azure Kubernetes Service
+
+The docker service connections enables Azure Devops to  perform operations on your docker registry. In this case, the Docker Registry is the Azure Container Registry you created in a previous step.
+
+The AKS service connection enables Azure devops to perform operations on your Kubernetes cluster.
 
 To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. 
 
-Select "New service connection" and write "Docker Registry" in the search field. Make sure ````Docker Registry```` is selected and press ````next````.  Now, choose Azure Container Registry as ````registry type```` and select the ACR that you created earlier in the workshop. Finally give the connection a nice name.  This will bind a conneciton from Azure DevOps to your container registry to build and save your images:
+Select "New service connection" and write "Docker Registry" in the search field. Make sure ````Docker Registry```` is selected and press ````next````.  Now, choose Azure Container Registry as ````registry type```` and select the ACR that you created earlier in the workshop. Finally give the connection a nice name.  
+
 
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/serviceconnection_acr.JPG">
 </p>
 
-Create a second servcie connection for the AKS cluster using the same method. Hint: write "Kubernetes" in the search field to find the ````kubernetes```` connection type.
+Create a second servcie connection for the AKS cluster using the same method. Hint: write "Kubernetes" in the search field to find the ````kubernetes```` connection type. 
+
+Make sure to select the right subscription, and the right Kubernetes Cluster.
  
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/devops_aks_srv.jpg">
@@ -549,17 +560,24 @@ We are going to:
 * Create a build pipeline
 * Create a release pipeline that is chained to the build pipeline
 
-There are two ways to create pipelines, the "old way" and the "new way". We are going to do it the "new way" since its an improvement and that is the direction Azure DevOps is going in.
+We will define the pipeline as **code**, in your repository. The feature is currently in preview and in order to use it you need to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
 
-The improvement is to have the entire pipeline defined as code, in your repository. The feature is currently in preview and in order to use it you need to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
+To enable this preview feature click on your account icon in the top right corner, and select the three dots down to the left, then click on *User settings*.
 
-To enable this preview feature click on your account icon in the top right corner, and select "Preview features":
+<p align="left">
+  <img width="45%" height="45%" hspace="0" src="./media/new-activate-preview-1.JPG">
+</p>
 
+In the dialogue that follows, select *Preview features* and make sure that the *Multi-stage pipeline* toggle is set to **On**.
+
+<!---
 <p align="left">
   <img width="45%" height="45%" hspace="0" src="./media/devops_preview.JPG">
 </p>
 
 Enable "Multi-stage pipelines":
+
+-->
 
 <p align="left">
   <img width="55%" height="55%" hspace="0" src="./media/devops_multi.jpg">
