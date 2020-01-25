@@ -467,11 +467,11 @@ This will remove all the pods and services, and other resources related to the a
 </p>
 
 
-In this step you will make a CI/CD pipeline for the AKS cluster. You will learn how to:  
+In this step you will make a CI/CD pipeline to deploy your application into the AKS cluster. You will learn how to:  
 
 * Automatically build an application on check-in 
 * Automatically build the docker container for the application
-* Autamtically deploy the docker container to AKS
+* Automatically deploy the docker container to AKS
 
 
 ### Register an account at Azure DevOps
@@ -545,7 +545,7 @@ The AKS service connection enables Azure devops to perform operations on your Ku
 
 To create the service connections, click on **Project Settings** at the bottom of the left hand navigation panel. Then go to **Service Connections**. 
 
-Select "New service connection" and write "Docker Registry" in the search field. Make sure ````Docker Registry```` is selected and press ````next````.  Now, choose Azure Container Registry as ````registry type```` and select the ACR that you created earlier in the workshop. Finally give the connection a nice name.  
+Select "New service connection" and write "Docker Registry" in the search field. Make sure ````Docker Registry```` is selected and press ````next````.  Now, choose Azure Container Registry as ````registry type```` and select the ACR that you created earlier in the workshop. Finally give the connection a nice name and click *Save*.  
 
 
 <p align="left">
@@ -575,7 +575,7 @@ We will define the pipeline as **code**, in your repository. The feature is curr
 To enable this preview feature click on your account icon in the top right corner, and select the three dots down to the left, then click on *User settings*.
 
 <p align="left">
-  <img width="50%" height="50%" hspace="0" src="./media/new-activate-preview-3.png">
+  <img width="30%" height="30%" hspace="0" src="./media/new-activate-preview-3.png">
 </p>
 
 In the dialogue that follows, select *Preview features* and make sure that the *Multi-stage pipeline* toggle is set to **On**.
@@ -740,7 +740,7 @@ After doing the build, we have our image and build tag set. The only thing we ne
 
 Open the pipeline and edit the stage B to include the release. This stage will update our Kubernetes manifest, and deploy the application to AKS. To achive this search for "Manifest" (like you did previously with the docker task) and add it.
 
-####: Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````
+#### Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/devops_manifest2.jpg">
