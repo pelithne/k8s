@@ -565,7 +565,7 @@ We will define the pipeline as **code**, in your repository. The feature is curr
 To enable this preview feature click on your account icon in the top right corner, and select the three dots down to the left, then click on *User settings*.
 
 <p align="left">
-  <img width="45%" height="45%" hspace="0" src="./media/new-activate-preview-1.JPG">
+  <img width="45%" height="45%" hspace="0" src="./media/new-activate-preview-1.png">
 </p>
 
 In the dialogue that follows, select *Preview features* and make sure that the *Multi-stage pipeline* toggle is set to **On**.
