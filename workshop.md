@@ -646,10 +646,10 @@ Run the pipeline and see the steps in the build.
 
 #### Create Pipeline
 
-As mentioned before, we want to create a **Multistage pipeline**, defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
+As mentioned before, we call this a **Multistage pipeline**, which is defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
 
 
-In the pipeline, we want to have a Build and Release pipeline chained together. The example YAML in the repository explains the relationships between the different actions.
+In the pipeline, we have a Build and Release pipeline chained together. The example YAML in the repository tries to explain the relationships between the different actions and keywords.
 
 * trigger: Means that the pipeline will automatically trigger on checkin in master branch
 
