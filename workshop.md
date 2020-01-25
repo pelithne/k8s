@@ -234,7 +234,7 @@ In this step the sample Azure Vote app is updated. You learn how to:
 
 Let's make a change to the sample application, then update the version already deployed to your AKS cluster. 
 
-First we want to make sure that the update ca be done without service interuption. For this to be possible, we need multiple instances of the front end pod. This will enable to update the app as a "rolling update", which means that it will restart the pods in sequence making sure that one or more is always running.
+First we want to make sure that the update can be completed without service interuption. For this to be possible, we need multiple instances of the front end pod. This will enable Kubernetes to update the app as a "rolling update", which means that it will restart the pods in sequence making sure that one or more is always running.
 
 To achieve that, open the sample manifest file `azure-vote-all-in-one-redis.yaml` and change the number of replicas of the ````azure-vote-front```` pod from 1 to 3, on line 34 (or similar).
 
@@ -299,7 +299,7 @@ Save and close the file.
 
 ### Update the container image
 
-To re-create the front-end image, use ```az acr build``` the same way as before, but make sure to change the version from ````v1```` to ````v2````
+To build a new front-end image, use ```az acr build``` the same way as before, but make sure to change the version from ````v1```` to ````v2````
 
 ```console
 az acr build --image azure-vote-front:v2 --registry <your unique ACR name> --file Dockerfile .
