@@ -130,7 +130,7 @@ az aks get-credentials --resource-group k8s-rg --name k8s
 
 To verify that your cluster is up and running you can try a kubectl command, like ````kubectl get nodes```` which  will show you the nodes (virtual machines) that are active in your cluster.
 
-`````
+````
 kubectl get nodes
 ````
 
