@@ -528,6 +528,8 @@ to
 image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
 ````
 
+Don't forget to select "Commit" after the change, to include the change in your repository.
+
 ### Connect Azure and Azure DevOps
 
 Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
@@ -573,7 +575,7 @@ We will define the pipeline as **code**, in your repository. The feature is curr
 To enable this preview feature click on your account icon in the top right corner, and select the three dots down to the left, then click on *User settings*.
 
 <p align="left">
-  <img width="100%" height="100%" hspace="0" src="./media/new-activate-preview-3.png">
+  <img width="50%" height="50%" hspace="0" src="./media/new-activate-preview-3.png">
 </p>
 
 In the dialogue that follows, select *Preview features* and make sure that the *Multi-stage pipeline* toggle is set to **On**.
