@@ -506,14 +506,14 @@ Select "import a repository"
   <img width="40%" height="40%" hspace="0" src="./media/import-repo-1.png">
 </p>
 
-Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/k8s
+Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/k8s and click **Import**
 <p align="left">
   <img width="40%" height="40%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
 When the import is finished, you will have your own version of the repository in Azure Devops. The code that you will work with in this part of the tutorial are located in the ````application/azure-vote-app```` folder.
 
-In order for for Azure Devops to use the container that you created in previous steps, you (once again!) need to update the Kubernetes Manifest. Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
+In order for for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
 
 #### Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
 
