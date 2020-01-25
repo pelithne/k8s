@@ -609,7 +609,7 @@ Choose "Azure Repos Git" and then select the repository that you previously impo
   <img width="40%" hspace="0" src="./media/pipeline_1.JPG">
 </p>
 
-Choose "Existing Azure Pipelines YAML file" and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
+First select the repository (e.g. "k8s") then choose "Existing Azure Pipelines YAML file", and then select the path ````/application/azure-pipelines.yml```` and press **Continue**
 
 <p align="left">
   <img width="50%" height="50%" hspace="0" src="./media/azure-pipelines.png">
@@ -642,14 +642,14 @@ stages:
 
 ```
 
-Run the pipeline and see the steps in the build. 
+Run the pipeline and see the steps in the build. If you click on the steps, you can drill down into the step to get some more details about what is going on. 
 
 #### Create Pipeline
 
 As mentioned before, we call this a **Multistage pipeline**, which is defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
 
 
-In the pipeline, we have a Build and Release pipeline chained together. The example YAML in the repository tries to explain the relationships between the different actions and keywords.
+In the pipeline, we have Build and Release stages that are chained together. The example YAML in the repository tries to explain the relationships between the different actions and keywords.
 
 * trigger: Means that the pipeline will automatically trigger on checkin in master branch
 
@@ -671,7 +671,7 @@ Running the pipeline:
   <img width="80%" height="80%" hspace="0" src="./media/devops_stages.jpg">
 </p>
 
-Open the pipeline again and edit it. Once again, you can do this either by changing ````azure-pipelines.yaml```` in your repository, or by going to your pipeline and select "Edit pipeline".
+Open the pipeline again and edit it.
 
 Lets start implementing the "Development stage". Rename the stage to "Build_Development". We will use the docker module in Azure Devops to help us creating the build step.
 
@@ -867,12 +867,7 @@ spec:
 
 Once you have committed the file, open Azure DevOps and watch the automatic build been triggered.
 
-<p align="left">
-  <img width="85%" hspace="0" src="./media/devops_cd.jpg">
-</p>
-
-
-Once the build is finished you can now run ````kubectl```` and watch the number of pods. You should now have 4 "azure-vote-front-*" pods.
+Once the build is finished you can open **Azure Cloud Shell** now run ````kubectl```` and watch the number of pods. You should now have 4 "azure-vote-front-*" pods.
 
 ```console
 
