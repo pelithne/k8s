@@ -617,17 +617,13 @@ Choose "Existing Azure Pipelines YAML file" and then select the path ````/applic
 
 Run the pipeline and see the steps in the build. It will fail since because it is currently not complete.
 
-#### Build Pipeline
+#### Create Pipeline
 
-To make a build we need to follow the same steps you have done manually:
+As mentioned before, we want to create a **Multistage pipeline**, defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
 
-1. Go to your new Pipeline
-2. Clean the file so there is no text inside
-3. Look at the exmple yaml below (explaination of multistage: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
 
-We want to have a Build and Release pipeline chained together. The example YAML below explains the relationships between the different actions.
 
-Copy the yaml-sceleton below into the pipeline and notice the structure:
+In the pipeline, we want to have a Build and Release pipeline chained together. The example YAML below explains the relationships between the different actions.
 
 ```yaml
 
@@ -653,19 +649,22 @@ stages:
 
 ```
 
-With this notation we can create both build and release in the same file. Stages could be for example: "build this app", "run these tests", and "deploy to pre-production" are good examples of stages.
+With this notation we can create both build and release in the same file. 
 
-* trigger: will automatically trigger on checkin in master branch
+* trigger: Means that the pipeline will automatically trigger on checkin in master branch
 
 * pool: the vm type the build will be conducted on
 
-* stage : this would normally be for example "Build"
+* stage: Could be "Build" or "Release" or anything that makes sense 
 
-* jobs: group of several "job"
+* jobs: group of several "job"-sections
 
 * job: group of "steps" to achive the job
 
 * steps: atomic actions
+
+
+Copy the yaml definition above into your azure-pipelines.yaml, and replace all the content of the file. 
 
 Save the pipeline and watch the "A_stage" and "B_stage" run in sequence below when you save and run the pipeline, click on the stages to see live informaiton:
 
@@ -682,7 +681,9 @@ Running the pipeline:
   <img width="80%" height="80%" hspace="0" src="./media/devops_stages.jpg">
 </p>
 
-Open the pipeline again and edit it. Lets start implementing the "Development stage". Rename the stage to "Build_Development"
+Open the pipeline again and edit it. Once again, you can do this either by changing ````azure-pipelines.yaml```` in your repository, or by going to your pipeline and select "Edit pipeline".
+
+Lets start implementing the "Development stage". Rename the stage to "Build_Development". We will use the docker module in Azure Devops to help us creating the build step.
 
 On the right hand search for "Docker" and fill in the details. Make sure your cursor is positioned after "steps" then press "Add".
 
@@ -690,7 +691,7 @@ On the right hand search for "Docker" and fill in the details. Make sure your cu
   <img width="40%" hspace="0" src="./media/devops_docker.jpg">
 </p>
 
-In the yaml file you fill find the following:
+When coosing add, Azure Devops will add a **task** in the azure-pipelines.yaml. In the yaml file you fill find the following:
 
 * task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
 
@@ -737,7 +738,7 @@ stages:
       - bash: echo "B"
 ```
 
-Save and run the pipeline. Make sure it build successfully.
+Save and run the pipeline. Make sure it builds successfully.
 
 <p align="left">
   <img width="65%" hspace="0" src="./media/devops_build.jpg">
@@ -745,19 +746,21 @@ Save and run the pipeline. Make sure it build successfully.
 
 Notice the change of the first stage and also make sure the build was ok by looking into the details of the stage.
 
-After doing the build, we have our image and build tag set. The only thing we need now is to deploy the aaplication to AKS. Do this by adding a release stage to the pipeline yaml. Make sure to use the specific image name and especially the tag just like we did manually earlier.
+After doing the build, we have our image and build tag set. The only thing we need to do now is to deploy the application to AKS. Do this by adding a release stage to the pipeline yaml. Make sure to use the specific image name and especially the tag just like we did manually earlier.
 
-Open the pipeline and edit the stage B to including the release. The release is done by manipulating the applicaiton yaml and deployed to AKS. To achive this search for "Manifest" and add the task:
+Open the pipeline and edit the stage B to include the release. This stage will update our Kubernetes manifest, and deploy the application to AKS. To achive this search for "Manifest" (like you did previously with the docker task) and add it:
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/devops_manifest2.jpg">
 </p>
 
-Make sure the alignment of the task comes under "steps". Also we are adding condition: succeeded('Build_Development') which indicates that the stage is **only** run if and only if the "Build_Development" stage was successfull. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
+Make sure the alignment of the task comes under "steps". 
+
+Also we are adding a condition: succeeded('Build_Development') which indicates that the stage is **only** run if the "Build_Development" stage was successful. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
 
 **Also note the "containers" part** which will update the actual image and tag and append the **$(Build.BuildId)** to the end of the image tag to be deployed.
 
-The Kubernetes manifest task can be read here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/kubernetes-manifest?view=azure-devops
+The Kubernetes manifest task is described here in more detail: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/kubernetes-manifest?view=azure-devops
 
 The final pipeline should look similar to this:
 
@@ -803,7 +806,7 @@ Make sure the pipeline is building and releasing successfully and make sure the 
 
 Let's change some code and watch the whole chain roll from Code commit ->Build->Release. 
 
-Open the file: azure-vote-app/azure-vote/config_file.cfg and change the code:
+Open the file: azure-vote-app/azure-vote/config_file.cfg (using the editor in Azure Devops) and change the code:
 
 ```py
 # UI Configurations
@@ -813,13 +816,15 @@ VOTE2VALUE = 'Pink'    <-- changed
 SHOWHOST = 'false'
 ```
 
-Watch the Build and Release pipeline finalize.
+Remember to commit the change when you are done.
+
+Watch the build automatically triggered in Azure DevOps and see how the Release pipeline starts when the build is done.
 
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/devops_build2.jpg">
 </p>
 
-Watch the build automatically triggered in Azure DevOps. 
+. 
 
 
 To see the change in the application we need the public endpoint of the application. Run the kubectl command to get the service endpoint:
@@ -875,7 +880,7 @@ Once you have committed the file, open Azure DevOps and watch the automatic buil
 </p>
 
 
-Once the build is finished you can now run kubectle and watch the number of pods, you should now have 4 "azure-vote-front-*" pods.
+Once the build is finished you can now run ````kubectl```` and watch the number of pods. You should now have 4 "azure-vote-front-*" pods.
 
 ```console
 
