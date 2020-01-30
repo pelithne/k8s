@@ -1,6 +1,6 @@
-# 1. Kubernetes Workshop
+Kubernetes Workshop
 
-This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, including how to design CI/CD pipelines. 
+This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kuberntetes, including how to design CI/CD pipelines.
 
 You will go through the following steps to complete the workshop:
 
@@ -11,28 +11,30 @@ You will go through the following steps to complete the workshop:
 * Use Helm to create templated Kubernetes applications
 * Use Azure DevOps to setup up build and release pipelines
 * and more...
- 
-## 1.1. Prerequisites
+
+# 1. Prerequisites
 
 You need a valid Azure subscription. If you do not have one, you can sign up for a free trial account here: https://azure.microsoft.com/en-us/free/
 
-## 1.2. Azure Portal
+## 1.1. Azure Portal
 
-To make sure you are correctly setup with a working subscription, make sure you can log in to the Azure portal. Go to https://portal.azure.com. Once logged in, feel free to browse around a little bit to get to know the surroundings! 
+To make sure you are correctly setup with a working subscription, make sure you can log in to the Azure portal. Go to https://portal.azure.com. Once logged in, feel free to browse around a little bit to get to know the surroundings!
 
 It might be a good idea to keep a tab with the Azure Portal open during the workshop, to keep track of the Azure resources you create. We will almost exclusively use CLI based tools during the workshop, but everything we do will be visible in the portal, and all the resources we create could also be created using the portal.
 
-## 1.3. Azure Cloud Shell
+## 1.2. Azure Cloud Shell
 
 We will use the Azure Cloud Shell (ACR) throughout the workshop for all our command line needs. This is a web based shell that has all the necessary tools (like kubectl, az cli, helm, etc) pre-installed.
 
 Start cloud shell by typing the address ````shell.azure.com```` into a web browser. If you have not used cloud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run bash as your shell (not powershell).
 
-#### 1.3.0.1. Protip: You can use ctrl-c to copy text in cloud shell. To paste you have to use shift-insert, or use the right mouse button -> paste. If you are on a Mac, you can use the "normal" Cmd+C/Cmd+V. 
+#### 1.2.0.1. Protip: You can use ctrl-c to copy text in cloud shell. To paste you have to use shift-insert, or use the right mouse button -> paste. If you are on a Mac, you can use the "normal" Cmd+C/Cmd+V. 
 
-#### 1.3.0.2. Protip II: Cloud Shell will time out after 20 minutes of inactivity. When you log back in, you will end up in your home directory, so be sure to ````cd```` into where you are supposed to be.
+#### 1.2.0.2. Protip II: Cloud Shell will time out after 20 minutes of inactivity. When you log back in, you will end up in your home directory, so be sure to ````cd```` into where you are supposed to be.
 
-## 1.4. Get the code
+# 2. Hands-on Exercises
+
+## 2.1. Get the code
 
 The code for this workshop is located in the same repository that you are looking at now. To *clone* the repository to your cloud shell, do this:
 
@@ -46,7 +48,7 @@ Then cd into the repository directory:
 cd k8s
 ````
 
-## 1.5. View the code
+## 2.2. View the code
 
 Azure Cloud Shell has a built in code editor, which is based on the popular VS Code editor. To view/edit all the files in the repository, run code like this:
 
@@ -58,7 +60,7 @@ You can navigate the files in the repo in the left hand menu, and edit the files
 
 For instance, you may want to have a look in the ````application/azure-vote-app```` directory. This is where the code for the application is located. Here you can also find the *Dockerfile* which will be used to build your docker image, in a later step.
 
-## 1.6. Resource Group
+## 2.3. Create Resource Group
 
 All resources in Azure exists in a *Resource Group*. The resource group is a "container" for all the resources you create. 
 
@@ -68,7 +70,7 @@ All the resources you create in this workshop will use the same Resource Group. 
 az group create -n k8s-rg -l westeurope
 ````
 
-## 1.7. Azure Container Registry
+## 2.4. ACR - Azure Container Registry
 
 You will use a private Azure Container Registry to *build* and *store* the docker images that you will deploy to Kubernetes. The name of the the ACR needs to be globally unique, and should consist of only lower case letters. You could for instance use your corporate signum.
 
@@ -80,7 +82,7 @@ The command below will create the container registry and place it in the Resourc
 az acr create --name <your unique ACR name> --resource-group k8s-rg --sku basic
 ````
 
-### 1.7.1. Build images using ACR
+### 2.4.1. Build images using ACR
 
 Docker images can be built in a number of different ways, for instance by using the docker CLI. Another (and easier!) way is to use *Azure Container Registry Tasks*, which is the approach we will use in this workshop.
 
@@ -101,7 +103,7 @@ cd application/azure-vote-app
 az acr build --image azure-vote-front:v1 --registry <your unique ACR name> --file Dockerfile .
 ````
 
-### 1.7.2. List images in registry
+### 2.4.2. List images in registry
 
 To return a list of images that have been built, use the ```az acr repository list``` command:
 
@@ -111,7 +113,19 @@ az acr repository list --name <your unique ACR name> --output table
 
 This image will be deployed from ACR to a Kubernetes cluster in the next step.
 
-## 1.8. Create Kubernetes Cluster
+## 2.5. AKS - Azure Kubernetes Service
+
+AKS is the hosted Kubernetes service on Azure.
+
+Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application will be deployed into your own Kubernetes cluster. You will learn how to:
+
+* Create an AKS Kubernetes Cluster
+* Connect/validate towards the AKS Cluster
+* Update Kubernetes manifest files
+* Run an application in Kubernetes
+* Test the application
+
+### 2.5.1. Create Kubernetes Cluster
 
 Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the following command (assuming that you named your resource group as suggested in a previous step, ````k8s-rg````):
 
@@ -121,16 +135,7 @@ az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-ac
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
-## 1.9. Run applications in Azure Kubernetes Service (AKS)
-
-Kubernetes provides a distributed platform for containerized applications. You build and deploy your own applications and services into a Kubernetes cluster, and let the cluster manage the availability and connectivity. In this step a sample application is deployed into the Kubernetes cluster you created in a previous step. You will learn how to:
-
-* Connect/validate towards the AKS Cluster
-* Update Kubernetes manifest files
-* Run an application in Kubernetes
-* Test the application
-  
-### 1.9.1. Validate towards Kubernetes Cluster
+### 2.5.2. Validate towards Kubernetes Cluster
 
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command (which assumes that you have used the naming proposals above):
 
@@ -144,7 +149,7 @@ To verify that your cluster is up and running you can try a kubectl command, lik
 kubectl get nodes
 ````
 
-#### 1.9.1.1. Update the manifest file
+### 2.5.3. Update a Kubernetes manifest file
 
 You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
@@ -178,7 +183,7 @@ Please also take some time to study the manifest file, to get a better understan
 
 Save and Quit.
 
-### 1.9.2. Deploy the application
+### 2.5.4. Deploy the application
 
 To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the needed Kubernetes objects. Specify the sample manifest file, as shown in the following example:
 
@@ -186,7 +191,7 @@ To deploy your application, use the ```kubectl apply``` command. This command pa
 kubectl apply -f azure-vote-all-in-one-redis.yaml
 ```
 
-### 1.9.3. Test the application
+### 2.5.5. Test the application
 
 A kubernetes-service is created which exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. In order to monitor the progress of the download, you can use ``kubectl get pods`` and ``kubectl describe pod``, like this:
 
@@ -228,7 +233,7 @@ To see the application in action, open a web browser to the external IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
 
-## 1.10. Update an application in Azure Kubernetes Service (AKS)
+### 2.5.6. Update an application in Azure Kubernetes Service (AKS)
 
 After an application has been deployed in Kubernetes, it can be updated by specifying a new container image or image version. When doing so, the update is staged so that only a portion of the deployment is concurrently updated. This staged update enables the application to keep running during the update. It also provides a rollback mechanism if a deployment failure occurs.
 
@@ -238,7 +243,7 @@ In this step the sample Azure Vote app is updated. You learn how to:
 * Create an updated container image
 * Deploy the updated container image to AKS
 
-### 1.10.1. Increase number of pods
+### 2.5.7. Increase number of pods
 
 Let's make a change to the sample application, then update the version already deployed to your AKS cluster. 
 
@@ -287,7 +292,7 @@ azure-vote-front-74b865bcd9-94lrz   1/1     Running   0          49s
 azure-vote-front-74b865bcd9-xfsq8   1/1     Running   0          18m
 ```
 
-### 1.10.2. Update the application
+### 2.5.8. Update the application
 
 The sample application source code can be found inside of the *azure-vote* directory. Open the *config_file.cfg* file with an editor, such as `code`:
 
@@ -307,7 +312,7 @@ SHOWHOST = 'false'
 
 Save and close the file.
 
-### 1.10.3. Update the container image
+### 2.5.9. Update the container image
 
 To build a new front-end image, use ```az acr build``` the same way as before, but make sure to change the version from ````v1```` to ````v2````
 
@@ -317,15 +322,15 @@ az acr build --image azure-vote-front:v2 --registry <your unique ACR name> --fil
 
 This will build a new container image, with the code changes you did in the previous step. The image will be stored in ACR with the same name as before, but with a new version (v2).
 
-### 1.10.4. Deploy the updated application
+### 2.5.10. Deploy the updated application
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version:
 
-Open the file `azure-vote-all-in-one-redis.yaml` again and change `image:` from `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1` to `<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2` on line 47 (or close to 47...).
+Open the file ````azure-vote-all-in-one-redis.yaml```` again and change ````image:```` from ````<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v1```` to ````<Your ACR Name>.azurecr.io/<unique name>/azure-vote-front:v2```` on line 47 (or close to 47...).
 
 Change
 
- ```yaml
+```yaml
     spec:
       containers:
       - name: azure-vote-front
@@ -374,7 +379,7 @@ azure-vote-front-1297194256-tptnx  1/1       Running       0          5m
 azure-vote-front-1297194256-zktw9  1/1       Terminating   0          1m
 ```
 
-### Test the updated application
+### 2.5.11. Test the updated application
 
 To view the updated application, first get the external IP address of the `azure-vote-front` service (will be the same as before, since the service was not updated, only the pod):
 
@@ -386,7 +391,7 @@ Now open a local web browser to the IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
 
-### Clean-up
+### 2.5.12. Clean-up
 
 Make sure the application is deleted from the cluster (otherwise the next part, using Helm, will have issues...)
 
@@ -394,13 +399,13 @@ Make sure the application is deleted from the cluster (otherwise the next part, 
 kubectl delete -f azure-vote-all-in-one-redis.yaml
 ````
 
-## HELM!
+## 2.6. HELM!
 
 Helm is an open-source packaging tool that helps you install and manage the life cycle of Kubernetes applications. Similar to Linux package managers such as APT and Yum, Helm is used to manage Kubernetes charts, which are packages of preconfigured Kubernetes resources.
 
 In this exercise you will use Helm to deploy the same application you just deployed using ````kubectl````.
 
-### Using Helm
+### 2.6.1. Using Helm
 
 Cloud shell already has helm installed, with the latest version of Helm 3. 
 
@@ -416,9 +421,9 @@ Which should give something like:
 version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
 ````
 
-#### Note: In the previous version of Helm, there was a server side component as well, named "Tiller". This is no longer the case.
+#### 2.6.1.1. Note: In the previous version of Helm, there was a server side component as well, named "Tiller". This is no longer the case.
 
-### Helm and Azure Vote!
+### 2.6.2. Helm and Azure Vote!
 
 The repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**. 
 
@@ -443,7 +448,7 @@ to
 image: <your unique ACR name>.azurecr.io/azure-vote-front:v2
 ````
 
-### Deploy Azure-vote app using Helm
+### 2.6.3. Deploy Azure-vote app using Helm
 
 Deploying the azure-vote app using helm can be done with this command, which will give the Helm deployment a name ````azvote```` and use the helm chart in the ````azvote-helmchart```` (indicated by the dot):
 
@@ -453,7 +458,7 @@ helm install azvote .
 
 After some time, you should be able to access the vote app in your browser. To find out when it is available, use ````kubectl get services````
 
-### Helm Upgrade
+### 2.6.4. Helm Upgrade
 
 One of the advantages with Helm is that configuration values can be separated from values that are more static. Have a look at the file ````values.yaml```` which contains configurations that we can change dynamically. For example, you can upgrade your current deployment and give it new configuration values from the command line.
 
@@ -469,7 +474,7 @@ Much better!
   <img width="75%" height="75%" hspace="0" src="./media/beer4.png">
 </p>
 
-### Cleaning up
+### 2.6.5. Cleaning up
 
 To keep things tidy in the cluster, delete the application you just deployed with helm
 
@@ -480,7 +485,7 @@ helm delete azvote
 
 This will remove all the pods and services, and other resources related to the application.
 
-## Azure DevOps with AKS
+## 2.7. Azure DevOps with AKS
 
 <p align="left">
   <img width="65%" height="65%" hspace="0" src="./media/index-hero.jpg">
@@ -492,7 +497,7 @@ In this step you will make a CI/CD pipeline to deploy your application into the 
 * Automatically build the docker container for the application
 * Automatically deploy the docker container to AKS
 
-### Register an account at Azure DevOps
+### 2.7.1. Register an account at Azure DevOps
 
 You can create a free Azure DevOps account at: <https://azure.microsoft.com/en-us/services/devops/>. Azure DevOps is SaaS service from Microsoft. You need a Microsoft account to get started. If you do not have one you can create a free account here: <https://account.microsoft.com/account?lang=en-us>
 
@@ -514,7 +519,7 @@ The left hand side shows you:
 * **TestPlans** - testing overview
 * **Artifacts** - your build artifacts that you might share in other projects, like nuget packages and such.
 
-### Create your Repository
+### 2.7.2. Create your Repository
 
 During this step we will import the same repository we have been working with in previous steps, but this time we will import it into Azure Devops instead.
 
@@ -534,7 +539,7 @@ When the import is finished, you will have your own version of the repository in
 
 In order for for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
 
-#### Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
+#### 2.7.2.1. Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
 
 You can edit the file in your browser by selecting **edit** in the top toolbar. Scroll down in the file, and change 
 
@@ -550,7 +555,7 @@ image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
 
 Don't forget to select "Commit" after the change, to include the change in your repository.
 
-### Connect Azure and Azure DevOps
+### 2.7.3. Connect Azure and Azure DevOps
 
 Make sure you are using the same account in both Azure and Azure DevOps (same email addess).
 
@@ -579,7 +584,7 @@ Make sure to select the right subscription, and the right Kubernetes Cluster.
   <img width="65%" hspace="0" src="./media/devops_aks_srv.jpg">
 </p>
 
-### Create Build and Release Pipelines
+### 2.7.4. Create Build and Release Pipelines
 
 We are going to:
 
@@ -662,7 +667,7 @@ It should look similar to this:
   <img width="80%" height="80%" hspace="0" src="./media/devops_stages.jpg">
 </p>
 
-#### Create Pipeline
+### 2.7.5. Create Pipeline
 
 As mentioned before, we call this a **Multistage pipeline**, which is defined as code. If you want to know more about multistage pipelines, have a look here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml). 
 
@@ -749,7 +754,7 @@ After doing the build, we have our image and build tag set. The only thing we ne
 
 Open the pipeline and edit the stage B to include the release. This stage will update our Kubernetes manifest, and deploy the application to AKS. To achieve this search for "Manifest" (like you did previously with the docker task) and add it.
 
-#### Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````
+#### 2.7.5.1. Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/devops_manifest2.jpg">
@@ -786,7 +791,7 @@ stages:
         Dockerfile: '**/Dockerfile'
         tags: $(Build.BuildId)
 
-# 2. stage 'Release to Development' runs if 'Build Development' succeeds
+# stage 'Release to Development' runs if 'Build Development' succeeds
 - stage: 'Release_to_Development'
   condition: succeeded('Build_Development')
   jobs:
@@ -826,14 +831,14 @@ kubernetes         ClusterIP      10.0.0.1      <none>          443/TCP        4
 
 Copy the **Public IP address** of the azure-vote-front service into the address field of your browser to view the web interface of your application.
 
-### All-In-One
+### 2.7.6. All-In-One
 
 Let's change some code and watch the whole chain roll from Code commit ->Build->Release. 
 
 Open the file: azure-vote-app/azure-vote/config_file.cfg (using the editor in Azure Devops) and change the code:
 
 ```py
-# 3. UI Configurations
+# UI Configurations
 TITLE = 'Azure Voting App'
 VOTE1VALUE = 'Yellow'  <-- changed
 VOTE2VALUE = 'Pink'    <-- changed
@@ -865,15 +870,9 @@ Open the public IP-addess, and watch the Yellow and Pink buttons have changed.
   <img width="75%" height="75%" hspace="0" src="./media/devops_final.jpg">
 </p>
 
-## Scale applications in Azure Kubernetes Service (AKS)
+### 2.7.7. Scale applications in Azure Kubernetes Service (AKS)
 
-In this step you will scale out the pods in the app and try pod autoscaling.
-
-* Use Azure DevOps to scale number of pods
-* Manually scale Kubernetes pods that run your application
-* Configure autoscaling pods that run the app front-end
-
-### Azure DevOps to scale pods
+In this step you will scale out the pods in the app and try basic pod level scaling.
 
 You can use Azure DevOps to configure the number of pods in the cluster for one service. This is a very easy task since all of your infrastructure of Kubernetes resides within the "azure-vote-all-in-one-redis.yaml" file.
 
@@ -909,7 +908,7 @@ azure-vote-front-55fb564887-xwd9t   1/1     Running   0          2d16h
 
 ```
 
-### Cleaning up
+### 2.7.8. Final Clean up
 
 The easiest way to clean up your environment, and avoid unnecessary cost, is to remove the entire *Resource Group*.
 
