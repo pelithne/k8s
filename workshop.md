@@ -28,9 +28,9 @@ We will use the Azure Cloud Shell (ACR) throughout the workshop for all our comm
 
 Start cloud shell by typing the address ````shell.azure.com```` into a web browser. If you have not used cloud shell before, you will be asked to create a storage location for cloud shell. Accept that and make sure that you run bash as your shell (not powershell).
 
-#### 2.2.0.1. Protip: You can use ctrl-c to copy text in cloud shell. To paste you have to use shift-insert, or use the right mouse button -> paste. If you are on a Mac, you can use the "normal" Cmd+C/Cmd+V. 
+**Protip: You can use ctrl-c to copy text in cloud shell. To paste you have to use shift-insert, or use the right mouse button -> paste. If you are on a Mac, you can use the "normal" Cmd+C/Cmd+V.**
 
-#### 2.2.0.2. Protip II: Cloud Shell will time out after 20 minutes of inactivity. When you log back in, you will end up in your home directory, so be sure to ````cd```` into where you are supposed to be.
+**Protip II: Cloud Shell will time out after 20 minutes of inactivity. When you log back in, you will end up in your home directory, so be sure to ````cd```` into where you are supposed to be.**
 
 # 3. Hands-on Exercises
 
@@ -421,7 +421,7 @@ Which should give something like:
 version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
 ````
 
-#### 3.6.1.1. Note: In the previous version of Helm, there was a server side component as well, named "Tiller". This is no longer the case.
+**Note: In the previous version of Helm, there was a server side component as well, named "Tiller". This is no longer the case.**
 
 ### 3.6.2. Helm and Azure Vote!
 
@@ -539,7 +539,7 @@ When the import is finished, you will have your own version of the repository in
 
 In order for for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
 
-#### 3.7.2.1. Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".
+**Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".**
 
 You can edit the file in your browser by selecting **edit** in the top toolbar. Scroll down in the file, and change 
 
@@ -754,7 +754,7 @@ After doing the build, we have our image and build tag set. The only thing we ne
 
 Open the pipeline and edit the stage B to include the release. This stage will update our Kubernetes manifest, and deploy the application to AKS. To achieve this search for "Manifest" (like you did previously with the docker task) and add it.
 
-#### 3.7.5.1. Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````
+**Note: the path to the kubernetes manifest should be ````application/azure-vote-app/azure-vote-all-in-one-redis.yaml````**
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/devops_manifest2.jpg">
