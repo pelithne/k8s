@@ -556,13 +556,13 @@ stages:
   jobs:
    - job: A_job
      steps:
-      - bash: echo "A"
+     - bash: echo "A"
 
 - stage: B_stage
   jobs:
    - job: B_job
      steps:
-      - bash: echo "B"
+     - bash: echo "B"
 
 ```
 
@@ -595,15 +595,16 @@ In the pipeline, we have Build and Release stages that are chained together. The
 
 Open the pipeline again and edit it.
 
-Lets start implementing the "Development stage". Rename the stage to "Build_Development". We will use the docker module in Azure Devops to help us creating the build step.
+Lets start implementing the "Build stage". Rename the "A_Stage" to "Build_Stage". 
 
-On the right hand search for "Docker" and fill in the details. Make sure your cursor is positioned after "steps" then press "Add".
+The pipeline editor has helper functions that cab assist you when creating the pipeline. We will start by using the docker module, to help us create the build stage.
+
+On the right hand search for "Docker" and fill in the details, so that you have something similar to this: 
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/devops_docker.jpg">
 </p>
 
-When choosing add, Azure Devops will add a **task** in the azure-pipelines.yaml. In the yaml file you fill find the following:
 
 * task: the actual build task, in this case Docker build, more information about the task can be found: <https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker?view=azure-devops>
 
@@ -617,10 +618,27 @@ When choosing add, Azure Devops will add a **task** in the azure-pipelines.yaml.
 
 * tags: the Docker build tag to be appended. $(Build.BuildId) is a predefined environment variable in Azure DevOps that is incremented at every build, more information about Azure DevOps built in environment variables can be found here: <https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml>
 
+When you have filled out the form, make sure your cursor is positioned after "steps" then press "Add".
 
-Make sure you add the "tags: $(Build.BuildId)" otherwise the build will not update the tag of the image. Also, the tags: $(Build.BuildId) is unique for this build and in the release stage, we need to refer to this tag in order for the right image to be deployed.
+When choosing add, Azure Devops will add a **task** in the azure-pipelines.yaml, which will look similar to this:
 
-The final yaml file should look similar to this:
+````yaml
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Azure Container Registry'
+        repository: 'azure-vote-front'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildId)
+
+````
+
+Note that this is ````yaml```` so indentation matters. All steps and tasks etc, needs to be indented correctly, or you will have errors.
+
+Make sure you add the "tags: $(Build.BuildId)" otherwise the build will not update the tag of the image. Also, the tags: $(Build.BuildId) are unique for this build and in the release stage, we need to refer to this tag in order for the right image to be deployed.
+
+The final yaml for the **Build stage** should look similar to this:
 
 ```yaml
 trigger:
@@ -631,7 +649,7 @@ pool:
 
 
 stages:
-- stage: 'Build_Development'
+- stage: 'Build_Stage'
   jobs:
   - job:
     steps:
@@ -670,7 +688,7 @@ Open the pipeline and edit the stage B to include the release. This stage will u
 
 Make sure the alignment of the task comes under "steps".
 
-Also we are adding a condition: succeeded('Build_Development') which indicates that the stage is **only** run if the "Build_Development" stage was successful. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
+We are also adding a condition: succeeded('Build_Development') which indicates that the stage is **only** run if the "Build_Development" stage was successful. You can read more about the conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml#conditions
 
 **Also note the "containers" part** which will update the actual image and tag and append the **$(Build.BuildId)** to the end of the image tag to be deployed.
 
