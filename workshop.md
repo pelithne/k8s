@@ -395,7 +395,7 @@ Now open a local web browser to the IP address.
 
 ### 3.5.12. Clean-up
 
-Make sure the application is deleted from the cluster (otherwise the next part, using Helm, will have issues...)
+Make sure the application is deleted from the cluster (otherwise a later step, which is using Helm, might have issues...)
 
 ````bash
 kubectl delete -f azure-vote-all-in-one-redis.yaml
