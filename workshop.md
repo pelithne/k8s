@@ -508,19 +508,7 @@ In this section you will:
 * Create a build stage
 * Create a release stage that is chained to the build stage
 
-We will define the pipeline as **code**, in your repository. The feature is currently in preview and in order to use it you need to enable multistage pipelines, read this: <https://devblogs.microsoft.com/devops/whats-new-with-azure-pipelines>
-
-To enable this preview feature click on your account icon in the top right corner, and select the three dots down to the left, then click on *User settings*.
-
-<p align="left">
-  <img width="25%" hspace="0" src="./media/new-activate-preview-3.png">
-</p>
-
-In the dialogue that follows, select *Preview features* and make sure that the *Multi-stage pipeline* toggle is set to **On**.
-
-<p align="left">
-  <img width="30%" hspace="0" src="./media/devops_multi.jpg">
-</p>
+We will define the pipeline as **code**, in your repository, which simply means that the steps in the pipeline will be described in text, in a yaml-file.
 
 ### 3.6.5. Create a new Pipeline
 
