@@ -193,7 +193,9 @@ kubectl apply -f azure-vote-all-in-one-redis.yaml
 
 ### 3.5.5. Test the application
 
-A kubernetes-service is created which exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. In order to monitor the progress of the download, you can use ``kubectl get pods`` and ``kubectl describe pod``, like this:
+When the manifest is applied, a pod and a service is created. The pod contains the "business logic" of your application and the service exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. 
+
+To monitor the progress of the download, you can use ``kubectl get pods`` and ``kubectl describe pod``, like this:
 
 First use ``kubectl get pods`` to find the name of your pod:
 
@@ -223,7 +225,7 @@ The *EXTERNAL-IP* for the *azure-vote-front* service initially appears as *pendi
 azure-vote-front   10.0.34.242   <pending>     80:30676/TCP   7s
 ```
 
-When the *EXTERNAL-IP* address changes from *pending* to an actual public IP address, use `CTRL-C` to stop the kubectl watch process. The following example shows a public IP address is now assigned:
+When the *EXTERNAL-IP* address changes from *pending* to an actual public IP address, the creation of the service is finished. The following example shows a public IP address is now assigned:
 
 ```bash
 azure-vote-front   10.0.34.242   52.179.23.131   80:30676/TCP   2m
