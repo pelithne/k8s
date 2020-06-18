@@ -719,7 +719,7 @@ stages:
         kubernetesServiceConnection: 'AKS'
         namespace: 'default'
         manifests: 'application/azure-vote-app/azure-vote-all-in-one-redis.yaml'
-        containers: 'arraacrcicd.azurecr.io/azure-vote-front:$(Build.BuildId)'
+        containers: '<Your ACR Name>.azurecr.io/azure-vote-front:$(Build.BuildId)'
 ```
 
 Make sure the pipeline is building and releasing successfully. Please note that you may have to give permission to use the service connections:
