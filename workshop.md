@@ -585,7 +585,7 @@ In the pipeline, we have Build and Release stages that are chained together. The
 
 Open the pipeline again and edit it.
 
-Lets start implementing the "Build stage". Rename the "A_Stage" to "Build_Stage". 
+Lets start implementing the "Build stage". Rename the "A_Stage" to "Build_Development". 
 
 The pipeline editor has helper functions that cab assist you when creating the pipeline. We will start by using the docker module, to help us create the build stage.
 
@@ -639,7 +639,7 @@ pool:
 
 
 stages:
-- stage: 'Build_Stage'
+- stage: 'Build_Development'
   jobs:
   - job:
     steps:
