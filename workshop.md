@@ -559,7 +559,7 @@ stages:
           $(tag)
           
     - upload: manifests
-      artifact: manifests
+      artifact: azure-vote-app/azure-vote-all-in-one-redis.yaml
 
 - stage: Deploy
   displayName: Deploy stage
@@ -587,8 +587,7 @@ stages:
             inputs:
               action: deploy
               manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yml
-                $(Pipeline.Workspace)/manifests/service.yml
+                $(Pipeline.Workspace)/azure-vote-app/azure-vote-all-in-one-redis.yaml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
@@ -610,9 +609,11 @@ resources:
 - repo: self
 ````
 
-After this, a few variables are added. The ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry. 
+After this, a few variables are added. The ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry.
 
 The ````imageRepository```` should point to "azure-vote-front". If you were not able to add that in the previous step, do that now.
+
+The ````dockerfilePath```` is where the pipeline expects a Dockerfile. Since we will be using the same Dockerfile as before, we need to change the pipeline to use that file. Add ````application/azure-vote-app```` to the predefined path. 
 
 
 ````yaml
@@ -622,7 +623,7 @@ variables:
   dockerRegistryServiceConnection: '3b126235-3a6f-1239-8514-10c9cf630123'
   imageRepository: 'azure-vote-front'
   containerRegistry: 'pelithneacr.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  dockerfilePath: '**/application/azure-vote-app/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'pelithneacrb820-auth'
 
@@ -635,20 +636,42 @@ Nest comes the first ````stage```` of the pipeline
 stages:
 - stage: Build
 ````
+
 It uses some of the variables declared above, to build and push the container to your container registry.
 
+
+
 ````yaml
-inputs:
+steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
         command: buildAndPush
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+````
+
+The last step of the build stage is to upload the kubernetes manifest, to make it available for later stages. Make sure to change the path to the manifest, so that it uses the one in the repository (rather than using the dummy manifest created by Azure Devops)
+
+````yaml
+    - upload: manifests
+      artifact: azure-vote-app/azure-vote-all-in-one-redis.
 
 ````
 
-The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster
+The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
+
+The steps are reasonable self-explanatory, but you need to change (once again) the path to the manifest, to use the one in the repository.
+
+````yaml
+manifests: |
+                $(Pipeline.Workspace)/azure-vote-app/azure-vote-all-in-one-redis.yaml
+````
+
+
 
 Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
 
