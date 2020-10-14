@@ -671,6 +671,33 @@ manifests: |
                 $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
 ````
 
+Also, have a look at the container statement:
+
+````yaml
+containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
+````
+What this will do is to replace the container reference in your kubernetes manifest (azure-vote-all-in-one-redis.yaml) with the container built in the build stage.
+
+For this to work, the name of the repository needs to match the name that we are trying to replace with.
+
+You need to edit your ````azure-vote-all-in-one-redis.yaml```` and change this 
+
+````
+containers:
+      - name: azure-vote-front
+        image: microsoft/azure-vote-front:v1
+````
+
+to:
+
+````
+containers:
+      - name: azure-vote-front
+        image: <your ACR name>/azure-vote-front:v1
+````
+
+
 After all the changes, your pipeline should look very similar to the yaml below, except that ````dockerRegistryServiceConnection````, ````containerRegistry```` and ````imagePullSecret```` will be different.
 
 ````yaml
@@ -754,7 +781,6 @@ stages:
                 $(containerRegistry)/$(imageRepository):$(tag)
 
 ````
-
 
 Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
 
