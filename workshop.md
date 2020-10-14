@@ -601,7 +601,7 @@ Have a look at this, and try to understand what each part is doing.
 To break it down a little, these are some of the important things to notice. From the top:
 
 
-The following ensures that when something is added to the master branch of your repository, a new run of the pipeline will be triggered.
+The first lines ensures that when something is added to the master branch of your repository, a new run of the pipeline will be triggered.
 ````yaml
 trigger:
 - master
@@ -610,7 +610,7 @@ resources:
 - repo: self
 ````
 
-After this, a few variables are added. 
+After this, a few variables are added.
 
 * ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry.
 
@@ -677,11 +677,11 @@ Also, have a look at the container statement:
 containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
 ````
-What this will do is to replace the container reference in your kubernetes manifest (azure-vote-all-in-one-redis.yaml) with the container built in the build stage.
+What this will do is to replace the container reference in your kubernetes manifest (called ````azure-vote-all-in-one-redis.yaml````) with the container`that was pushed in the build stage.
 
-For this to work, the name of the repository needs to match the name that we are trying to replace with.
+For this to work, the name of the repository needs to match the name that we are trying to replace it with.
 
-You need to edit your ````azure-vote-all-in-one-redis.yaml```` and change this 
+You need to edit your ````azure-vote-all-in-one-redis.yaml```` and change this:
 
 ````
 containers:
