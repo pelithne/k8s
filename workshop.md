@@ -496,7 +496,7 @@ Choose "Azure Repos Git" as your source code repository, and then select the rep
 First select the repository (e.g. "k8s") then choose "Deploy to Azure Kubernetes Service"
 
 <p align="left">
-  <img width="40%" hspace="0" src="./media/configure_your_pipeline.JPG">
+  <img width="60%" hspace="0" src="./media/configure_your_pipeline.JPG">
 </p>
 
 You will now be assisted in creating a new pipeline for your Kubernetes deployment.
@@ -529,7 +529,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '3b126235-3a6f-1239-8514-10c9cf630123'
-  imageRepository: 'azure-vote-front'
+  imageRepository: 'something-perhaps-not-right'
   containerRegistry: 'pelithneacr.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -559,7 +559,7 @@ stages:
           $(tag)
           
     - upload: manifests
-      artifact: azure-vote-app/azure-vote-all-in-one-redis.yaml
+      artifact: manifests
 
 - stage: Deploy
   displayName: Deploy stage
@@ -587,7 +587,8 @@ stages:
             inputs:
               action: deploy
               manifests: |
-                $(Pipeline.Workspace)/azure-vote-app/azure-vote-all-in-one-redis.yaml
+                $(Pipeline.Workspace)/manifests/deployment.yml
+                $(Pipeline.Workspace)/manifests/service.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
@@ -595,9 +596,9 @@ stages:
 
 ````
 
-Have a look at this, and try to understand what each part is doing. 
+Have a look at this, and try to understand what each part is doing.
 
-To break it down a little, these are some of the important things to notice, from the top
+To break it down a little, these are some of the important things to notice. From the top:
 
 
 The following ensures that when something is added to the master branch of your repository, a new run of the pipeline will be triggered.
@@ -639,8 +640,6 @@ stages:
 
 It uses some of the variables declared above, to build and push the container to your container registry.
 
-
-
 ````yaml
 steps:
     - task: Docker@2
@@ -657,21 +656,18 @@ steps:
 The last step of the build stage is to upload the kubernetes manifest, to make it available for later stages. Make sure to change the path to the manifest, so that it uses the one in the repository (rather than using the dummy manifest created by Azure Devops)
 
 ````yaml
-    - upload: manifests
-      artifact: azure-vote-app/azure-vote-all-in-one-redis.
-
+    - upload: application/azure-vote-app
+      artifact: application/azure-vote-app/
 ````
 
 The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
 
-The steps are reasonable self-explanatory, but you need to change (once again) the path to the manifest, to use the one in the repository.
+The steps are reasonable self-explanatory, but you need to change (once again) the path to the manifest, to use the one in the repository, that was added into ````$(Pipeline.Workspace)````  by the build stage.
 
 ````yaml
 manifests: |
-                $(Pipeline.Workspace)/azure-vote-app/azure-vote-all-in-one-redis.yaml
+                $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
 ````
-
-
 
 Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
 
