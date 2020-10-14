@@ -610,11 +610,13 @@ resources:
 - repo: self
 ````
 
-After this, a few variables are added. The ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry.
+After this, a few variables are added. 
 
-The ````imageRepository```` should point to "azure-vote-front". If you were not able to add that in the previous step, do that now.
+* ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry.
 
-The ````dockerfilePath```` is where the pipeline expects a Dockerfile. Since we will be using the same Dockerfile as before, we need to change the pipeline to use that file. Add ````application/azure-vote-app```` to the predefined path. 
+* ````imageRepository```` should point to "azure-vote-front". If you were not able to add that in the previous step, do that now.
+
+* ````dockerfilePath```` is where the pipeline expects a Dockerfile. Since we will be using the same Dockerfile as before, we need to change the pipeline to use that file. Add ````application/azure-vote-app```` instead of the default path.
 
 
 ````yaml
@@ -632,7 +634,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 ````
 
-Nest comes the first ````stage```` of the pipeline
+Next comes the first ````stage```` of the pipeline:
 ````yaml
 stages:
 - stage: Build
@@ -668,6 +670,91 @@ The steps are reasonable self-explanatory, but you need to change (once again) t
 manifests: |
                 $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
 ````
+
+After all the changes, your pipeline should look very similar to the yaml below, except that ````dockerRegistryServiceConnection````, ````containerRegistry```` and ````imagePullSecret```` will be different.
+
+````yaml
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Services
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '3b122345-3b6f-48a9-8514-10c9cf630340'
+  imageRepository: 'azure-vote-front'
+  containerRegistry: 'pelithneacr.azurecr.io'
+  dockerfilePath: '**/application/azure-vote-app/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'pelithneacrb820-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+  
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          
+    - upload: application/azure-vote-app
+      artifact: application/azure-vote-app/
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'k8s2.default'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+              
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              action: deploy
+              manifests: |
+                $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
+
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
+
+````
+
 
 Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
 
