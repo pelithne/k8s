@@ -1,6 +1,6 @@
 # Create and use secret for image pull
 
-You need to give your AKS kluster access to pull images from your container registry. One way of doing that is to use a service principal, but if that is not possible you can create and image pull secret.
+You need to give your AKS kluster access to pull images from your container registry. One way of doing that is to use a service principal, but if that is not possible you can create an image pull secret.
 
 This secret needs to be included in the kubernetes manifest you use to create your deployment.
 
@@ -9,7 +9,7 @@ This secret needs to be included in the kubernetes manifest you use to create yo
 From your cloud shell (or any shell that is connected to your kubernetes cluster) perform the steps below to create a secret named ````acr-secret````
 
 ````bash
-ACR=<your ACR name>.azurecr.io
+ACR=<your unique ACR name>.azurecr.io
 
 USERNAME=$(az acr credential show -n $ACR --query="username" -o tsv)
 PASSWORD=$(az acr credential show -n $ACR--query="passwords[0].value" -o tsv)
@@ -33,6 +33,8 @@ kubectl create secret docker-registry acr-secret \
   imagePullSecrets:
   - name: acr-secret 
 ````
+
+Note that ````imagePullSecrets```` should be on the same level as ````containers```` and ````nodeSelector````
 
 You should end up with a file similar to this:
 
