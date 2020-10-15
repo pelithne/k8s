@@ -133,7 +133,7 @@ Create an AKS cluster using ````az aks create````. Lets give the cluster the nam
 az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
 ```
 
-### Note: If your subscription does not allow you to create Service Principals, run the command without ````--attach-arc````. You will use a different (more difficult method later...)
+### Note: If your subscription does not allow you to create Service Principals, run the command without ````--attach-acr````. You will use a different (more difficult method later...)
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
