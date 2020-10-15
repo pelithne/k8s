@@ -30,7 +30,7 @@ Now select **New Service Connection** in the top right corner.
 In the search field write "docker"
 
 <p align="left">
-  <img width="30%" hspace="0" src="./media/new-service-connection-docker-registry.PNG">
+  <img width="40%" hspace="0" src="./media/new-service-connection-docker-registry.PNG">
 </p>
 
 Select "Docker Registry" and click **Next**
@@ -40,7 +40,7 @@ In the following screen, first select Registry type - Others.
  Then use the credentials from you Azure Container Registry (Access Keys), like this:
 
 <p align="left">
-  <img width="30%" hspace="0" src="./media/docker-registry-service-connection.PNG">
+  <img width="40%" hspace="0" src="./media/docker-registry-service-connection.PNG">
 </p>
 
 * Docker Registry - Your "Login Server" prepended by https://
@@ -53,7 +53,7 @@ Then click **Save** at the bottom of the screen.
 Create another "New Service Connection". In the search field, type "Kubernetes" and select kubernetes from the search results, then click **Next**.
 
 <p align="left">
-  <img width="30%" hspace="0" src="./media/aks-service-connection.PNG">
+  <img width="40%" hspace="0" src="./media/aks-service-connection.PNG">
 </p>
 
 In the next screen select **KubeConfig** as Authentication method.
@@ -76,7 +76,7 @@ Finally give a name (like "aks-kubeconfig") to the service connection. You shoul
 
 aks-service-connection-kubeconfig.PNG
 <p align="left">
-  <img width="30%" hspace="0" src="./media/aks-service-connection-kubeconfig.PNG">
+  <img width="40%" hspace="0" src="./media/aks-service-connection-kubeconfig.PNG">
 </p>
 
 Finally, click **Verify and Save** to create your Kubernetes service connection.
