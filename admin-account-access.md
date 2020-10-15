@@ -7,13 +7,13 @@ If your subscription does not allow you to create Service Principals, You can al
 After creating your container registry, go to the portal and navigate to the resource. Then click Access Keys in the left hand navigation bar, and enable the toggle for "Admin User", like in the image below:
 
 <p align="left">
-  <img width="75%" height="75%" hspace="0" src="./media/admin-user.PNG">
+  <img width="75%" height="75%" hspace="0" src="./media/admin-user.png">
 </p>
 
 Note that you can see your login server name, the user name and two secrets, either of which you can use (and will use in a later step).
 
 ## Access from Azure Devops
-In order to access Azure Container Registry (for pushing docker images) without a service principal, you need to create a service principal for a basic docker registry. Then you need to use that service connection in your pipelines.
+In order to access Azure Container Registry (for pushing docker images) without a service principal, you need to create a **Service Connection** for a basic docker registry. Then you need to use that service connection in your pipelines.
 
 ### Create Service Connections
 
@@ -299,7 +299,7 @@ stages:
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
               kubernetesServiceConnection: $(kubernetesServiceConnection)
-              
+
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
