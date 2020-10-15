@@ -133,6 +133,8 @@ Create an AKS cluster using ````az aks create````. Lets give the cluster the nam
 az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
 ```
 
+### Note: If your subscription does not allow you to create Service Principals, run the command without ````--attach-arc````. You will use a different (more difficult method later...)
+
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
 ### 3.5.2. Validate towards Kubernetes Cluster
@@ -180,6 +182,9 @@ containers:
 ```
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
+
+### Note: If you previously could not connect your ACR to you AKS using ````--attach-acr```` you need to perform an additional step, which is described <a href="https://github.com/pelithne/k8s/blob/master/imagepullsecret.md">here!</a>
+
 
 Save and Quit.
 
