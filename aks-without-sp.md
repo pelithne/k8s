@@ -6,9 +6,8 @@ In the default scenario, when you create an AKS cluster, a **Service Principal**
 
 
 ````
-az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s --service-principal <a valid SP> --client-secret <SP secret>
+az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s --service-principal <a valid SP> --client-secret <SP secret>
 ````
-
 
 For reference, a service principal looks similar to this (with fake credentials):
 
