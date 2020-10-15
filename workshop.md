@@ -782,6 +782,9 @@ stages:
 
 ````
 
+### Note: If your subscription does not allow you to create Service Principals, then please complete the additional steps described <a href="https://github.com/pelithne/k8s/blob/master/admin-account-access.md">here!</a>
+
+
 Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
 
 After a few seconds, you should see your pipeline starting, and you can drill down into the pipelines to see more details, by clicking on them
