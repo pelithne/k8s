@@ -687,7 +687,7 @@ What this will do is to replace the container reference in your kubernetes manif
 
 For this to work, the name of the repository needs to match the name that we are trying to replace it with.
 
-You need to edit your ````azure-vote-all-in-one-redis.yaml```` and change this:
+If you haven't already done so, you need to edit your ````azure-vote-all-in-one-redis.yaml```` and change this:
 
 ````
 containers:

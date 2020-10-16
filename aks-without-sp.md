@@ -3,7 +3,7 @@
 
 In the default scenario, when you create an AKS cluster, a **Service Principal** will be created for you. If your user does not have permission to create a service principal, you can use an existing one (assuming that one has been created by someone with the necessary permissions).
 
-Alternatively, you can create the AKS cluster with a **Managed Identity** instead. This removes the need to use a pre-provisioned Service Principal.
+Alternatively, you can create the AKS cluster with a **Managed Identity**. This removes the need to use a pre-provisioned Service Principal.
 
 To create a cluster with managed identity:
 ````
