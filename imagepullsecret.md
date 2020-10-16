@@ -1,4 +1,19 @@
-# Create and use secret for image pull
+# Connect to ACR without service principal
+
+## Enable Admin Account
+
+If your subscription does not allow you to create Service Principals, You can allow access to your container registry using the "Admin Account". Note however that this is only recommended for testing scenarios.
+
+After creating your container registry, go to the portal and navigate to the resource. Then click Access Keys in the left hand navigation bar, and enable the toggle for "Admin User", like in the image below:
+
+<p align="left">
+  <img width="75%" hspace="0" src="./media/admin-user.png">
+</p>
+
+Note that you can see your login server name, the user name and two secrets, either of which you can use (and will use below).
+
+
+## Create and use secret for image pull
 
 You need to give your AKS kluster access to pull images from your container registry. One way of doing that is to use a service principal, but if that is not possible you can create an image pull secret.
 

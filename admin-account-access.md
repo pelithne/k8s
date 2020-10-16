@@ -1,25 +1,12 @@
 # Access ACR without Service Principal
 
-## Enable Admin Account
-
-If your subscription does not allow you to create Service Principals, You can allow access to your container registry using the "Admin Account". Note however that this is only recommended for testing scenarios.
-
-After creating your container registry, go to the portal and navigate to the resource. Then click Access Keys in the left hand navigation bar, and enable the toggle for "Admin User", like in the image below:
-
-<p align="left">
-  <img width="75%" hspace="0" src="./media/admin-user.png">
-</p>
-
-Note that you can see your login server name, the user name and two secrets, either of which you can use (and will use in a later step).
-
-## Access from Azure Devops
 In order to access Azure Container Registry (for pushing docker images) without a service principal, you need to create a **Service Connection** for a basic docker registry. Then you need to use that service connection in your pipelines.
 
-### Create Service Connections
+## Create Service Connections
 
 You need to create one service connection for ACR, and one for AKS.
 
-#### Service Connection for ACR
+### Service Connection for ACR
 
 Start by navigating to *Project Settings* at the bottom of the left-hand navigation bar.
 
@@ -49,7 +36,7 @@ In the following screen, first select Registry type - Others.
 
 Then click **Save** at the bottom of the screen.
 
-#### Service Connection for AKS
+### Service Connection for AKS
 Create another "New Service Connection". In the search field, type "Kubernetes" and select kubernetes from the search results, then click **Next**.
 
 <p align="left">
@@ -82,7 +69,7 @@ aks-service-connection-kubeconfig.PNG
 Finally, click **Verify and Save** to create your Kubernetes service connection.
 
 
-### Use Service Connections in pipeline
+## Use Service Connections in pipeline
 You can reference the Service Connection from your pipeline, simply using their names. For instance, you can create a variable called $aks_sc that references your Kubernetes Service Connection by including this in your yaml pipeline
 
 ````yaml
