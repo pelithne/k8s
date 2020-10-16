@@ -1,9 +1,15 @@
 
 # Create cluster with an existing Service Principal
 
-In the default scenario, when you create an AKS cluster, a **Service Principal** will be created for you. If your user does not have permission to create a service principal, you have to use an existing one (assuming that one has been created by someone with the necessary permissions).
+In the default scenario, when you create an AKS cluster, a **Service Principal** will be created for you. If your user does not have permission to create a service principal, you can use an existing one (assuming that one has been created by someone with the necessary permissions).
+
+Alternatively, you can create the AKS cluster with a **Managed Identity** instead. This removes the need to use a pre-provisioned Service Principal.
+
+To create a cluster with managed identity:
+az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s --enable-managed-identity
 
 
+If you do not want to use the managed identity, you can create a cluster with an existing service principal, like this:
 
 ````
 az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s --service-principal <a valid SP> --client-secret <SP secret>
