@@ -1,4 +1,4 @@
-# Access ACR without Managed Identity or Service Principal
+# Access ACR without Service Principal
 
 ## Enable Admin Account
 
