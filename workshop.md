@@ -485,6 +485,8 @@ In this section you will create your pipeline, which will consist of a build sta
 
 We will define the pipeline as **code**, in your repository, which simply means that the steps in the pipeline will be described in text, in a yaml-file.
 
+### Note: If your subscription does not allow you to create Service Principals, then please complete the additional steps described <a href="https://github.com/pelithne/k8s/blob/master/admin-account-access.md">here!</a>
+
 ### 3.6.5. Create a new Pipeline
 
 Go to Pipelines and create a new pipeline:
@@ -602,7 +604,9 @@ stages:
 
 ````
 
-Have a look at this, and try to understand what each part is doing.
+### Edit the pipeline
+
+Have a look at the pipeline, and try to understand what each part is doing.
 
 To break it down a little, these are some of the important things to notice. From the top:
 
@@ -787,9 +791,6 @@ stages:
                 $(containerRegistry)/$(imageRepository):$(tag)
 
 ````
-
-### Note: If your subscription does not allow you to create Service Principals, then please complete the additional steps described <a href="https://github.com/pelithne/k8s/blob/master/admin-account-access.md">here!</a>
-
 
 Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
 

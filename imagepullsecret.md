@@ -13,6 +13,7 @@ After creating your container registry, go to the portal and navigate to the res
 Note that you can see your login server name, the user name and two secrets, either of which you can use (and will use below).
 
 
+
 ## Create and use secret for image pull
 
 You need to give your AKS kluster access to pull images from your container registry. One way of doing that is to use a service principal, but if that is not possible you can create an image pull secret.

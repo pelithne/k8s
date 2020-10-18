@@ -2,6 +2,10 @@
 
 In order to access Azure Container Registry (for pushing docker images) without a service principal, you need to create a **Service Connection** for a basic docker registry. Then you need to use that service connection in your pipelines.
 
+Also, for AKS to be able to retrieve images from ACR, you need to create another service connection.
+
+Furthermore, you will not be able to "automatically" generate a pipeline as is described in steps 3.6.4 and 3.6.5. Instead you will start from an existing pipeline definition from the repository.
+
 ## Create Service Connections
 
 You need to create one service connection for ACR, and one for AKS.
@@ -70,6 +74,11 @@ Finally, click **Verify and Save** to create your Kubernetes service connection.
 
 
 ## Use Service Connections in pipeline
+
+If you can not create service principals, you can not generate a pipeline automatically for deployment to AKS. 
+
+Instead, select to create a new pipeline, and then choose **Existing Azure Pipelines YAML file**
+
 You can reference the Service Connection from your pipeline, simply using their names. For instance, you can create a variable called $aks_sc that references your Kubernetes Service Connection by including this in your yaml pipeline
 
 ````yaml
