@@ -333,3 +333,9 @@ kubectl create secret docker-registry acr-secret \
 This will create a kubernetes secret, named acr-secret, that you will have to include into your deployment manifests.
 
 -->
+
+## Continue back to main workshop
+
+Now that you have created a pipeline, you can continue back to the main workshop.
+
+You should be able to continue at the step "Run Pipeline". 
