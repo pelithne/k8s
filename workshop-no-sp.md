@@ -129,12 +129,9 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the following command (assuming that you named your resource group as suggested in a previous step, ````k8s-rg````):
 
-```azurecli
-az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
-```
-
-### Note: If your subscription does not allow you to create Service Principals, you will have to jump through a few more hoops. Please complete the steps <a href="https://github.com/pelithne/k8s/blob/master/aks-without-sp.md">here!</a>
-
+````
+az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s --enable-managed-identity
+````
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
@@ -152,11 +149,152 @@ To verify that your cluster is up and running you can try a kubectl command, lik
 kubectl get nodes
 ````
 
+## Configure access to ACR 
+
+If your subscription does not allow you to create Service Principals, You can allow access to your container registry using the "Admin Account". Note however that this is only recommended for testing scenarios.
+
+### Enable ACR Admin Account
+
+After creating your container registry, go to the portal and navigate to the resource. Then click Access Keys in the left hand navigation bar, and enable the toggle for "Admin User", like in the image below:
+
+<p align="left">
+  <img width="75%" hspace="0" src="./media/admin-user.png">
+</p>
+
+Note that you can see your login server name, the user name and two secrets, either of which you can use (and will use below).
+
+### Create and use secret for image pull
+
+You need to give your AKS kluster access to pull images from your container registry. One way of doing that is to use a service principal, but if that is not possible you can create an image pull secret.
+
+This secret needs to be included in the kubernetes manifest you use to create your deployment.
+
+### Create secret
+
+From your cloud shell (or any shell that is connected to your kubernetes cluster) perform the steps below to create a secret named ````acr-secret````
+
+````bash
+ACR=<your unique ACR name>.azurecr.io
+
+USERNAME=$(az acr credential show -n $ACR --query="username" -o tsv)
+PASSWORD=$(az acr credential show -n $ACR--query="passwords[0].value" -o tsv)
+
+kubectl create secret docker-registry acr-secret \
+  --docker-server=$ACR \
+  --docker-username=$USERNAME \
+  --docker-password=$PASSWORD \
+  --docker-email=anything@mail.com
+  ````
+  
+  You should get a positive acknowledgement that the secret was created. 
+
+  ### Use secret in deployment
+
+  To use the secret when deploying to AKS, you need to edit ````azure-vote-all-in-one-redis.yaml```` a bit more. 
+
+  You need to add the following, at the very end of the Deployment section for azure-vote-front. 
+
+````yaml
+  imagePullSecrets:
+  - name: acr-secret 
+````
+
+Note that ````imagePullSecrets```` should be on the same level as ````containers```` and ````nodeSelector````
+
+You should end up with a file similar to this:
+
+````yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-vote-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-vote-back
+  template:
+    metadata:
+      labels:
+        app: azure-vote-back
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: azure-vote-back
+        image: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-back
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: azure-vote-back
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-vote-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-vote-front 
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: azure-vote-front
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: azure-vote-front
+        image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        env:
+        - name: REDIS
+          value: "azure-vote-back"
+      imagePullSecrets:
+      - name: acr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-front
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: azure-vote-front
+
+````
+
+
+
+
 ### 3.5.3. Update a Kubernetes manifest file
 
-You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
+You have previously built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
-The manifest file to modify is the one that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
+The manifest file to modify is the one called ````azure-vote-all-in-one-redis.yaml```` that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
 
 The sample manifest file from the git repo cloned in the first tutorial uses the login server name of *microsoft*. Open this manifest file with a text editor, such as `code`:
 
@@ -184,7 +322,7 @@ containers:
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
-### Note: If you previously could not connect your ACR to you AKS using ````--attach-acr```` you need to perform some additional steps, which are described <a href="https://github.com/pelithne/k8s/blob/master/imagepullsecret.md">here!</a>
+
 
 
 Save and Quit.
@@ -199,7 +337,7 @@ kubectl apply -f azure-vote-all-in-one-redis.yaml
 
 ### 3.5.5. Test the application
 
-When the manifest is applied, a pod and a service is created. The pod contains the "business logic" of your application and the service exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. 
+When the manifest is applied, a pod and a service is created. The pod contains the "business logic" of your application and the service exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster.
 
 To monitor the progress of the download, you can use ``kubectl get pods`` and ``kubectl describe pod``, like this:
 
@@ -413,7 +551,7 @@ kubectl delete -f azure-vote-all-in-one-redis.yaml
   <img width="65%" height="65%" hspace="0" src="./media/index-hero.jpg">
 </p>
 
-In this step you will create CI/CD pipelines to deploy your application into the AKS cluster. You will learn how to:  
+In this part you will create CI/CD pipelines to deploy your application into the AKS cluster. You will learn how to:  
 
 * Automatically build an application on check-in
 * Automatically build the docker container for the application
@@ -483,234 +621,116 @@ Don't forget to select "Commit" after the change, to include the change in your 
 
 ### 3.6.4. Create Pipeline
 
-In this section you will create your pipeline, which will consist of a build stage and a deploy stage. 
+In this section you will create your pipeline, which will consist of a build stage and a deploy stage.
 
 We will define the pipeline as **code**, in your repository, which simply means that the steps in the pipeline will be described in text, in a yaml-file.
 
-### Note: If your subscription does not allow you to create Service Principals, then please complete the additional steps described <a href="https://github.com/pelithne/k8s/blob/master/admin-account-access.md">here!</a> Then jump forward to the step "Run Pipeline". 
+First though, you need to create a **Service Connection** for your container registry, to use in your pipelines. This is to allow Azure Devops to access your container registry.
 
-### 3.6.5. Create a new Pipeline
+Then, to access your AKS cluster from your pipeline, you need to create another service connection.
 
-Go to Pipelines and create a new pipeline:
+#### Service Connection for ACR
 
-<p align="left">
-  <img width="65%" hspace="0" src="./media/new_pipeline_v2.jpg">
-</p>
+Start by navigating to *Project Settings* at the bottom of the left-hand navigation bar.
 
-Choose "Azure Repos Git" as your source code repository, and then select the repository that you previously imported to Azure DevOps.
+From the Project Settings screen, click on *Service connections* in the left-hand navigation bar (in the **Pipelines** section).
 
-<p align="left">
-  <img width="30%" hspace="0" src="./media/pipeline_1.JPG">
-</p>
+Now select **New Service Connection** in the top right corner. 
 
-First select the repository (e.g. "k8s") then choose "Deploy to Azure Kubernetes Service"
+In the search field write "docker"
 
 <p align="left">
-  <img width="60%" hspace="0" src="./media/configure_your_pipeline.JPG">
+  <img width="40%" hspace="0" src="./media/new-service-connection-docker-registry.PNG">
 </p>
 
-You will now be assisted in creating a new pipeline for your Kubernetes deployment.
+Select "Docker Registry" and click **Next**
 
-In the "Pop-up" that appears, you need to add the subscription to use (unless it is already added). Then select your newly created AKS cluster, and the namespace to use in the cluster. Select default, for simplicity.
+In the following screen, first select Registry type - Others (do not select Azure Container Registry).
 
-Then add your Container Registry and the image you pushed previously. 
-
-#### Note: if you cannot add the image, you can fix it in a later step
+Then use the credentials from you Azure Container Registry (Access Keys), like this:
 
 <p align="left">
-  <img width="40%" hspace="0" src="./media/deploy_to_aks.JPG">
+  <img width="40%" hspace="0" src="./media/docker-registry-service-connection.PNG">
 </p>
 
+* Docker Registry - Your "Login Server" prepended by https://
+* Docker ID - Your "Username"
+* Docker Password - One of the generated passwords
 
-The pipeline that was created should look similar to this:
+Give the Service Connection a nice name, then click **Save** at the bottom of the screen.
+
+#### Service Connection for AKS
+Once again, select "New Service Connection". In the search field, type "Kubernetes" and select kubernetes from the search results, then click **Next**.
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/aks-service-connection.PNG">
+</p>
+
+In the next screen select **KubeConfig** as Authentication method.
+
+Next, you need to paste your kubeconfig into the KubeConfig-field. To get your kubeconfig, you can run the following command in your cloud shell:
+
+````bash
+az aks get-credentials --resource-group <RG name> --name <Cluster name> --file kubeconfig.txt
+````
+
+Then copy all the contents of the file kubeconfig.txt and paste that into the Kubeconfig field in Azure Devops.
+
+For example you can use **code** to view the file and copy the content.
+
+````bash
+code kubeconfig.txt
+````
+
+Finally give a name (like "aks-kubeconfig") to the service connection. You should end up with something looking similar to this:
+
+aks-service-connection-kubeconfig.PNG
+<p align="left">
+  <img width="40%" hspace="0" src="./media/aks-service-connection-kubeconfig.PNG">
+</p>
+
+Finally, click **Verify and Save** to create your Kubernetes service connection.
+
+
+#### Create from existing file
+
+As mentioned previously, you will use an already existing ````azure-pipelines.yaml```` and modify to match your setup.
+
+Select to **create a new pipeline**, and then choose **Existing Azure Pipelines YAML file**
+
+Use the **master** branch, and ````/application/azure-pipelines.yaml```` as **Path**
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/existing-yaml-file.PNG">
+</p>
+
+Then select **Continue** 
+
+You will come to a "review" page. Just select **save** by clicking on the arrow next to **Run** in the right-hand top corner
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/save.PNG">
+</p>
+
+Now select **Edit** to the left of "Run Pipeline", to edit your pipeline a bit more.
+
+#### Use Service Connections in pipeline
+
+You can reference the Service Connections from your pipeline, simply using their names. For instance, you can create a variable called $kubernetesServiceConnection that references your Kubernetes Service Connection by including this in your yaml pipeline
 
 ````yaml
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
-trigger:
-- master
-
-resources:
-- repo: self
-
-variables:
-
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '3b126235-3a6f-1239-8514-10c9cf630123'
-  imageRepository: 'something-perhaps-not-right'
-  containerRegistry: 'pelithneacr.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'pelithneacrb820-auth'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-  
-
-stages:
-- stage: Build
-  displayName: Build stage
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-          
-    - upload: manifests
-      artifact: manifests
-
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    pool:
-      vmImage: $(vmImageName)
-    environment: 'k8s2.default'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
-            inputs:
-              action: createSecret
-              secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
-            inputs:
-              action: deploy
-              manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yml
-                $(Pipeline.Workspace)/manifests/service.yml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
-
+kubernetesServiceConnection: 'aks-kubeconfig'
 ````
 
-### Edit the pipeline
-
-Have a look at the pipeline, and try to understand what each part is doing.
-
-To break it down a little, these are some of the important things to notice. From the top:
-
-
-The first lines ensures that when something is added to the master branch of your repository, a new run of the pipeline will be triggered.
-````yaml
-trigger:
-- master
-
-resources:
-- repo: self
-````
-
-After this, a few variables are added.
-
-* ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry.
-
-* ````imageRepository```` should point to "azure-vote-front". If you were not able to add that in the previous step, do that now.
-
-* ````dockerfilePath```` is where the pipeline expects a Dockerfile. Since we will be using the same Dockerfile as before, we need to change the pipeline to use that file. Add ````application/azure-vote-app```` instead of the default path.
-
+Then you can use that variable later in the pipeline by referencing the variable. Like so:
 
 ````yaml
-variables:
-
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '3b126235-3a6f-1239-8514-10c9cf630123'
-  imageRepository: 'azure-vote-front'
-  containerRegistry: 'pelithneacr.azurecr.io'
-  dockerfilePath: '**/application/azure-vote-app/Dockerfile'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'pelithneacrb820-auth'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+kubernetesServiceConnection: $(kubernetesServiceConnection)
 ````
 
-Next comes the first ````stage```` of the pipeline:
-````yaml
-stages:
-- stage: Build
-````
+In order to use the service connections you created, you need to put them into the file azure-pipelines.yaml (located in ````application/azure-pipeline.yaml````)
 
-It uses some of the variables declared above, to build and push the container to your container registry.
-
-````yaml
-steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-````
-
-The last step of the build stage is to upload the kubernetes manifest, to make it available for later stages. Make sure to change the path to the manifest, so that it uses the one in the repository (rather than using the dummy manifest created by Azure Devops)
-
-````yaml
-    - upload: application/azure-vote-app
-      artifact: application/azure-vote-app/
-````
-
-The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
-
-The steps are reasonable self-explanatory, but you need to change (once again) the path to the manifest, to use the one in the repository, that was added into ````$(Pipeline.Workspace)````  by the build stage.
-
-````yaml
-manifests: |
-                $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
-````
-
-Also, have a look at the container statement:
-
-````yaml
-containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
-````
-What this will do is to replace the container reference in your kubernetes manifest (called ````azure-vote-all-in-one-redis.yaml````) with the container`that was pushed in the build stage.
-
-For this to work, the name of the repository needs to match the name that we are trying to replace it with.
-
-If you haven't already done so, you need to edit your ````azure-vote-all-in-one-redis.yaml```` and change this:
-
-````
-containers:
-      - name: azure-vote-front
-        image: microsoft/azure-vote-front:v1
-````
-
-to:
-
-````
-containers:
-      - name: azure-vote-front
-        image: <your ACR name>/azure-vote-front:v1
-````
-
-
-After all the changes, your pipeline should look very similar to the yaml below, except that ````dockerRegistryServiceConnection````, ````containerRegistry```` and ````imagePullSecret```` will be different.
+You should have an azure-pipelines.yaml that looks something like this:
 
 ````yaml
 # Deploy to Azure Kubernetes Service
@@ -726,12 +746,12 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '3b122345-3b6f-48a9-8514-10c9cf630340'
+  dockerRegistryServiceConnection: ' '
+  kubernetesServiceConnection: ' '
   imageRepository: 'azure-vote-front'
-  containerRegistry: 'pelithneacr.azurecr.io'
   dockerfilePath: '**/application/azure-vote-app/Dockerfile'
   tag: '$(Build.BuildId)'
-  imagePullSecret: 'pelithneacrb820-auth'
+  imagePullSecret: 'acr-secret'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -768,7 +788,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'k8s2.default'
+    environment: 'k8s'
     strategy:
       runOnce:
         deploy:
@@ -779,6 +799,7 @@ stages:
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
               
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
@@ -786,17 +807,42 @@ stages:
               action: deploy
               manifests: |
                 $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
-
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
 
 ````
 
+In this file you need add your dockerServiceConnection, and your kubernetesServiceConnection.
+
+First, change this:
+````yaml
+  dockerRegistryServiceConnection: ' '
+````
+
+to
+````yaml
+dockerRegistryServiceConnection: 'the name of your ACR Service Connection'
+````
+
+Then change 
+
+````yaml
+kubernetesServiceConnection: ' '
+````
+
+to
+````yaml
+kubernetesServiceConnection: 'the name of your AKS Service Connection'
+````
+
+Save the file.
+
 ## Run pipeline
 
-Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
+Once you understand what the pipeline is doing (within reason :-) ), click "Run".
 
 After a few seconds, you should see your pipeline starting, and you can drill down into the pipelines to see more details, by clicking on them
 
@@ -807,7 +853,7 @@ After a few seconds, you should see your pipeline starting, and you can drill do
 
 
 
- Also make sure the Azure Container Registry is updated with a new tag and check the status of the AKS cluster in Azure Cloud Shell.
+ Also make sure the container in Azure Container Registry is updated with a new tag and check the status of the AKS cluster in Azure Cloud Shell.
 
 To make sure the application is running, you need to find the public IP address of the LoadBalancer. Use ````kubectl get svc```` in Azure Cloud shell:
 
