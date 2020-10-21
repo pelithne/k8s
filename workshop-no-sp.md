@@ -722,11 +722,13 @@ You will come to a "review" page. Just select **save** by clicking on the arrow 
   <img width="40%" hspace="0" src="./media/save.PNG">
 </p>
 
-Now select **Edit** to the left of "Run Pipeline", to edit your pipeline a bit more.
+
 
 #### 3.7.3.4. Use Service Connections in pipeline
 
 You can reference the Service Connections (that you created previously) from your pipeline, simply using their names.
+
+Select **Edit** to the left of "Run Pipeline", to edit your pipeline.
 
 You should have an azure-pipelines.yaml that looks something like this:
 
