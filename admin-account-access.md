@@ -26,7 +26,7 @@ In the search field write "docker"
 
 Select "Docker Registry" and click **Next**
 
-In the following screen, first select Registry type - Others (no dot select Azure Container Registry).
+In the following screen, first select Registry type - Others (do not select Azure Container Registry).
 
 Then use the credentials from you Azure Container Registry (Access Keys), like this:
 
