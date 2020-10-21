@@ -11,8 +11,8 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: "<Your ACR Service Connection name>"
-  kubernetesServiceConnection: "<Your AKS Service Connection name>"
+  dockerRegistryServiceConnection: " "
+  kubernetesServiceConnection: " "
   imageRepository: 'azure-vote-front'
   dockerfilePath: '**/application/azure-vote-app/Dockerfile'
   tag: '$(Build.BuildId)'
