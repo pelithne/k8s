@@ -184,7 +184,7 @@ containers:
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
-### Note: If you previously could not connect your ACR to you AKS using ````--attach-acr```` you need to perform an additional step, which is described <a href="https://github.com/pelithne/k8s/blob/master/imagepullsecret.md">here!</a>
+### Note: If you previously could not connect your ACR to you AKS using ````--attach-acr```` you need to perform some additional steps, which are described <a href="https://github.com/pelithne/k8s/blob/master/imagepullsecret.md">here!</a>
 
 
 Save and Quit.
