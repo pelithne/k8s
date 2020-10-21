@@ -831,7 +831,7 @@ to
 kubernetesServiceConnection: 'the name of your AKS Service Connection'
 ````
 
-Save the file. This will trigger the pipeline to run.
+Save the file. This will commit the file to your repo, and will trigger the pipeline to run.
 
 #### 3.7.3.5. Run pipeline
 
