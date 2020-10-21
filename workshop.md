@@ -476,7 +476,7 @@ to
 image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
 ````
 
-This change is necessary for a string substitions that the pipeline will do in a later step.
+This change is necessary for a string substition that the pipeline will do in a later step.
 
 Don't forget to select "Commit" after the change, to include the change in your repository.
 
