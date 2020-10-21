@@ -719,7 +719,7 @@ Then select **Continue**
 You will come to a "review" page. Just select **save** by clicking on the arrow next to **Run** in the right-hand top corner
 
 <p align="left">
-  <img width="40%" hspace="0" src="./media/save.PNG">
+  <img width="30%" hspace="0" src="./media/save.PNG">
 </p>
 
 
