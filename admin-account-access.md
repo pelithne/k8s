@@ -41,7 +41,7 @@ Then use the credentials from you Azure Container Registry (Access Keys), like t
 Give the Service Connection a nice name, then click **Save** at the bottom of the screen.
 
 ### Service Connection for AKS
-Create another "New Service Connection". In the search field, type "Kubernetes" and select kubernetes from the search results, then click **Next**.
+Once again, select "New Service Connection". In the search field, type "Kubernetes" and select kubernetes from the search results, then click **Next**.
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/aks-service-connection.PNG">
