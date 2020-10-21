@@ -14,7 +14,7 @@ az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --load-bala
 
 Azure container registry does not support managed identity yet, so you can not attach it to AKS with a simple flag. You will have to configure your ACR to accept an admin user with password. This is described later in the main workshop instructions.
 
-## Create with a existing Service Principal
+## Create with an existing Service Principal
 
 If you do not want to use the managed identity, you can create a cluster with an existing service principal, like this:
 
