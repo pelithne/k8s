@@ -217,7 +217,7 @@ kubectl describe pod <pod name>
 
 You can also use ``kubectl describe`` to trouble shoot any problems you might have with the deployment (for instance, a common problem is **Error: ErrImagePull**, which can be caused by incorrect credentials or incorrect address/path to the container in ACR. It can also happen if the Kubernetes Cluster does not have read permission in the Azure Container Registry.
 
-Once your container has been pulled and started, showing state **READY**, you can instead start monitoring the service to see when a public IP address has been created.
+Once your container has been pulled and started, showing state **READY**, you can instead start monitoring the **service** to see when a public IP address has been created.
 
 To monitor progress, use the `kubectl get service`. You will probably have to repeats a few times, as it can take a while to get the public IP address.
 
