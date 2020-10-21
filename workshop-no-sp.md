@@ -793,21 +793,17 @@ steps:
           $(tag)
 ````
 
-The last step of the build stage is to upload the kubernetes manifest, to make it available for later stages. Make sure to change the path to the manifest, so that it uses the one in the repository (rather than using the dummy manifest created by Azure Devops)
-
-````yaml
-    - upload: application/azure-vote-app
-      artifact: application/azure-vote-app/
-````
+The last step of the build stage is to upload the kubernetes manifest, to make it available for later stages.
 
 The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
 
-Also, have a look at the container statement:
+Have a look at the ````containers```` statement:
 
 ````yaml
 containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
 ````
+
 What this will do is to replace the container reference in your kubernetes manifest with the container that was pushed in the build stage.
 
 #### 3.7.3.4. Use Service Connections in pipeline
