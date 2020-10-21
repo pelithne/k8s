@@ -4,7 +4,7 @@ If your subscription does not allow creation of Service Principal, you will not 
 
 First, you need to create a **Service Connection** for your container registry, to use in your pipelines.
 
-Then, for AKS to be able to retrieve images from ACR, you need to create another service connection.
+Then, to access your AKS cluster from your pipeline, you need to create another service connection.
 
 ## Create Service Connections
 
