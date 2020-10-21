@@ -330,6 +330,12 @@ az acr build --image azure-vote-front:v2 --registry <your unique ACR name> --fil
 
 This will build a new container image, with the code changes you did in the previous step. The image will be stored in ACR with the same name as before, but with a new version (v2).
 
+You can check that all went well with the ````az acr repository show-tags```` command:
+
+````bash
+az acr repository show-tags --name <Your ACR Name> --repository azure-vote-front --output table
+````
+
 ### 3.5.10. Deploy the updated application
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version:
