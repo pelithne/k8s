@@ -41,7 +41,7 @@ kubectl create secret docker-registry acr-secret \
 
   ## Use secret in deployment
 
-  To use the secret when deploying to AKS, you need to edit the deployment file a bit more. 
+  To use the secret when deploying to AKS, you need to edit ````azure-vote-all-in-one-redis.yaml```` a bit more. 
 
   You need to add the following, at the very end of the Deployment section for azure-vote-front. 
 
