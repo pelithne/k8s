@@ -725,10 +725,9 @@ In order to use the service connections you created, you need to put them into t
 
 You should have an azure-pipelines.yaml that looks something like this:
 
+
+
 ````yaml
-# 4. Deploy to Azure Kubernetes Service
-# 5. Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Services
-# 6. https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
 - master
@@ -738,7 +737,6 @@ resources:
 
 variables:
 
-  # 7. Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: ' '
   kubernetesServiceConnection: ' '
   imageRepository: 'azure-vote-front'
@@ -746,7 +744,6 @@ variables:
   tag: '$(Build.BuildId)'
   imagePullSecret: 'acr-secret'
 
-  # 8. Agent VM image name
   vmImageName: 'ubuntu-latest'
   
 
@@ -833,7 +830,7 @@ kubernetesServiceConnection: 'the name of your AKS Service Connection'
 
 Save the file.
 
-### 8.0.1. Run pipeline
+#### 3.7.3.5. Run pipeline
 
 Once you understand what the pipeline is doing (within reason :-) ), click "Run".
 
@@ -862,14 +859,13 @@ kubernetes         ClusterIP      10.0.0.1      <none>          443/TCP        4
 
 Copy the **Public IP address** of the azure-vote-front service into the address field of your browser to view the web interface of your application.
 
-### 8.0.2. Auto deploy
+### 3.7.4. Auto deploy
 
 Let's change some code and watch the whole chain roll from Code commit ->Build->Release.
 
 Open the file: azure-vote-app/azure-vote/config_file.cfg (using the editor in Azure Devops) and change the code:
 
 ```py
-# UI Configurations
 TITLE = 'Azure Voting App'
 VOTE1VALUE = 'Yellow'  <-- changed
 VOTE2VALUE = 'Pink'    <-- changed
@@ -901,7 +897,7 @@ Open the public IP-addess, and watch the Yellow and Pink buttons have changed.
   <img width="75%" height="75%" hspace="0" src="./media/devops_final.jpg">
 </p>
 
-### 8.0.3. Scale applications in Azure Kubernetes Service (AKS)
+### 3.7.5. Scale applications in Azure Kubernetes Service (AKS)
 
 In this step you will scale out the pods in the app and try basic pod level scaling.
 
@@ -939,7 +935,7 @@ azure-vote-front-55fb564887-xwd9t   1/1     Running   0          2d16h
 
 ```
 
-### 8.0.4. Clean up
+### 3.7.6. Clean up
 
 The easiest way to clean up your environment, and avoid unnecessary cost, is to remove the entire *Resource Group*.
 
@@ -951,17 +947,17 @@ Assuming that the Resource Group name is k8s-rg, type the following command:
 az group delete -n k8s-rg
 ````
 
-## 8.1. Extra tasks
+## 3.8. Extra tasks
 
 If you still have time, and want to learn more.
 
-### 8.1.1. HELM
+### 3.8.1. HELM
 
 Helm is an open-source packaging tool that helps you install and manage the life cycle of Kubernetes applications. Similar to Linux package managers such as APT and Yum, Helm is used to manage Kubernetes charts, which are packages of preconfigured Kubernetes resources.
 
 In this exercise you will use Helm to deploy the same application you just deployed using ````kubectl````.
 
-#### 8.1.1.1. Using Helm
+#### 3.8.1.1. Using Helm
 
 Cloud shell already has helm installed, with the latest version of Helm 3.
 
@@ -979,7 +975,7 @@ version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be
 
 **Note: In the previous version of Helm, there was a server side component as well, named "Tiller". This is no longer the case.**
 
-#### 8.1.1.2. Helm and Azure Vote
+#### 3.8.1.2. Helm and Azure Vote
 
 The repository that you cloned in the beginning of the tutorial (or during preparations) contains a **helm chart** to deploy the application using **Helm**.
 
@@ -1004,7 +1000,7 @@ to
 image: <your unique ACR name>.azurecr.io/azure-vote-front:v2
 ````
 
-#### 8.1.1.3. Deploy Azure-vote app using Helm
+#### 3.8.1.3. Deploy Azure-vote app using Helm
 
 Deploying the azure-vote app using helm can be done with this command, which will give the Helm deployment a name ````azvote```` and use the helm chart in the ````azvote-helmchart```` (indicated by the dot):
 
@@ -1014,7 +1010,7 @@ helm install azvote .
 
 After some time, you should be able to access the vote app in your browser. To find out when it is available, use ````kubectl get services````
 
-#### 8.1.1.4. Helm Upgrade
+#### 3.8.1.4. Helm Upgrade
 
 One of the advantages with Helm is that configuration values can be separated from values that are more static. Have a look at the file ````values.yaml```` which contains configurations that we can change dynamically. For example, you can upgrade your current deployment and give it new configuration values from the command line.
 
@@ -1030,7 +1026,7 @@ Much better!
   <img width="75%" height="75%" hspace="0" src="./media/beer4.png">
 </p>
 
-#### 8.1.1.5. Cleaning up
+#### 3.8.1.5. Cleaning up
 
 To keep things tidy in the cluster, delete the application you just deployed with helm
 
