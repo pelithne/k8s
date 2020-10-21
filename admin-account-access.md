@@ -79,19 +79,19 @@ As mentioned previously, you will use an already existing ````azure-pipelines.ya
 
 Select to **create a new pipeline**, and then choose **Existing Azure Pipelines YAML file**
 
-You can reference the Service Connections from your pipeline, simply using their names. For instance, you can create a variable called $aks_sc that references your Kubernetes Service Connection by including this in your yaml pipeline
+You can reference the Service Connections from your pipeline, simply using their names. For instance, you can create a variable called $kubernetesServiceConnection that references your Kubernetes Service Connection by including this in your yaml pipeline
 
 ````yaml
-aks_sc: "aks-kubeconfig"
+kubernetesServiceConnection: 'aks-kubeconfig'
 ````
 
 Then you can use that variable later in the pipeline by referencing the variable. Like so:
 
 ````yaml
-kubernetesServiceConnection: $(aks_sc)
+kubernetesServiceConnection: $(kubernetesServiceConnection)
 ````
 
-In order to use the service connections you created, you need to put them into the file azure-pipelines.yaml, which was created automatically for you in a previous step, and which you have already modified a bit.
+In order to use the service connections you created, you need to put them into the file azure-pipelines.yaml (located in ````application/azure-pipeline.yaml````)
 
 You should have an azure-pipelines.yaml that looks something like this:
 
@@ -178,7 +178,7 @@ stages:
 
 ````
 
-In this file you need to replace the dockerServiceConnection, and your kubernetesServiceConnection.
+In this file you need add your dockerServiceConnection, and your kubernetesServiceConnection.
 
 First, change this:
 ````yaml
