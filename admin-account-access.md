@@ -38,7 +38,7 @@ Then use the credentials from you Azure Container Registry (Access Keys), like t
 * Docker ID - Your "Username"
 * Docker Password - One of the generated passwords
 
-Then click **Save** at the bottom of the screen.
+Give the Service Connection a nice name, then click **Save** at the bottom of the screen.
 
 ### Service Connection for AKS
 Create another "New Service Connection". In the search field, type "Kubernetes" and select kubernetes from the search results, then click **Next**.
