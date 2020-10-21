@@ -797,14 +797,14 @@ The last step of the build stage is to upload the kubernetes manifest, to make i
 
 The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
 
-Have a look at the ````containers```` statement:
+It´s fairly self-explanatory, but have a look at the ````containers```` statement:
 
 ````yaml
 containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
 ````
 
-What this will do is to replace the container reference in your kubernetes manifest with the container that was pushed in the build stage.
+What this will do is to replace the container reference in your kubernetes manifest with the container that was pushed in the build stage. This is using a string replacement, which is why you needed to change your manifest to point to your own Azure Container Registry in an earlier step.
 
 #### 3.7.3.4. Use Service Connections in pipeline
 
