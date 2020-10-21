@@ -1,14 +1,14 @@
 # Create pipeline from existing file
 
-In order to access Azure Container Registry (for pushing docker images) without a service principal, you need to create a **Service Connection** for a basic docker registry. Then you need to use that service connection in your pipelines.
+If your subscription does not allow creation of Service Principal, you will not be able to "automatically" generate a pipeline as is described in steps 3.6.4 and 3.6.5. Instead you will start from an existing pipeline definition from the repository. This pipeline has most of the configurations you need, but you are required to do some changes. 
 
-Also, for AKS to be able to retrieve images from ACR, you need to create another service connection.
+First, you need to create a **Service Connection** for your container registry, to use in your pipelines.
 
-Furthermore, you will not be able to "automatically" generate a pipeline as is described in steps 3.6.4 and 3.6.5. Instead you will start from an existing pipeline definition from the repository.
+Then, for AKS to be able to retrieve images from ACR, you need to create another service connection.
 
 ## Create Service Connections
 
-You need to create one service connection for ACR, and one for AKS.
+As mentioned above, you need to create one service connection for ACR, and one for AKS.
 
 ### Service Connection for ACR
 
@@ -26,9 +26,9 @@ In the search field write "docker"
 
 Select "Docker Registry" and click **Next**
 
-In the following screen, first select Registry type - Others.
+In the following screen, first select Registry type - Others (no dot select Azure Container Registry).
 
- Then use the credentials from you Azure Container Registry (Access Keys), like this:
+Then use the credentials from you Azure Container Registry (Access Keys), like this:
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/docker-registry-service-connection.PNG">
@@ -75,9 +75,9 @@ Finally, click **Verify and Save** to create your Kubernetes service connection.
 
 ## Use Service Connections in pipeline
 
-If you can not create service principals, you can not generate a pipeline automatically for deployment to AKS. 
+As mentioned previously, you will use an already existing ````azure-pipelines.yaml```` and modify to match your setup.
 
-Instead, select to create a new pipeline, and then choose **Existing Azure Pipelines YAML file**
+Select to **create a new pipeline**, and then choose **Existing Azure Pipelines YAML file**
 
 You can reference the Service Connection from your pipeline, simply using their names. For instance, you can create a variable called $aks_sc that references your Kubernetes Service Connection by including this in your yaml pipeline
 
@@ -109,11 +109,12 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '3b122345-3b6f-48a9-8514-10c9cf630340'
+  dockerRegistryServiceConnection: "<Your ACR Service Connection name>"
+  kubernetesServiceConnection: "<Your AKS Service Connection name>"
   imageRepository: 'azure-vote-front'
   dockerfilePath: '**/application/azure-vote-app/Dockerfile'
   tag: '$(Build.BuildId)'
-  imagePullSecret: 'pelithneacrb820-auth'
+  imagePullSecret: 'acr-secret'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -150,7 +151,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'k8s2.default'
+    environment: 'k8s'
     strategy:
       runOnce:
         deploy:
@@ -161,6 +162,7 @@ stages:
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
               
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
@@ -168,170 +170,36 @@ stages:
               action: deploy
               manifests: |
                 $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
-
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
 
 ````
 
-In this file you need to replace the dockerServiceConnection, and you need to add your kubernetes service connection
+In this file you need to replace the dockerServiceConnection, and your kubernetesServiceConnection.
 
 First, change this:
 ````yaml
-  dockerRegistryServiceConnection: '3b122345-3b6f-48a9-8514-10c9cf630340'
+  dockerRegistryServiceConnection: ' '
 ````
 
 to
 ````yaml
-dockerRegistryServiceConnection: "the name of your ACR Service Connection
+dockerRegistryServiceConnection: 'the name of your ACR Service Connection'
 ````
 
-Then add this, just below ````dockerRegistryServiceConnection````
+Then change 
 
 ````yaml
-kubernetesServiceConnection: "the name of your AKS Service Connection"
+kubernetesServiceConnection: ' '
 ````
 
-Then add a reference to the kubernetes service connection in both of the two KubernetesManifest tasks, at the end of each task. 
-
+to
 ````yaml
-task: KubernetesManifest@0
-displayName: Create imagePullSecret
-inputs:
-  action: createSecret
-  secretName: $(imagePullSecret)
-  dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-  kubernetesServiceConnection: $(kubernetesServiceConnection)  <--- add this!
+kubernetesServiceConnection: 'the name of your AKS Service Connection'
 ````
-
-and
-
-````yaml
-task: KubernetesManifest@0
-displayName: Deploy to Kubernetes cluster
-inputs:
-  action: deploy
-  manifests: |
-    $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
-  imagePullSecrets: |
-    $(imagePullSecret)
-  containers: |
-    $(containerRegistry)/$(imageRepository):$(tag)
-  kubernetesServiceConnection: $(kubernetesServiceConnection)  <--- add this!
-
-````
-
-You should end up with a pipeline that looks similar to this:
-
-````yaml
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Services
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
-trigger:
-- master
-
-resources:
-- repo: self
-
-variables:
-
-  # Container registry service connection established during pipeline creation
-  # dockerRegistryServiceConnection: '3b126235-3a6f-48a9-8514-10c9cf630680'
-  dockerRegistryServiceConnection: "acr-adminuser-connection"
-  kubernetesServiceConnection: "aks-kubeconfig"
-  imageRepository: 'azure-vote-front'
-  containerRegistry: 'pelithneacr.azurecr.io'
-  dockerfilePath: '**/application/azure-vote-app/Dockerfile'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'acr-secret'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-  
-
-stages:
-- stage: Build
-  displayName: Build stage
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-    - upload: application/azure-vote-app
-      artifact: application/azure-vote-app/
-
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    pool:
-      vmImage: $(vmImageName)
-    environment: 'k8s3'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
-            inputs:
-              action: createSecret
-              secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              kubernetesServiceConnection: $(kubernetesServiceConnection)
-
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
-            inputs:
-              action: deploy
-              manifests: |
-                $(Pipeline.Workspace)/application/azure-vote-app/azure-vote-all-in-one-redis.yaml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
-              kubernetesServiceConnection: $(kubernetesServiceConnection)
-````
-
-<!-- 
-
-## Access from AKS (Kubernetes)
-In order to allow your Kubernetes cluster to access your container registry, you need to create an "Image Pull Secret".
-
-In your cloud shell, perform the following steps.
-
-````bash
-ACR=<Your ACR name>.azurecr.io
-
-USER=$(az acr credential show -n $ACR --query="username" -o tsv)
-
-PASSWORD=$(az acr credential show -n $ACR --query="passwords[0].value" -o tsv)
-
-kubectl create secret docker-registry acr-secret \
-  --docker-server=$ACR \
-  --docker-username=$USER \
-  --docker-password=$PASSWORD \
-  --docker-email=anything@abc123.net
-  ````
-
-This will create a kubernetes secret, named acr-secret, that you will have to include into your deployment manifests.
-
--->
 
 ## Continue back to main workshop
 
