@@ -190,7 +190,7 @@ kubectl create secret docker-registry acr-secret \
 
   ### Use secret in deployment
 
-  To use the secret when deploying to AKS, you need to edit ````azure-vote-all-in-one-redis.yaml```` a bit more. 
+  To use the secret when deploying to AKS, you need to edit the kubernetes manifest. The manifest file to modify is the one called ````azure-vote-all-in-one-redis.yaml```` that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
 
   You need to add the following, at the very end of the Deployment section for azure-vote-front. 
 
@@ -260,7 +260,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+        image: microsoft/azure-vote-front:v1
         ports:
         - containerPort: 80
         resources:
@@ -288,13 +288,9 @@ spec:
 ````
 
 
-
-
-### 3.5.3. Update a Kubernetes manifest file
+### 3.5.3. Use Docker Container in deployment
 
 You have previously built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
-
-The manifest file to modify is the one called ````azure-vote-all-in-one-redis.yaml```` that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
 
 The sample manifest file from the git repo cloned in the first tutorial uses the login server name of *microsoft*. Open this manifest file with a text editor, such as `code`:
 
@@ -321,9 +317,6 @@ containers:
 ```
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
-
-
-
 
 Save and Quit.
 
