@@ -177,7 +177,7 @@ From your cloud shell (or any shell that is connected to your kubernetes cluster
 ACR=<your unique ACR name>.azurecr.io
 
 USERNAME=$(az acr credential show -n $ACR --query="username" -o tsv)
-PASSWORD=$(az acr credential show -n $ACR--query="passwords[0].value" -o tsv)
+PASSWORD=$(az acr credential show -n $ACR --query="passwords[0].value" -o tsv)
 
 kubectl create secret docker-registry acr-secret \
   --docker-server=$ACR \
@@ -192,6 +192,12 @@ kubectl create secret docker-registry acr-secret \
 
   To use the secret when deploying to AKS, you need to edit the kubernetes manifest. The manifest file to modify is the one called ````azure-vote-all-in-one-redis.yaml```` that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
 
+  To edit the file, you can for instance use the **code** editor:
+
+  ````yaml
+code azure-vote-all-in-one-redis.yaml
+````
+
   You need to add the following, at the very end of the Deployment section for azure-vote-front. 
 
 ````yaml
@@ -200,6 +206,7 @@ kubectl create secret docker-registry acr-secret \
 ````
 
 Note that ````imagePullSecrets```` should be on the same level as ````containers```` and ````nodeSelector````
+
 
 You should end up with a file similar to this:
 
@@ -287,6 +294,7 @@ spec:
 
 ````
 
+Save the file and quit (right-click-> save, then right-click->quit)
 
 ### 3.6.5. Use Docker Container in deployment
 
@@ -591,7 +599,7 @@ Then type in the URL to the repository (this is becoming familiar by now... :-) 
 
 When the import is finished, you will have your own version of the repository in Azure Devops. The code that you will work with in this part of the tutorial is located in the ````application/azure-vote-app```` folder.
 
-In order for for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the application folder.
+In order for for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the ````application/azure-vote-app```` folder.
 
 **Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".**
 
@@ -689,7 +697,16 @@ Finally, click **Verify and Save** to create your Kubernetes service connection.
 
 As mentioned previously, you will use an already existing ````azure-pipelines.yaml```` and modify to match your setup.
 
-Select to **create a new pipeline**, and then choose **Existing Azure Pipelines YAML file**
+Go to **Pipelines** in the left-hand navigation bar. Select to **create a new pipeline**, and then choose **Existing Azure Pipelines YAML file**
+
+In the "Where is your code" page, select **Azure Repos Git**
+
+
+<p align="left">
+  <img width="40%" hspace="0" src="./media/where-is-your-code.PNG">
+</p>
+
+Then select the repository you just created (perhaps named k8s)
 
 Use the **master** branch, and ````/application/azure-pipelines.yaml```` as **Path**
 
@@ -709,23 +726,9 @@ Now select **Edit** to the left of "Run Pipeline", to edit your pipeline a bit m
 
 #### 3.7.3.4. Use Service Connections in pipeline
 
-You can reference the Service Connections from your pipeline, simply using their names. For instance, you can create a variable called $kubernetesServiceConnection that references your Kubernetes Service Connection by including this in your yaml pipeline
-
-````yaml
-kubernetesServiceConnection: 'aks-kubeconfig'
-````
-
-Then you can use that variable later in the pipeline by referencing the variable. Like so:
-
-````yaml
-kubernetesServiceConnection: $(kubernetesServiceConnection)
-````
-
-In order to use the service connections you created, you need to put them into the file azure-pipelines.yaml (located in ````application/azure-pipeline.yaml````)
+You can reference the Service Connections (that you created previously) from your pipeline, simply using their names.
 
 You should have an azure-pipelines.yaml that looks something like this:
-
-
 
 ````yaml
 
@@ -828,11 +831,9 @@ to
 kubernetesServiceConnection: 'the name of your AKS Service Connection'
 ````
 
-Save the file.
+Save the file. This will trigger the pipeline to run.
 
 #### 3.7.3.5. Run pipeline
-
-Once you understand what the pipeline is doing (within reason :-) ), click "Run".
 
 After a few seconds, you should see your pipeline starting, and you can drill down into the pipelines to see more details, by clicking on them
 
@@ -891,7 +892,7 @@ kubernetes         ClusterIP      10.0.0.1       <none>           443/TCP       
 
 ```
 
-Open the public IP-addess, and watch the Yellow and Pink buttons have changed.
+Open the public IP-address, and watch the Yellow and Pink buttons have changed.
 
 <p align="left">
   <img width="75%" height="75%" hspace="0" src="./media/devops_final.jpg">

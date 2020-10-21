@@ -28,7 +28,7 @@ From your cloud shell (or any shell that is connected to your kubernetes cluster
 ACR=<your unique ACR name>.azurecr.io
 
 USERNAME=$(az acr credential show -n $ACR --query="username" -o tsv)
-PASSWORD=$(az acr credential show -n $ACR--query="passwords[0].value" -o tsv)
+PASSWORD=$(az acr credential show -n $ACR --query="passwords[0].value" -o tsv)
 
 kubectl create secret docker-registry acr-secret \
   --docker-server=$ACR \
