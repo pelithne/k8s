@@ -562,7 +562,7 @@ kubectl delete -f azure-vote-all-in-one-redis.yaml
   <img width="65%" height="65%" hspace="0" src="./media/index-hero.jpg">
 </p>
 
-In this part you will create CI/CD pipelines to deploy your application into the AKS cluster. You will learn how to:  
+In this part you will create a CI/CD pipeline to deploy your application into the AKS cluster. You will learn how to:  
 
 * Automatically build an application on check-in
 * Automatically build the docker container for the application
@@ -593,7 +593,7 @@ The left hand side shows you:
 
 ### 3.7.2. Create your Repository
 
-During this step we will import the same repository we have been working with in previous steps, but this time we will import it into Azure Devops instead.
+During this step we will import the same repository we have been working with in previous steps, but this time we will import it into Azure Devops instead of cloning it to your cloud shell.
 
 To do this, start by clicking on *Repos*.
 
@@ -602,14 +602,14 @@ Select "import a repository"
   <img width="40%" height="40%" hspace="0" src="./media/import-repo-1.png">
 </p>
 
-Then type in the URL to the repository (this is becoming familiar by now... :-) ): https://github.com/pelithne/k8s and click **Import**
+Then type in the URL to the repository: https://github.com/pelithne/k8s and click **Import**
 <p align="left">
   <img width="40%" height="40%" hspace="0" src="./media/import-repo-2.png">
 </p>
 
 When the import is finished, you will have your own version of the repository in Azure Devops. The code that you will work with in this part of the tutorial is located in the ````application/azure-vote-app```` folder.
 
-In order for for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the ````application/azure-vote-app```` folder.
+In order for Azure Devops to use the container that you created in previous steps, you need to update the Kubernetes Manifest (once again!). Navigate to the manifest named ````azure-vote-all-in-one-redis.yaml```` in the ````application/azure-vote-app```` folder.
 
 **Note: The repo you imported is the "original" repo, which does not have any of the changes you made before, so you start from "scratch".**
 
@@ -732,7 +732,83 @@ You will come to a "review" page. Just select **save** by clicking on the arrow 
   <img width="30%" hspace="0" src="./media/save.PNG">
 </p>
 
+Take some time to understand the content of the pipeline. 
 
+To break it down a little, these are some of the important things to notice. From the top:
+
+
+The first lines ensures that when something is added to the master branch of your repository, a new run of the pipeline will be triggered.
+````yaml
+trigger:
+- master
+
+resources:
+- repo: self
+````
+
+After this, a few variables are added.
+
+* ````dockerRegistryServiceConnection```` is the identity of the connection to your Container Registry.
+
+* ````kubernetesServiceConnection```` is the identity of the connection to your AKS cluster.
+
+* ````imageRepository```` should point to "azure-vote-front".
+
+* ````dockerfilePath```` is where the pipeline expects a Dockerfile. Since we will be using the same Dockerfile as before, we need to change the pipeline to use that file. Add ````application/azure-vote-app```` instead of the default path.
+
+
+````yaml
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: ''
+  kubernetesServiceConnection: ''
+  imageRepository: 'azure-vote-front'
+  dockerfilePath: '**/application/azure-vote-app/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'acr-secret'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+````
+
+Next comes the first ````stage```` of the pipeline:
+````yaml
+stages:
+- stage: Build
+````
+
+It uses some of the variables declared above, to build and push the container to your container registry.
+
+````yaml
+steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+````
+
+The last step of the build stage is to upload the kubernetes manifest, to make it available for later stages. Make sure to change the path to the manifest, so that it uses the one in the repository (rather than using the dummy manifest created by Azure Devops)
+
+````yaml
+    - upload: application/azure-vote-app
+      artifact: application/azure-vote-app/
+````
+
+The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
+
+Also, have a look at the container statement:
+
+````yaml
+containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
+````
+What this will do is to replace the container reference in your kubernetes manifest with the container that was pushed in the build stage.
 
 #### 3.7.3.4. Use Service Connections in pipeline
 
