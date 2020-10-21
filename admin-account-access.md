@@ -111,7 +111,6 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '3b122345-3b6f-48a9-8514-10c9cf630340'
   imageRepository: 'azure-vote-front'
-  containerRegistry: 'pelithneacr.azurecr.io'
   dockerfilePath: '**/application/azure-vote-app/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'pelithneacrb820-auth'
