@@ -360,7 +360,7 @@ And then run:
 kubectl apply -f azure-vote-all-in-one-redis.yaml
 ````
 
-Note in the output of the command, how only the azure-vote-front deployment is *configured* while the others are *unchanged*. This is because the changes made to the manifest only impacts the azure-vote-front deployment. In other words, only the necessary things are changed, while the rest are left untouched.
+Note in the output of the command, how only the azure-vote-front deployment is *configured* while the others are *unchanged*. This is because the changes made to the manifest only impacts the azure-vote-front deployment. In other words, only the necessary things are changed, while the rest is left untouched.
 
 ````bash
 deployment.apps/azure-vote-back unchanged
