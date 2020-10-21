@@ -190,7 +190,11 @@ kubectl create secret docker-registry acr-secret \
 
   ### 3.6.4. Use secret in deployment
 
-  To use the secret when deploying to AKS, you need to edit the kubernetes manifest. The manifest file to modify is the one called ````azure-vote-all-in-one-redis.yaml```` that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
+  To use the secret when deploying to AKS, it needs to exist in the kubernetes manifest. The manifest file in this case is the one called ````azure-vote-all-in-one-redis.yaml```` that was downloaded when cloning the repository in a previous step. The location of the manifest file is in the ````./k8s/application/azure-vote-app```` directory.
+
+  For convenience, the file in the repo already contains an ````imagePullSecrets```` section with a secret name ````acr-secret````.
+
+  If you created a secret named ````acr-secret```` then you are good to go. If not, you need to edit the manifest a bit.
 
   To edit the file, you can for instance use the **code** editor:
 
@@ -198,11 +202,11 @@ kubectl create secret docker-registry acr-secret \
 code azure-vote-all-in-one-redis.yaml
 ````
 
-  You need to add the following, at the very end of the Deployment section for azure-vote-front. 
+  You need to add your secret, at the very end of the Deployment section for azure-vote-front.
 
 ````yaml
   imagePullSecrets:
-  - name: acr-secret 
+  - name: acr-secret
 ````
 
 Note that ````imagePullSecrets```` should be on the same level as ````containers```` and ````nodeSelector````
