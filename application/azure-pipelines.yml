@@ -11,7 +11,6 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  # dockerRegistryServiceConnection: '3b126235-3a6f-48a9-8514-10c9cf630680'
   dockerRegistryServiceConnection: "acr-adminuser-connection"
   kubernetesServiceConnection: "aks-kubeconfig"
   imageRepository: 'azure-vote-front'
