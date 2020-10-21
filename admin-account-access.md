@@ -79,7 +79,7 @@ As mentioned previously, you will use an already existing ````azure-pipelines.ya
 
 Select to **create a new pipeline**, and then choose **Existing Azure Pipelines YAML file**
 
-You can reference the Service Connection from your pipeline, simply using their names. For instance, you can create a variable called $aks_sc that references your Kubernetes Service Connection by including this in your yaml pipeline
+You can reference the Service Connections from your pipeline, simply using their names. For instance, you can create a variable called $aks_sc that references your Kubernetes Service Connection by including this in your yaml pipeline
 
 ````yaml
 aks_sc: "aks-kubeconfig"
