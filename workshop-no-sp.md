@@ -64,7 +64,7 @@ For instance, you may want to have a look in the ````application/azure-vote-app`
 
 All resources in Azure exists in a *Resource Group*. The resource group is a "container" for all the resources you create.
 
-## Note: in this workshop you are all sharing the same subscription, so you need to create your own Resource Group with a unique name, perhaps using your corporate id.
+## Note: in this workshop you are all sharing the same subscription, so you need to create your own Resource Group with a unique name, perhaps using your corporate id. Throughout the workshop, remember to use this unique RG.
 
 All the resources you create in this workshop will use the same Resource Group. The command below will create a resource group named ````k8s-rg```` in West Europe. 
 
