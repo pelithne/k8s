@@ -187,7 +187,7 @@ Please also take some time to study the manifest file, to get a better understan
 ### Note: If you previously could not connect your ACR to you AKS using ````--attach-acr```` you need to perform some additional steps, which are described <a href="https://github.com/pelithne/k8s/blob/master/imagepullsecret.md">here!</a>
 
 
-Save and Quit.
+Right click Save and then right click Quit.
 
 ### 3.5.4. Deploy the application
 
