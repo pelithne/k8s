@@ -94,7 +94,7 @@ code application/azure-vote-app/Dockerfile
 
 As you can see, this very basic Dockerfile will use a *base image* from ````tiangolo/uwsgi-nginx-flask:python3.6-alpine3.8````.
 
-On top of that base image, it will install ````redis```` and then take the contents of the directory ````./azure-vote```` and copy it into the container in the path ````/app````.
+On top of that base image, it will install [redis-py](https://pypi.org/project/redis/) and then take the contents of the directory ````./azure-vote```` and copy it into the container in the path ````/app````.
 
 To build the docker container image, cd into the right directory, and use the ````az acr build```` command:
 
