@@ -513,7 +513,7 @@ In the "Pop-up" that appears, you need to add the subscription to use (unless it
 
 Then add your Container Registry and the image you pushed previously. 
 
-#### Note: if you cannot add the image, you can fix it in a later step
+#### Note: if you cannot add the image, you can fix it in a later step (it appears we have a bug here)
 
 <p align="left">
   <img width="40%" hspace="0" src="./media/deploy_to_aks.JPG">
@@ -528,7 +528,7 @@ The pipeline that was created should look similar to this:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- master
+- main
 
 resources:
 - repo: self
@@ -610,14 +610,19 @@ Have a look at the pipeline, and try to understand what each part is doing.
 
 To break it down a little, these are some of the important things to notice. From the top:
 
+The first lines ensures that when something is added to the main branch of your repository, a new run of the pipeline will be triggered. For convenience, we will change this to "master" instead. 
 
-The first lines ensures that when something is added to the master branch of your repository, a new run of the pipeline will be triggered.
+
+Change this
+````yaml
+trigger:
+- main
+````
+
+To this:
 ````yaml
 trigger:
 - master
-
-resources:
-- repo: self
 ````
 
 After this, a few variables are added.
