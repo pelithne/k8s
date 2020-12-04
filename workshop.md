@@ -487,8 +487,6 @@ In this section you will create your pipeline, which will consist of a build sta
 
 We will define the pipeline as **code**, in your repository, which simply means that the steps in the pipeline will be described in text, in a yaml-file.
 
-### Note: If your subscription does not allow you to create Service Principals, then please complete the additional steps described <a href="https://github.com/pelithne/k8s/blob/master/admin-account-access.md">here!</a> Then jump forward to the step "Run Pipeline". 
-
 ### 3.6.5. Create a new Pipeline
 
 Go to Pipelines and create a new pipeline:
