@@ -799,7 +799,7 @@ stages:
 
 ## Run pipeline
 
-Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline.
+Once you understand what the pipeline is doing (within reason :-) ), click "Save and Run". This will create a new file azure-pipelines.yaml and commit that to your repository, and then execute the pipeline. Make sure that **Commit directly to the master branch** is selected.
 
 After a few seconds, you should see your pipeline starting, and you can drill down into the pipelines to see more details, by clicking on them
 
