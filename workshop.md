@@ -679,7 +679,7 @@ The last step of the build stage is to upload the kubernetes manifest, to make i
 
 The following ````deploy```` stage, has two jobs. One for pulling the container from the registry, and one for deploying the application to you AKS cluster.
 
-The steps are reasonable self-explanatory, but you need to change (once again) the path to the manifest, to use the one in the repository, that was added into ````$(Pipeline.Workspace)````  by the build stage.
+The steps are reasonable self-explanatory, but you need to change (once again) the path to the manifest, to use the one in the repository, that was added into ````$(Pipeline.Workspace)````  by the build stage. Note: you will only use one manifest, so remove any other references under ````manifests````
 
 ````yaml
 manifests: |
