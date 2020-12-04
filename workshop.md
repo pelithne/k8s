@@ -127,14 +127,11 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### 3.5.1. Create Kubernetes Cluster
 
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the following command (assuming that you named your resource group as suggested in a previous step, ````k8s-rg````):
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the following command (assuming that you named your resource group as suggested in a previous step, ````k8s-rg````). Note the ````--attach-acr```` parameter. This will setup a service principle that gives your AKS cluster access to your Container Registry.
 
 ```azurecli
 az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
 ```
-
-### Note: If your subscription does not allow you to create Service Principals, you will have to jump through a few more hoops. Please complete the steps <a href="https://github.com/pelithne/k8s/blob/master/aks-without-sp.md">here!</a>
-
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
@@ -183,9 +180,6 @@ containers:
 ```
 
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
-
-### Note: If you previously could not connect your ACR to you AKS using ````--attach-acr```` you need to perform some additional steps, which are described <a href="https://github.com/pelithne/k8s/blob/master/imagepullsecret.md">here!</a>
-
 
 Right click Save and then right click Quit.
 
