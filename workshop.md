@@ -38,7 +38,7 @@ Start cloud shell by typing the address ````shell.azure.com```` into a web brows
 In your **Cloud Shell** make sure that you are using the right subscription by running this command
 
 ````
-az account set --subscription <subscription name>
+az account set --subscription <subscription ID>
 ````
 
 You will get info about which subscription to use during the workshop. 
