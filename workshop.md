@@ -34,6 +34,15 @@ Start cloud shell by typing the address ````shell.azure.com```` into a web brows
 
 # 3. Hands-on Exercises
 
+## 3.0.5 Use the right subscription
+In your **Cloud Shell** make sure that you are using the right subscription by running this command
+
+````
+az account set --subscription <subscription name>
+````
+
+You will get info about which subscription to use during the workshop. 
+
 ## 3.1. Get the code
 
 The code for this workshop is located in the same repository that you are looking at now. To *clone* the repository to your cloud shell, do this:
