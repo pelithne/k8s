@@ -32,16 +32,7 @@ Start cloud shell by typing the address ````shell.azure.com```` into a web brows
 
 **Protip II: Cloud Shell will time out after 20 minutes of inactivity. When you log back in, you will end up in your home directory, so be sure to ````cd```` into where you are supposed to be.**
 
-# 3. Hands-on Exercises
-
-## 3.0.5 Use the right subscription
-In your **Cloud Shell** make sure that you are using the right subscription by running this command
-
-````
-az account set --subscription <subscription ID>
-````
-
-You will get info about which subscription to use during the workshop. 
+# 3. Hands-on Exercises 
 
 ## 3.1. Get the code
 
