@@ -14,15 +14,22 @@ You will go through the following steps to complete the workshop:
 
 # 2. Prerequisites
 
+## 2.1 Subscription
 You need a valid Azure subscription. If you do not have one, you can sign up for a free trial account here: <https://azure.microsoft.com/en-us/free/>
 
-## 2.1. Azure Portal
+To use a specific subscription, use the ````account```` command like this (with your subscription id):
+````
+az account set --subscription <subscription-id>
+````
+If don't h ave a shell set up to run this command, there will be instructions further down to do that.
+
+## 2.2. Azure Portal
 
 To make sure you are correctly setup with a working subscription, make sure you can log in to the Azure portal. Go to <https://portal.azure.com.> Once logged in, feel free to browse around a little bit to get to know the surroundings!
 
 It might be a good idea to keep a tab with the Azure Portal open during the workshop, to keep track of the Azure resources you create. We will almost exclusively use CLI based tools during the workshop, but everything we do will be visible in the portal, and all the resources we create could also be created using the portal.
 
-## 2.2. Azure Cloud Shell
+## 2.3. Azure Cloud Shell
 
 We will use the Azure Cloud Shell (ACS) throughout the workshop for all our command line needs. This is a web based shell that has all the necessary tools (like kubectl, az cli, helm, etc) pre-installed.
 
