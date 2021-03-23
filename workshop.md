@@ -69,12 +69,14 @@ For instance, you may want to have a look in the ````application/azure-vote-app`
 
 ## 3.3. Create Resource Group
 
-All resources in Azure exists in a *Resource Group*. The resource group is a "container" for all the resources you create. 
+All resources in Azure exists in a *Resource Group*. The resource group is a "placeholder" for all the resources you create. 
 
-All the resources you create in this workshop will use the same Resource Group. The command below will create a resource group named ````k8s-rg```` in West Europe. 
+All the resources you create in this workshop will use the same Resource Group. Use the commnd below to create the resource group.
+
+If you are working in a shared subscription, make sure that you create a uniqely named resource group, eg by using your corporate signum.
 
 ````bash
-az group create -n k8s-rg -l westeurope
+az group create -n <resource-group-name> -l westeurope
 ````
 
 ## 3.4. ACR - Azure Container Registry
@@ -83,10 +85,10 @@ You will use a private Azure Container Registry to *build* and *store* the docke
 
 The reason it needs to be unique, is that your ACR will get a Fully Qualified Domain Name (FQDN), on the form ````<Your unique ACR name>.azurecr.io````
 
-The command below will create the container registry and place it in the Resource Group you created previously (k8s-rg).
+The command below will create the container registry and place it in the Resource Group you created previously.
 
 ````bash
-az acr create --name <your unique ACR name> --resource-group k8s-rg --sku basic
+az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic
 ````
 
 ### 3.4.1. Build images using ACR
@@ -134,10 +136,10 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### 3.5.1. Create Kubernetes Cluster
 
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the following command (assuming that you named your resource group as suggested in a previous step, ````k8s-rg````). Note the ````--attach-acr```` parameter. This will setup a service principle that gives your AKS cluster access to your Container Registry.
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` parameter. This will setup a service principle that gives your AKS cluster access to your Container Registry.
 
 ```azurecli
-az aks create --resource-group k8s-rg --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
+az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 3 --node-vm-size Standard_B2s
 ```
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
@@ -147,7 +149,7 @@ The creation time for the cluster can be up to 10 minutes, so this might be a go
 In order to use `kubectl` you need to connect to the Kubernetes cluster, using the following command (which assumes that you have used the naming proposals above):
 
 ```azurecli
-az aks get-credentials --resource-group k8s-rg --name k8s
+az aks get-credentials --resource-group <resource-group-name> --name k8s
 ```
 
 To verify that your cluster is up and running you can try a kubectl command, like ````kubectl get nodes```` which  will show you the nodes (virtual machines) that are active in your cluster.
@@ -917,12 +919,10 @@ azure-vote-front-55fb564887-xwd9t   1/1     Running   0          2d16h
 
 The easiest way to clean up your environment, and avoid unnecessary cost, is to remove the entire *Resource Group*.
 
-To do this, go back to Azure Cloud Shell.
-
-Assuming that the Resource Group name is k8s-rg, type the following command:
+To do this, go back to Azure Cloud Shell and delete the entire resource group:
 
 ````azurecli
-az group delete -n k8s-rg
+az group delete -n <resource-group-name>
 ````
 
 ## 3.7. Extra tasks
