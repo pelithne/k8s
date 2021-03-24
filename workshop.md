@@ -25,7 +25,7 @@ If don't h ave a shell set up to run this command, there will be instructions fu
 
 ## 2.2. Azure Portal
 
-To make sure you are correctly setup with a working subscription, make sure you can log in to the Azure portal. Go to <https://portal.azure.com.> Once logged in, feel free to browse around a little bit to get to know the surroundings!
+To make sure you are correctly setup with a working subscription, make sure you can log in to the Azure portal. Go to <https://portal.azure.com> Once logged in, feel free to browse around a little bit to get to know the surroundings!
 
 It might be a good idea to keep a tab with the Azure Portal open during the workshop, to keep track of the Azure resources you create. We will almost exclusively use CLI based tools during the workshop, but everything we do will be visible in the portal, and all the resources we create could also be created using the portal.
 
