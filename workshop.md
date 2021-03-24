@@ -428,6 +428,9 @@ In this step you will create CI/CD pipelines to deploy your application into the
 * Automatically build the docker container for the application
 * Automatically deploy the docker container to AKS
 
+### Note: The GUI changes from time to time. You should be able to follow the instructions anyway, but if you are blocked don't hesitate to ask.
+
+
 ### 3.6.1. Register an account at Azure DevOps
 
 You can create a free Azure DevOps account at: <https://azure.microsoft.com/en-us/services/devops/>. Azure DevOps is SaaS service from Microsoft. 
