@@ -156,7 +156,7 @@ If govenance policies does not allow the creation of a service principal, or man
 The resulting command to create the cluster, looks like this
 
 ```azurecli
-az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --outbound-type userDefinedRouting --vnet-subnet-id /subscriptions/<subscription ID>/resourceGroups/<rg name>/providers/Microsoft.Network/virtualNetworks/<vnet name>/subnets/<subnet name> --pod-cidr 172.20.0.0/22 --network-plugin kubenet --service-principal <service principal ID> --client-secret <service principal secret> --docker-bridge-address 172.17.0.1/16
+az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --outbound-type userDefinedRouting --vnet-subnet-id /subscriptions/<subscription ID>/resourceGroups/<rg name>/providers/Microsoft.Network/virtualNetworks/<vnet name>/subnets/<subnet name> --pod-cidr 172.20.0.0/22 --network-plugin kubenet --service-principal <service principal ID> --client-secret <service principal secret> --docker-bridge-address 172.17.0.1/16
 ```
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
