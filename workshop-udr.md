@@ -1,6 +1,6 @@
 # 1. Kubernetes Workshop
 
-## Note: Follow this insrtuction if your Azure environment does not allow you to create a Public IP address
+## Note: Follow this instruction if your Azure environment does not allow you to create a Public IP address
 
 This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kubernetes, including how to design CI/CD pipelines.
 
