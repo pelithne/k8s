@@ -138,7 +138,7 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### 3.5.1. Create Kubernetes Cluster
 
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` parameter. This will setup a service principle that gives your AKS cluster access to your Container Registry.
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command.
 
 If the Azure policies does not allow creation of public IP addresses, you can deploy the Kubernetes cluster without an external load balancer. To achieve this you need to use a few specific parameters:
 ````
@@ -156,7 +156,7 @@ If govenance policies does not allow the creation of a service principal, or man
 The resulting command to create the cluster, looks like this
 
 ```azurecli
-az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --outbound-type userDefinedRouting --vnet-subnet-id /subscriptions/<subscription ID>/resourceGroups/<rg name>/providers/Microsoft.Network/virtualNetworks/<vnet name>/subnets/<subnet name> --pod-cidr 172.20.0.0/22 --network-plugin kubenet --service-principal <service principal ID> --client-secret <service principal secret> --docker-bridge-address 172.17.0.1/16 --attach-acr <your unique ACR name> 
+az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --outbound-type userDefinedRouting --vnet-subnet-id /subscriptions/<subscription ID>/resourceGroups/<rg name>/providers/Microsoft.Network/virtualNetworks/<vnet name>/subnets/<subnet name> --pod-cidr 172.20.0.0/22 --network-plugin kubenet --service-principal <service principal ID> --client-secret <service principal secret> --docker-bridge-address 172.17.0.1/16
 ```
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
