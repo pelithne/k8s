@@ -263,9 +263,9 @@ metadata:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
-ports:
-- port: 8080
-  targetPort: 80
+  ports:
+  - port: 8080
+    targetPort: 80
 
 ```
 
