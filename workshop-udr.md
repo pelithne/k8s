@@ -138,6 +138,11 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### 3.5.1. Create Kubernetes Cluster
 
+### Note: You need to first Create a subnet and UDR
+Before you can deploy the cluster into the resource group you need to create a subnet in the VNET you are using. Then you need to create a User Defined Route in the subnet.
+
+More instructions to come
+
 Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command.
 
 If the Azure policies does not allow creation of public IP addresses, you can deploy the Kubernetes cluster without an external load balancer. To achieve this you need to use a few specific parameters:
