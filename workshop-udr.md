@@ -141,7 +141,28 @@ Kubernetes provides a distributed platform for containerized applications. You b
 ### Note: You need to first Create a subnet and UDR
 Before you can deploy the cluster into the resource group you need to create a subnet in the VNET you are using. Then you need to create a User Defined Route in the subnet.
 
-More instructions to come
+[10:07] Bäckström, Oscar
+
+Identify an unused subnet IP range from your VNet
+In Azure portal navigate to Home>Subscriptions>(your subscription)>(your network resource group)>(your VNet resource)>Settings>Subnets
+Click on +Subnet
+Add name, e.g. snet-(name)-aks-dev-weu
+Add subnet address range: paste value from PPT, e.g. 10.48.6.240/28
+Select Network security group: nsg-(xyz)-nonprod
+Select Route table: rt-(xyz)-nonprod
+Click Save
+
+[10:07] Bäckström, Oscar
+
+1. Identify an unused subnet IP range from your VNet
+2. In Azure portal navigate to Home>Subscriptions>(your subscription)>(your network resource group)>(your VNet resource)>Settings>Subnets
+3. Click on +Subnet
+4. Add name, e.g. snet-(name)-aks-dev-weu
+5. Add subnet address range: paste value from PPT, e.g. 10.48.6.240/28
+6. Select Network security group: nsg-(xyz)-nonprod
+7. Select Route table: rt-(xyz)-nonprod
+8. Click Save
+
 
 Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command.
 
