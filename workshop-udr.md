@@ -143,23 +143,6 @@ Before you can deploy the cluster into the resource group you need to create a s
 
 [10:07] Bäckström, Oscar
 
-Identify an unused subnet IP range from your VNet
-In Azure portal navigate to Home>Subscriptions>(your subscription)>(your network resource group)>(your VNet resource)>Settings>Subnets
-
-Click on +Subnet
-
-Add name, e.g. snet-(name)-aks-dev-weu
-
-Add subnet address range: paste value from PPT, e.g. 10.48.6.240/28
-
-Select Network security group: nsg-(xyz)-nonprod
-
-Select Route table: rt-(xyz)-nonprod
-
-Click Save
-
-[10:07] Bäckström, Oscar
-
 1. Identify an unused subnet IP range from your VNet
 2. In Azure portal navigate to Home>Subscriptions>(your subscription)>(your network resource group)>(your VNet resource)>Settings>Subnets
 3. Click on +Subnet
