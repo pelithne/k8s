@@ -138,6 +138,13 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### Note: you may need a special command to create your cluster. Ask you coach for guidance
 
+
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` parameter. This will setup a service principle that gives your AKS cluster access to your Container Registry.
+
+```azurecli
+az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4
+```
+
 ### Note2: If the command below doesnt work, you can use a two-step approach. 
 
 1: Create cluster:
@@ -150,12 +157,6 @@ az aks create --resource-group <resource-group-name> --name <aks cluster name> -
 az aks update -n <aks cluster name> -g <resource-group-name> --attach-acr <acr-name>
 ```
 ### End Note 2
-
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` parameter. This will setup a service principle that gives your AKS cluster access to your Container Registry.
-
-```azurecli
-az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4
-```
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
