@@ -145,7 +145,7 @@ Create an AKS cluster using ````az aks create````. Lets give the cluster the nam
 az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4
 ```
 
-### Note2: If the command below doesnt work, you can use a two-step approach. 
+### Note2: If the command above doesnt work, you can use a two-step approach. 
 
 1: Create cluster:
 ```azurecli
