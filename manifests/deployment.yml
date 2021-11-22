@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: pelithneks 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pelithneks
+  template:
+    metadata:
+      labels:
+        app: pelithneks 
+    spec:
+      containers:
+        - name: pelithneks 
+          image: pelithneacr.azurecr.io/pelithneks
+          ports:
+          - containerPort: 80
