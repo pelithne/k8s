@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: pelithne 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pelithne
+  template:
+    metadata:
+      labels:
+        app: pelithne 
+    spec:
+      containers:
+        - name: pelithne 
+          image: pelithneacr.azurecr.io/pelithne
+          ports:
+          - containerPort: 80
