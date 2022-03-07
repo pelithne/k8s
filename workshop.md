@@ -88,8 +88,15 @@ The reason it needs to be unique, is that your ACR will get a Fully Qualified Do
 The command below will create the container registry and place it in the Resource Group you created previously. Note the flag ````--admin-enabled true````. This will allow your cluster to login to your ACR using credentials (not recommended security practice).
 
 ````bash
-az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic --admin-enabled true
+az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku Standard
 ````
+
+Then update to allow anonymous pull from the registry (this is not recommended security practice, but OK for this lab since no secret/sensitive material is used)
+
+````bash
+az acr update --name <your unique ACR name> --anonymous-pull-enabled
+````
+
 
 ### 3.4.1. Build images using ACR
 
@@ -161,7 +168,7 @@ To verify that your cluster is up and running you can try a kubectl command, lik
 kubectl get nodes
 ````
 
-### 3.5.3. Update a Kubernetes manifest file
+### 3.5.3. Update your Kubernetes manifest files
 
 You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
