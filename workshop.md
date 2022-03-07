@@ -85,10 +85,10 @@ You will use a private Azure Container Registry to *build* and *store* the docke
 
 The reason it needs to be unique, is that your ACR will get a Fully Qualified Domain Name (FQDN), on the form ````<Your unique ACR name>.azurecr.io````
 
-The command below will create the container registry and place it in the Resource Group you created previously.
+The command below will create the container registry and place it in the Resource Group you created previously. Note the flag ````--admin-enabled true````. This will allow your cluster to login to your ACR using credentials (not recommended security practice).
 
 ````bash
-az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic
+az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic --admin-enabled true
 ````
 
 ### 3.4.1. Build images using ACR
@@ -139,24 +139,11 @@ Kubernetes provides a distributed platform for containerized applications. You b
 ### Note: you may need a special command to create your cluster. Ask you coach for guidance
 
 
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` and --enable-managed-identity parameters. This will ensure that a managed identity is used that gives your AKS cluster access to your Container Registry.
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command. 
 
 ```azurecli
-az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --enable-managed-identity
+az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --enable-managed-identity
 ```
-
-### Note2: If the command above doesnt work, you can use a two-step approach. 
-
-1: Create cluster:
-```azurecli
-az aks create --resource-group <resource-group-name> --name <aks cluster name> --generate-ssh-keys --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --enable-managed-identity
-```
-
-2: Attach ACR
-```azurecli
-az aks update -n <aks cluster name> -g <resource-group-name> --attach-acr <acr-name>
-```
-### End Note 2
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
