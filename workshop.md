@@ -137,9 +137,9 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### 3.5.1. Create Kubernetes Cluster
 
-### Note: you may need a special command to create your cluster. Ask you coach for guidance
+### Note: Your cluster has already been created for you, because of... reasons :-). 
 
-
+<!---
 Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command. 
 
 ```azurecli
@@ -147,6 +147,8 @@ az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-k
 ```
 
 The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
+
+--->
 
 ### 3.5.2. Validate towards Kubernetes Cluster
 
