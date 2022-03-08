@@ -9,7 +9,7 @@ You will go through the following steps to complete the workshop:
 * Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Deploy application to Kubernetes
 * Use Helm to create templated Kubernetes applications
-* Use Azure DevOps to setup up build and release pipelines
+<!---* Use Azure DevOps to setup up build and release pipelines--->
 * and more...
 
 # 2. Prerequisites
