@@ -85,16 +85,10 @@ You will use a private Azure Container Registry to *build* and *store* the docke
 
 The reason it needs to be unique, is that your ACR will get a Fully Qualified Domain Name (FQDN), on the form ````<Your unique ACR name>.azurecr.io````
 
-The command below will create the container registry and place it in the Resource Group you created previously. Note the flag ````--admin-enabled true````. This will allow your cluster to login to your ACR using credentials (not recommended security practice).
+The command below will create the container registry and place it in the Resource Group you created previously. Note the flag ````--admin-enabled true````. This will allow your cluster to login to your ACR using credentials (not recommended security practice, but OK for this workshop).
 
 ````bash
 az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku Basic --admin-enabled true
-````
-
-Then update to allow anonymous pull from the registry (this is not recommended security practice, but OK for this lab since no secret/sensitive material is used)
-
-````bash
-az acr update --name <your unique ACR name> --anonymous-pull-enabled
 ````
 
 
