@@ -443,6 +443,8 @@ Make sure the application is deleted from the cluster (otherwise a later step, w
 kubectl delete -f azure-vote-all-in-one-redis.yaml
 ````
 
+<!---
+
 ## 3.6. Azure DevOps with AKS
 
 <p align="left">
@@ -958,6 +960,8 @@ az group delete -n <resource-group-name>
 ## 3.7. Extra tasks
 
 If you still have time, and want to learn more.
+
+--->
 
 ## 3.8. HELM
 
