@@ -210,8 +210,11 @@ Provide the ACR login server so that your manifest file looks like the following
 containers:
 - name: azure-vote-front
   image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+imagePullSecrets:
+        - name: acr-secret  
 ```
 
+  
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
 Right click Save and then right click Quit.
