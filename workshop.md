@@ -210,6 +210,25 @@ imagePullSecrets:
 - name: acr-secret  
 ````
 
+
+Finally, you need to update the Service with an annotation to indicate that it should use an internal Loadbalancer. Like this:
+
+````
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-front
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: azure-vote-front
+````
+  
+  
   
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
