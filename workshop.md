@@ -9,8 +9,8 @@ You will go through the following steps to complete the workshop:
 * Create Kubernetes Cluster using AKS (Azure Kubernetes Service)
 * Deploy application to Kubernetes
 * Use Helm to create templated Kubernetes applications
-<!---* Use Azure DevOps to setup up build and release pipelines
-* and more...--->
+* Use Azure DevOps to setup up build and release pipelines
+* and more...
 
 # 2. Prerequisites
 
@@ -85,12 +85,11 @@ You will use a private Azure Container Registry to *build* and *store* the docke
 
 The reason it needs to be unique, is that your ACR will get a Fully Qualified Domain Name (FQDN), on the form ````<Your unique ACR name>.azurecr.io````
 
-The command below will create the container registry and place it in the Resource Group you created previously. Note the flag ````--admin-enabled true````. This will allow your cluster to login to your ACR using credentials (not recommended security practice, but OK for this workshop).
+The command below will create the container registry and place it in the Resource Group you created previously.
 
 ````bash
-az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku Basic --admin-enabled true
+az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic
 ````
-
 
 ### 3.4.1. Build images using ACR
 
@@ -137,18 +136,29 @@ Kubernetes provides a distributed platform for containerized applications. You b
 
 ### 3.5.1. Create Kubernetes Cluster
 
-### Note: Your cluster has already been created for you, because of... reasons :-). 
+### Note: you may need a special command to create your cluster. Ask you coach for guidance
 
-<!---
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command. 
+
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` and --enable-managed-identity parameters. This will ensure that a managed identity is used that gives your AKS cluster access to your Container Registry.
 
 ```azurecli
-az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --enable-managed-identity
+az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys --attach-acr <your unique ACR name> --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --enable-managed-identity
 ```
 
-The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
+### Note2: If the command above doesnt work, you can use a two-step approach. 
 
---->
+1: Create cluster:
+```azurecli
+az aks create --resource-group <resource-group-name> --name <aks cluster name> --generate-ssh-keys --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4 --enable-managed-identity
+```
+
+2: Attach ACR
+```azurecli
+az aks update -n <aks cluster name> -g <resource-group-name> --attach-acr <acr-name>
+```
+### End Note 2
+
+The creation time for the cluster can be up to 10 minutes, so this might be a good time for a leg stretcher and/or cup of coffee!
 
 ### 3.5.2. Validate towards Kubernetes Cluster
 
@@ -164,21 +174,7 @@ To verify that your cluster is up and running you can try a kubectl command, lik
 kubectl get nodes
 ````
 
-### 3.5.3 Create image pull secret
-For convenience, we previously allowed "admin" login to our ACR. This enables us to use a Kubernetes secret in the manifest, which will hold the ACR credentials. 
-
-To create the secret, you need credentials. These can be found in the Azure portal. First navigate to your Container Registry. Then go to **Access Keys**. In the blade that opens up, you will see the ````login server````, the ````Username```` and ````Password```` that you will use to create the secret.
-
-Note that the ````login-server```` will be on the format ````<your unique ACR name>.azurecr.io```` and that ````Username```` will be the same as ````<your unique ACR name>````.
-  
-Either one of the two passwords can be used.
-
-To create the secret: 
-````
-kubectl create secret docker-registry acr-secret --docker-server=<login-server> --docker-username=<Username> --docker-password=<Password> 
-````
-
-### 3.5.4. Update your Kubernetes manifest files
+### 3.5.3. Update a Kubernetes manifest file
 
 You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
@@ -200,41 +196,19 @@ containers:
   image: microsoft/azure-vote-front:v1
 ```
 
-Provide the ACR login server and the imagePullSecret, so that your manifest file looks like the following example:
+Provide the ACR login server so that your manifest file looks like the following example:
 
 ```yaml
 containers:
 - name: azure-vote-front
   image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
-imagePullSecrets:
-- name: acr-secret  
-````
+```
 
-
-Finally, you need to update the Service with an annotation to indicate that it should use an internal Loadbalancer. Like this:
-
-````
-apiVersion: v1
-kind: Service
-metadata:
-  name: azure-vote-front
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-  selector:
-    app: azure-vote-front
-````
-  
-  
-  
 Please also take some time to study the manifest file, to get a better understanding of what it contains.
 
 Right click Save and then right click Quit.
 
-### 3.5.5. Deploy the application
+### 3.5.4. Deploy the application
 
 To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the needed Kubernetes objects. Specify the sample manifest file, as shown in the following example:
 
@@ -242,7 +216,7 @@ To deploy your application, use the ```kubectl apply``` command. This command pa
 kubectl apply -f azure-vote-all-in-one-redis.yaml
 ```
 
-### 3.5.6. Test the application
+### 3.5.5. Test the application
 
 When the manifest is applied, a pod and a service is created. The pod contains the "business logic" of your application and the service exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. 
 
@@ -286,7 +260,7 @@ To see the application in action, open a web browser to the external IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/azure-vote.png)
 
-### 3.5.7. Update an application in Azure Kubernetes Service (AKS)
+### 3.5.6. Update an application in Azure Kubernetes Service (AKS)
 
 After an application has been deployed in Kubernetes, it can be updated by specifying a new container image or image version. When doing so, the update is staged so that only a portion of the deployment is concurrently updated. This staged update enables the application to keep running during the update. It also provides a rollback mechanism if a deployment failure occurs.
 
@@ -296,7 +270,7 @@ In this step the sample Azure Vote app is updated. You learn how to:
 * Create an updated container image
 * Deploy the updated container image to AKS
 
-### 3.5.8. Increase number of pods
+### 3.5.7. Increase number of pods
 
 Let's make a change to the sample application, then update the version already deployed to your AKS cluster. 
 
@@ -345,7 +319,7 @@ azure-vote-front-74b865bcd9-94lrz   1/1     Running   0          49s
 azure-vote-front-74b865bcd9-xfsq8   1/1     Running   0          18m
 ```
 
-### 3.5.9. Update the application
+### 3.5.8. Update the application
 
 The sample application source code can be found inside of the *azure-vote* directory. Open the *config_file.cfg* file with an editor, such as `code`:
 
@@ -365,7 +339,7 @@ SHOWHOST = 'false'
 
 Save and close the file.
 
-### 3.5.10. Update the container image
+### 3.5.9. Update the container image
 
 To build a new front-end image, use ```az acr build``` the same way as before, but make sure to change the version from ````v1```` to ````v2````
 
@@ -381,7 +355,7 @@ You can check that all went well with the ````az acr repository show-tags```` co
 az acr repository show-tags --name <Your ACR Name> --repository azure-vote-front --output table
 ````
 
-### 3.5.11. Deploy the updated application
+### 3.5.10. Deploy the updated application
 
 To update the application, you can use  ```kubectl set``` and specify the new application version, but the preferred way is to edit the kubernetes manifest to change the version:
 
@@ -438,7 +412,7 @@ azure-vote-front-1297194256-tptnx  1/1       Running       0          5m
 azure-vote-front-1297194256-zktw9  1/1       Terminating   0          1m
 ```
 
-### 3.5.12. Test the updated application
+### 3.5.11. Test the updated application
 
 To view the updated application, first get the external IP address of the `azure-vote-front` service (will be the same as before, since the service was not updated, only the pod):
 
@@ -450,15 +424,13 @@ Now open a local web browser to the IP address.
 
 ![Image of Kubernetes cluster on Azure](./media/vote-app-updated-external.png)
 
-### 3.5.13. Clean-up
+### 3.5.12. Clean-up
 
 Make sure the application is deleted from the cluster (otherwise a later step, which is using Helm, might have issues...)
 
 ````bash
 kubectl delete -f azure-vote-all-in-one-redis.yaml
 ````
-
-<!---
 
 ## 3.6. Azure DevOps with AKS
 
@@ -975,8 +947,6 @@ az group delete -n <resource-group-name>
 ## 3.7. Extra tasks
 
 If you still have time, and want to learn more.
-
---->
 
 ## 3.8. HELM
 
