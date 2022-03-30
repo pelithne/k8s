@@ -161,7 +161,21 @@ To verify that your cluster is up and running you can try a kubectl command, lik
 kubectl get nodes
 ````
 
-### 3.5.3. Update a Kubernetes manifest file
+### 3.5.3 Create image pull secret
+For convenience, we previously allowed "admin" login to our ACR. This enables us to use a Kubernetes secret in the manifest, which will hold the ACR credentials. 
+
+To create the secret, you need credentials. These can be found in the Azure portal. First navigate to your Container Registry. Then go to **Access Keys**. In the blade that opens up, you will see the ````login server````, the ````Username```` and ````Password```` that you will use to create the secret.
+
+Note that the ````login-server```` will be on the format <your unique ACR name>.azurecr.io and that ````Username```` will be the same as <your unique ACR name>.
+
+Either one of the two passwords can be used.
+
+To create the secret: 
+````
+kubectl create secret docker-registry acr-secret --docker-server=<login-server> --docker-username=<Username> --docker-password=<Password> 
+````
+
+### 3.5.4. Update a Kubernetes manifest file
 
 You have built a docker image with the sample application, in the Azure Container Registry (ACR). To deploy the application to Kubernetes, you must update the image name in the Kubernetes manifest file to include the ACR login server name. Currently the manifest "points" to a container located in the microsoft repository in *docker hub*.
 
@@ -195,15 +209,13 @@ Please also take some time to study the manifest file, to get a better understan
 
 Right click Save and then right click Quit.
 
-### 3.5.4. Deploy the application
+### 3.5.5. Deploy the application
 
 To deploy your application, use the ```kubectl apply``` command. This command parses the manifest file and creates the needed Kubernetes objects. Specify the sample manifest file, as shown in the following example:
 
 ```console
 kubectl apply -f azure-vote-all-in-one-redis.yaml
 ```
-
-### 3.5.5. Test the application
 
 When the manifest is applied, a pod and a service is created. The pod contains the "business logic" of your application and the service exposes the application to the internet. This process can take a few minutes, in part because the container image needs to be downloaded from ACR to the Kubernetes Cluster. 
 
