@@ -88,7 +88,7 @@ The reason it needs to be unique, is that your ACR will get a Fully Qualified Do
 The command below will create the container registry and place it in the Resource Group you created previously.
 
 ````bash
-az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic
+az acr create --name <your unique ACR name> --resource-group <resource-group-name> --sku basic --admin-enabled true
 ````
 
 ### 3.4.1. Build images using ACR
