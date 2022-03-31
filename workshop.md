@@ -166,7 +166,7 @@ For convenience, we previously allowed "admin" login to our ACR. This enables us
 
 To create the secret, you need credentials. These can be found in the Azure portal. First navigate to your Container Registry. Then go to **Access Keys**. In the blade that opens up, you will see the ````login server````, the ````Username```` and ````Password```` that you will use to create the secret.
 
-Note that the ````login-server```` will be on the format <your unique ACR name>.azurecr.io and that ````Username```` will be the same as <your unique ACR name>.
+Note that the ````login-server```` will be on the format <your unique ACR name>.azurecr.io and that ````Username```` will be the same as "your unique ACR name" used when creating the container registry.
 
 Either one of the two passwords can be used.
 
