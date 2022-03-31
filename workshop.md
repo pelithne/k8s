@@ -139,7 +139,7 @@ Kubernetes provides a distributed platform for containerized applications. You b
 ### Note: you may need a special command to create your cluster. Ask you coach for guidance
 
 
-Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command b. Note the ````--attach-acr```` and --enable-managed-identity parameters. This will ensure that a managed identity is used that gives your AKS cluster access to your Container Registry.
+Create an AKS cluster using ````az aks create````. Lets give the cluster the name  ````k8s````, and run the command:
 
 ```azurecli
 az aks create --resource-group <resource-group-name> --name k8s --generate-ssh-keys  --load-balancer-sku basic --node-count 1 --node-vm-size Standard_D2s_v4
