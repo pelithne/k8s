@@ -203,7 +203,7 @@ containers:
 - name: azure-vote-front
   image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
 imagePullSecrets:
-        - name: acr-secret  
+- name: acr-secret  
   
 ```
 
