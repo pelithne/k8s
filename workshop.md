@@ -193,7 +193,7 @@ Original:
 ```yaml
 containers:
 - name: azure-vote-front
-  image: microsoft/azure-vote-front:v1
+  image: mcr.microsoft.com/azuredocs/azure-vote-front:v2
 ```
 
 Provide the ACR login server and image pull secret so that your manifest file looks like the following example:
