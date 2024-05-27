@@ -523,3 +523,83 @@ helm delete azvote
 ````
 
 This will remove all the pods and services, and other resources related to the application.
+
+
+
+
+
+
+
+
+
+# 4 Create Azure Container Apps
+
+In this step, we will create a Container Apps instance that hosts a pre-made web template for testing purposes. This will allow us to easily set up a test environment and begin experimenting with load testing. Follow the instructions below to create your Container Apps instance.
+
+1) In the Azure Portal, type **Container Apps** in the search field.
+2) From the drop down menu choose **Container Apps**. 
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt1.JPG)
+
+<img src="https://raw.githubusercontent.com/pelithne/AKS_secure_baseline_the_hard_way/main/images/aks-baseline-architecture-workshop.jpg" width="600">
+
+3) Click on **Create** button.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt2.JPG)
+
+4) Select your subscription from the drop down menu.
+5) Select your existing resource group called **rg-companyname-yourname**.
+6)Provide a name for the container apps instance, call it: **ca-yourcompanyname-yourname**.
+7) select **Sweden Central** as your region.
+
+8) Press **Next: Container>**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt3.JPG)
+
+9) Press **Next: Bindings >**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt4.JPG)
+
+10) Press **Next: Tags >**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt5.JPG)
+
+11) Press **Next: Review + Create >**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt6.JPG)
+
+12) Press **Create**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt7.JPG)
+
+The deployment is in progress, it may take 1-3 minutes.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt8.JPG)
+
+13) Once the deployment is finished, click on the **Home >** breadcrumb on the top left hand side of the portal.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt9.JPG)
+
+14) Click on **Resource groups**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt10.JPG)
+
+15) Click on your resource group called **rg-yourcompanyname-yourname**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt11.JPG)
+
+16) Within the resource group, you should be able to locate your Container Apps instance. Let’s take a moment to verify that the pre-made web template is up and running, by clicking on your **Container Apps instance**
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt12.JPG)
+
+17) In the overview page of Container Apps, copy the URL and click on the **Application URL**.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt13.JPG)
+
+You should now see a page similar to the one illustrated below. If you can see it, congratulations! You have successfully created your first Container Apps instance and made it accessible from the internet. We now have an Azure Container Apps instance that we can run load tests against. Follow the instructions below to verify the status of your Container Apps instance.
+
+![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt14.JPG)
+
+
+
+# Challenge: Create container app using the cantainer images from the AKS part of the workshop!
