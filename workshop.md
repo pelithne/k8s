@@ -600,6 +600,8 @@ You should now see a page similar to the one illustrated below. If you can see i
 
 ![Screenshot](https://github.com/pelithne/azure-for-testers/blob/main/images/alt14.JPG)
 
+<br>
+<br>
+<br>
 
-
-# Challenge: Create container app using the cantainer images from the AKS part of the workshop!
+# Challenge: Create container app using the container images from the AKS part of the workshop!
