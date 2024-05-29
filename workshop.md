@@ -854,7 +854,7 @@ ls -l /mnt/azure
 While inside the pod, you could create a file in the file share, e.g. by doing
 
 ````
-touch /mnt/azure/hello.txt
+echo "Hello from within the container" > /mnt/azure/hello.txt
 ````
 
 If you want to, you can now go into the Azure portal and browse to the resource group you created. Then click on the "Storage Account" resource. When the storage account blade opens up, you can select "File shares" in the left hand navigation bar. When you click file shares, you will see the file share you created previously. Go into that file share, and select "Overview" from the left hand navigation. When you do, you should see the file you just created in the pod (hello.txt).
