@@ -1,4 +1,4 @@
-# 1. Kubernetes Workshop
+Fhelm# 1. Kubernetes Workshop
 
 This workshop/tutorial contains a number of different sections, each addressing a specific aspect of running workloads (containers) in Kubernetes, including how to design CI/CD pipelines.
 
@@ -527,6 +527,345 @@ This will remove all the pods and services, and other resources related to the a
 
 
 
+
+
+## 3.9 Secret management in AKS
+### Note: The exercise below is using standard Kubernetes secrets. This is not recommended from a security point of view, but the idea here is to introduce the concept. There are things you can/should do to increase security later on.
+
+### 3.9.1 create secret
+
+Create files that will be used as input to the secret, and echo some text strings into the files. 
+
+```bash
+$ echo -n "user" > ./user.txt
+$ echo -n "verysecretpassword" > ./pass.txt
+```
+
+Use kubectl create secret to generate a secret using the files just created
+
+```bash
+kubectl create secret generic credentials --from-file=./user.txt --from-file=./pass.txt
+```
+
+Check to see that your secret has been created
+
+```bash
+kubectl get secrets
+```
+
+
+### 3.9.2 Use the secret
+For this example, we will insert the secret into environment variables in a pod. For convenience we will continue to use the azure-vote container.
+
+To use the secret in the pod, you need to edit the manifest in `azure-vote-all-in-one-redis.yaml` once again. At the end of the ````Deployment```` section for ````azure-vote-front```` Change the following:
+````
+      env:
+        - name: REDIS
+          value: "azure-vote-back"
+````
+
+To look like this
+````    
+      env:
+        - name: REDIS
+          value: "azure-vote-back"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: user.txt
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: pass.txt
+````
+
+After this, just re-apply the configuration 
+
+````
+kubectl apply -f azure-vote-all-in-one-redis.yaml
+````
+
+After a few moments, you should be able to log into the pod and check the environment variables. Use the following commands to ````exec```` into the container.
+
+First get the name of the pod
+````
+kubectl get pods
+````
+
+You should see two pods. One of them will be named something like ````azure-vote-front-d94895c88-p52sr````. This is the pod you want to access.
+
+Use ````kubectl exec -it <name of the pod> -- sh```` to access the pod (make sure to replace the pod name with the name of your pod):
+
+````
+kubectl exec -it azure-vote-front-d94895c88-p52sr -- sh
+````
+
+Once inside the pod, list the environment variables in the pod with the ````printenv```` command
+
+````
+printenv
+````
+
+This will give you a long list of environment variables. You should be able to find the username and password variables you created.
+
+Alternatively, you can achive the same result with a one-liner:
+
+````
+kubectl exec -it azure-vote-front-d94895c88-p52sr -- printenv
+````
+
+
+To exit the container, just type:
+````
+exit
+````
+
+
+
+
+## 3.10 Storage options in AKS
+
+### 3.10.1 Dynamically create volume using Azure Disk
+
+The easiest way to create persistant storage for a pod in AKS is to use the dynamic option. In this exercise you will be using one of the built in storage classes, to make it even easier.
+
+The first thing you need to do is to create a Persistant Volume Claim (PVC). In order to do that, you can create a file with the kubernetes manifest for a PVC.
+
+Create a file named azure-pvc.yaml, with the following content:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: azure-managed-disk
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: managed-csi
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+Then create the PVC using the ````kubectl apply```` command:
+
+````
+kubectl apply -f azure-pvc.yaml
+````
+
+Next step is to use the PVC in a pod. For simplicity, we will keep using the same manifest as before. 
+
+Edit ````azure-vote-all-in-one-redis.yaml```` to add the ````volume```` and ````volumeMounts```` sections. 
+
+Before:
+
+```yaml
+      containers:
+      - name: azure-vote-front
+        image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        env:
+        - name: REDIS
+          value: "azure-vote-back"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: user.txt
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: pass.txt
+
+```
+
+After (in other words, add the volumeMount at the end of the ````containers```` section and add the ````volumes```` section at the same indentation level as the ````containers```` section).
+
+```yaml
+      containers:
+      - name: azure-vote-front
+        image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        volumeMounts:
+        - name: disk
+          mountPath: "/mnt/azuredisk"
+        env:
+        - name: REDIS
+          value: "azure-vote-back"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: user.txt
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: pass.txt
+      volumes:
+      - name: disk
+        persistentVolumeClaim:
+          claimName: azure-managed-disk
+```
+
+### Note: Make sure indentation is correct. YAML is really picky when it comes to that. The ````volumes```` statement should be on the same indentation level as the ````containers```` statement
+
+Now, re-apply the pod definition using the ````kubectl apply```` command:
+
+````
+kubectl apply -f azure-vote-all-in-one-redis.yaml
+````
+
+To check that the storage was created, you can exec into the pod and run the ````ls```` command:
+
+````
+kubectl -it <name of the pod> -- sh
+ls -l /mnt/azuredisk
+````
+
+
+### 3.10.2 If you have the time: Use a file share as a volume, this time with static mode
+
+If you need storage that can be accessed by all pods in a cluster, you can use Azure Files. You can create the file share dynamically, like in the previous example, or statically. In this exercise you will take the hard way, and create it statically. 
+
+Create storage account. Give the storage account a unique name (e.g. use your signum)
+````
+az storage account create -n <unique name for storage account> -g <resource-group-name> -l westeurope  --sku Standard_LRS
+````
+
+
+Export the storage account connection string as an environment variable, this will be used when creating the Azure file share
+
+````
+export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -n <unique name for storage account> -g <resource-group-name> -o tsv)
+````
+
+Create the file share, inside the storage account. The fileshare could be named e.g. "aksshare"
+
+````
+az storage share create -n <file share name> --connection-string $AZURE_STORAGE_CONNECTION_STRING
+````
+
+Get storage account key. This will be needed for the pod to access the storage.
+
+````
+STORAGE_KEY=$(az storage account keys list --resource-group <resource-group-name> --account-name <unique name for storage account> --query "[0].value" -o tsv)
+````
+
+Validate that the environment variable was correctly populated, by echoing the content. 
+
+````
+echo  $STORAGE_KEY
+````
+
+Create a kubernetes secret to hold the storage account name and key. Like in the previous example, this secret will be used by the pod.
+
+````
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=<unique name for storage account> --from-literal=azurestorageaccountkey=$STORAGE_KEY
+````
+
+Now you need to edit the manifest once again. You need to add two things, a ````volume```` definition and a ````volumeMount````
+
+For the volumeMount, change the following:
+
+```yaml
+      containers:
+      - name: azure-vote-front
+        image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        volumeMounts:
+        - name: disk
+          mountPath: "/mnt/azuredisk"
+
+```
+
+to look like below (in other words, add the volumeMount at the end of the ````containers```` section)
+
+```yaml
+      containers:
+      - name: azure-vote-front
+        image: <your unique ACR name>.azurecr.io/azure-vote-front:v1
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        volumeMounts:
+        - name: disk
+          mountPath: "/mnt/azuredisk"
+        - name: azure
+          mountPath: "/mnt/azure"
+```
+
+For the ````volume```` definition, add the following at the very end of the ````deployment```` section for ````azure-vote-front````, after the ````env```` section. If you already have  `volume` section from the previous exercises, just add the missing parts (there should be only one volume segment, which can contain multiple volumes) 
+
+### Note: Make sure indentation is correct. YAML is really picky when it comes to that. The ````volumes```` statement should be on the same indentation level as the ````containers```` statement
+
+````
+  volumes:
+  - name: disk
+    persistentVolumeClaim:
+      claimName: azure-managed-disk
+  - name: azure
+    csi:
+      driver: file.csi.azure.com
+      readOnly: false
+      volumeAttributes:
+        secretName: azure-secret
+        shareName: <file share name>
+````
+
+Now its time to apply the manifest again:
+
+````
+kubectl apply -f azure-vote-all-in-one-redis.yaml
+````
+
+After some time, you can once again ````exec```` into the container to make sure that the volume is where it should be
+
+````
+kubectl exec -ti <pod name> -- sh
+ls -l /mnt/azure
+````
+
+While inside the pod, you could create a file in the file share, e.g. by doing
+
+````
+touch /mnt/azure/hello.txt
+````
+
+If you want to, you can now go into the Azure portal and browse to the resource group you created. Then click on the "Storage Account" resource. When the storage account blade opens up, you can select "File shares" in the left hand navigation bar. When you click file shares, you will see the file share you created previously. Go into that file share, and select "Overview" from the left hand navigation. When you do, you should see the file you just created in the pod (hello.txt).
+
+Another way of checking the mount is to use ````kubectl describe```` (if you are still attached to the pod, make sure to exit back to the cloud shell before running the command)
+
+````
+kubectl describe pod <pod name>
+````
+
+In the output you will find (among other things) that you have a mount at /mnt/azure.
 
 
 
