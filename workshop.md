@@ -734,7 +734,7 @@ kubectl apply -f azure-vote-all-in-one-redis.yaml
 To check that the storage was created, you can exec into the pod and run the ````ls```` command:
 
 ````
-kubectl -it <name of the pod> -- sh
+kubectl exec -it <name of the pod> -- sh
 ls -l /mnt/azuredisk
 ````
 
